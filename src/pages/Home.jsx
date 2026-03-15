@@ -1,7 +1,14 @@
+import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
-import { Atom, Zap, BookOpen, GitBranch, Code2, ArrowRight, CheckCircle, Lock, ChevronRight } from 'lucide-react'
+import { motion } from 'framer-motion'
+import {
+  Atom, Zap, BookOpen, GitBranch, Code2,
+  ArrowRight, CheckCircle, Lock, ChevronRight,
+  Lightbulb, Eye, AlignLeft, FlaskConical, Brain, Target,
+} from 'lucide-react'
 import { useProgress } from '../hooks/useProgress'
 
+/* ── Module data ─────────────────────────────────────────────────────── */
 const MODULES = [
   {
     id: 'intuition',
@@ -11,7 +18,6 @@ const MODULES = [
     title: 'Big-Picture Intuition',
     lessons: 5,
     topics: ['Bits vs qubits', 'Superposition', 'Measurement collapse', 'Interference', 'Why QC matters'],
-    color: 'indigo',
   },
   {
     id: 'braket',
@@ -21,7 +27,6 @@ const MODULES = [
     title: 'Bra-Ket Notation',
     lessons: 4,
     topics: ['Kets |ψ⟩', 'State explorer', 'Bras ⟨ψ|', 'Inner products'],
-    color: 'violet',
   },
   {
     id: 'phase',
@@ -31,7 +36,6 @@ const MODULES = [
     title: 'Phase & Measurement Angles',
     lessons: 5,
     topics: ['What is phase?', 'Unit circle explorer', 'Bloch sphere', 'Measurement bases', 'Real algorithms'],
-    color: 'purple',
   },
   {
     id: 'qiskit',
@@ -41,116 +45,205 @@ const MODULES = [
     title: 'Qiskit',
     lessons: 5,
     topics: ['What is Qiskit?', 'First circuit', 'Essential gates', 'Bell state', 'Next steps'],
-    color: 'fuchsia',
   },
 ]
 
+/* Per-module explicit style maps — full class strings so Tailwind JIT detects them */
+const MODULE_STYLES = {
+  intuition: {
+    num: '01',
+    icon:        'bg-indigo-900/40 border-indigo-700/50',
+    iconText:    'text-indigo-400',
+    badge:       'bg-indigo-900/40 text-indigo-300 border-indigo-800/40',
+    progressBar: 'bg-indigo-500',
+    link:        'text-indigo-400 hover:text-indigo-300',
+    leftBorder:  'border-l-indigo-500/60',
+    watermark:   'text-indigo-900/30',
+    hover:       'hover:border-indigo-700/40',
+  },
+  braket: {
+    num: '02',
+    icon:        'bg-violet-900/40 border-violet-700/50',
+    iconText:    'text-violet-400',
+    badge:       'bg-violet-900/40 text-violet-300 border-violet-800/40',
+    progressBar: 'bg-violet-500',
+    link:        'text-violet-400 hover:text-violet-300',
+    leftBorder:  'border-l-violet-500/60',
+    watermark:   'text-violet-900/30',
+    hover:       'hover:border-violet-700/40',
+  },
+  phase: {
+    num: '03',
+    icon:        'bg-purple-900/40 border-purple-700/50',
+    iconText:    'text-purple-400',
+    badge:       'bg-purple-900/40 text-purple-300 border-purple-800/40',
+    progressBar: 'bg-purple-500',
+    link:        'text-purple-400 hover:text-purple-300',
+    leftBorder:  'border-l-purple-500/60',
+    watermark:   'text-purple-900/30',
+    hover:       'hover:border-purple-700/40',
+  },
+  qiskit: {
+    num: '04',
+    icon:        'bg-fuchsia-900/40 border-fuchsia-700/50',
+    iconText:    'text-fuchsia-400',
+    badge:       'bg-fuchsia-900/40 text-fuchsia-300 border-fuchsia-800/40',
+    progressBar: 'bg-fuchsia-500',
+    link:        'text-fuchsia-400 hover:text-fuchsia-300',
+    leftBorder:  'border-l-fuchsia-500/60',
+    watermark:   'text-fuchsia-900/30',
+    hover:       'hover:border-fuchsia-700/40',
+  },
+}
+
 const TOTAL_LESSONS = MODULES.reduce((sum, m) => sum + m.lessons, 0)
 
-export default function Home() {
-  const { completed, count, total, getLessonPassed } = useProgress()
+/* ── Framer Motion variants ─────────────────────────────────────────── */
+const heroContainer = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.07 } },
+}
+const heroItem = {
+  hidden: { opacity: 0, y: 16 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+}
 
-  // Calculate total lessons done across all modules
+/* ── How it works steps ─────────────────────────────────────────────── */
+const STEPS = [
+  { icon: Lightbulb,   label: 'Key Idea',       color: 'text-amber-400',  bg: 'bg-amber-900/30 border-amber-800/40' },
+  { icon: Eye,         label: 'Visual First',    color: 'text-sky-400',    bg: 'bg-sky-900/30 border-sky-800/40' },
+  { icon: AlignLeft,   label: '3-Line Explain',  color: 'text-indigo-400', bg: 'bg-indigo-900/30 border-indigo-800/40' },
+  { icon: FlaskConical,label: 'Worked Example',  color: 'text-violet-400', bg: 'bg-violet-900/30 border-violet-800/40' },
+  { icon: CheckCircle, label: 'Checkpoint Quiz', color: 'text-green-400',  bg: 'bg-green-900/30 border-green-800/40' },
+]
+
+/* ── Component ──────────────────────────────────────────────────────── */
+export default function Home() {
+  const { completed, getLessonPassed } = useProgress()
+
   const lessonsDone = MODULES.reduce((sum, m) => {
-    const passed = getLessonPassed(m.id, m.lessons).filter(Boolean).length
-    return sum + passed
+    return sum + getLessonPassed(m.id, m.lessons).filter(Boolean).length
   }, 0)
   const pct = Math.round((lessonsDone / TOTAL_LESSONS) * 100)
-
-  // Find first incomplete module to "continue"
   const nextModule = MODULES.find(m => !completed[m.id])
 
   return (
     <div>
-      {/* Hero */}
+      {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden py-20 sm:py-28">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                          w-[500px] h-[500px] bg-indigo-600/8 rounded-full blur-3xl" />
+        {/* Layered orbs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-[480px] h-[480px]
+                          bg-indigo-600/8 rounded-full blur-3xl orb-float" />
+          <div className="absolute top-1/3 right-1/6 w-[320px] h-[320px]
+                          bg-violet-600/6 rounded-full blur-3xl orb-float-slow" />
+          <div className="absolute bottom-1/4 left-1/3 w-[260px] h-[260px]
+                          bg-fuchsia-600/5 rounded-full blur-3xl orb-float-alt" />
         </div>
 
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 badge bg-indigo-900/40 text-indigo-300
-                          border border-indigo-800/50 mb-6">
-            <Atom className="w-3.5 h-3.5" />
-            Free · Visual · Beginner-Friendly
-          </div>
+        <motion.div
+          className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center"
+          variants={heroContainer}
+          initial="hidden"
+          animate="show"
+        >
+          <motion.div variants={heroItem}>
+            <div className="inline-flex items-center gap-2 badge bg-indigo-900/40 text-indigo-300
+                            border border-indigo-800/50 mb-6">
+              <Atom className="w-3.5 h-3.5" />
+              Free · Visual · Beginner-Friendly
+            </div>
+          </motion.div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-5 leading-tight">
-            Learn Quantum Computing
-            <span className="text-indigo-400"> from scratch</span>
-          </h1>
+          <motion.h1
+            variants={heroItem}
+            className="text-4xl sm:text-6xl font-extrabold text-white mb-4 leading-tight tracking-tight"
+          >
+            Learn{' '}
+            <span className="gradient-text">Quantum Computing</span>
+            <br className="hidden sm:block" />
+            {' '}from scratch
+          </motion.h1>
 
-          <p className="text-lg text-slate-400 mb-4 max-w-xl mx-auto leading-relaxed">
+          <motion.p variants={heroItem} className="text-base sm:text-lg text-slate-400 mb-5 max-w-xl mx-auto leading-relaxed">
             {MODULES.length} modules · {TOTAL_LESSONS} bite-sized lessons · interactive diagrams · checkpoints
-          </p>
+          </motion.p>
 
           {/* Progress bar if started */}
           {lessonsDone > 0 && (
-            <div className="max-w-xs mx-auto mb-6">
+            <motion.div variants={heroItem} className="max-w-xs mx-auto mb-6">
               <div className="flex justify-between text-xs text-slate-500 mb-1.5">
-                <span>{lessonsDone}/{TOTAL_LESSONS} lessons</span>
-                <span>{pct}% complete</span>
+                <span>{lessonsDone}/{TOTAL_LESSONS} lessons done</span>
+                <span>{pct}%</span>
               </div>
               <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-indigo-500 rounded-full transition-all duration-700"
-                     style={{ width: `${pct}%` }} />
+                <motion.div
+                  className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${pct}%` }}
+                  transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+                />
               </div>
-            </div>
+            </motion.div>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <motion.div variants={heroItem} className="flex flex-col sm:flex-row gap-3 justify-center">
             {lessonsDone === 0 ? (
-              <Link to="/intuition" className="btn-primary text-base px-8 py-3">
+              <Link to="/intuition" className="btn-primary text-base px-7 py-3 group">
                 Start Learning
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 transition-transform duration-150 group-hover:translate-x-0.5" />
               </Link>
             ) : nextModule ? (
               <>
-                <Link to={nextModule.to} className="btn-primary text-base px-8 py-3">
+                <Link to={nextModule.to} className="btn-primary text-base px-7 py-3 group">
                   Continue — {nextModule.title}
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 transition-transform duration-150 group-hover:translate-x-0.5" />
                 </Link>
-                <Link to="/intuition" className="btn-secondary text-base px-8 py-3">
+                <Link to="/intuition" className="btn-secondary text-base px-7 py-3">
                   Start over
                 </Link>
               </>
             ) : (
               <div className="flex items-center gap-2 text-green-400 font-semibold text-base justify-center">
                 <CheckCircle className="w-5 h-5" />
-                Course Complete! 🎉
+                Course Complete!
               </div>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* How it works */}
-      <section className="border-y border-slate-800 bg-slate-900/30 py-12">
+      {/* ── How each lesson works ─────────────────────────────────── */}
+      <section className="border-y border-slate-800 bg-slate-900/30 py-12 sm:py-14">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <p className="text-center text-xs text-slate-500 uppercase tracking-widest mb-8 font-medium">
-            How each lesson works
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center text-xs">
-            {[
-              { icon: '💡', label: 'One Key Idea' },
-              { icon: '🎨', label: 'Visual First' },
-              { icon: '📖', label: '3-Line Explanation' },
-              { icon: '🔍', label: 'Worked Example' },
-              { icon: '✅', label: 'Checkpoint Quiz' },
-            ].map(({ icon, label }) => (
-              <div key={label} className="flex flex-col items-center gap-2 py-3">
-                <span className="text-2xl">{icon}</span>
-                <span className="text-slate-400 leading-tight">{label}</span>
-              </div>
+          <p className="text-center section-label mb-8">How each lesson works</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-0">
+            {STEPS.map(({ icon: Icon, label, color, bg }, i) => (
+              <Fragment key={label}>
+                <div className="flex sm:flex-col items-center gap-3 sm:gap-2 w-full sm:w-auto text-center sm:text-center">
+                  <div className={`w-10 h-10 rounded-xl border flex items-center justify-center flex-shrink-0 ${bg}`}>
+                    <Icon className={`w-5 h-5 ${color}`} />
+                  </div>
+                  <div className="flex-1 sm:flex-none">
+                    <p className={`text-xs font-semibold ${color} sm:mt-0`}>{i + 1}</p>
+                    <p className="text-xs text-slate-400 mt-0.5 leading-tight">{label}</p>
+                  </div>
+                </div>
+                {i < STEPS.length - 1 && (
+                  <div className="hidden sm:block w-8 h-px bg-slate-700/60 flex-shrink-0 mx-1" />
+                )}
+                {i < STEPS.length - 1 && (
+                  <div className="sm:hidden w-px h-4 bg-slate-700/60 flex-shrink-0" />
+                )}
+              </Fragment>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Course modules */}
+      {/* ── Course modules ────────────────────────────────────────── */}
       <section className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-        <h2 className="text-2xl font-bold text-white mb-1">Course Modules</h2>
+        <h2 className="text-2xl font-bold text-white mb-1 tracking-tight">Course Modules</h2>
         <p className="text-slate-400 text-sm mb-8">Complete in order. Each module unlocks the next.</p>
 
         <div className="space-y-4">
@@ -160,108 +253,156 @@ export default function Home() {
             const lessonCount = passed.filter(Boolean).length
             const isLocked = idx > 0 && !completed[MODULES[idx - 1].id]
             const Icon = m.icon
+            const styles = MODULE_STYLES[m.id]
+
+            const leftBorderClass = isDone
+              ? 'border-l-green-500/70'
+              : isLocked
+                ? 'border-l-slate-700/40'
+                : styles.leftBorder
 
             return (
-              <div key={m.id}
-                className={`rounded-2xl border transition-all duration-200 overflow-hidden
+              <div
+                key={m.id}
+                className={`rounded-2xl border border-l-4 overflow-hidden transition-all duration-200 relative
+                  ${leftBorderClass}
                   ${isDone
                     ? 'border-green-800/40 bg-green-950/10'
                     : isLocked
                       ? 'border-slate-800 bg-slate-900/20 opacity-50'
-                      : 'border-slate-700/60 bg-slate-900/40 hover:border-indigo-700/50'
-                  }`}>
-                <div className="p-5">
+                      : `border-slate-700/60 bg-slate-900/40 ${styles.hover} hover:shadow-lg hover:shadow-black/20`
+                  }`}
+              >
+                {/* Watermark module number */}
+                {!isLocked && (
+                  <div
+                    aria-hidden="true"
+                    className={`absolute top-1 right-3 text-[4.5rem] font-black leading-none
+                                select-none pointer-events-none
+                                ${isDone ? 'text-green-900/25' : styles.watermark}`}
+                  >
+                    {styles.num}
+                  </div>
+                )}
+
+                <div className="p-5 relative">
                   <div className="flex items-start gap-4">
                     {/* Icon */}
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0
+                    <div className={`w-11 h-11 rounded-xl border flex items-center justify-center flex-shrink-0
                       ${isDone
-                        ? 'bg-green-900/40 border border-green-700/50'
-                        : `bg-${m.color}-900/40 border border-${m.color}-700/50`
+                        ? 'bg-green-900/40 border-green-700/50'
+                        : isLocked
+                          ? 'bg-slate-800/60 border-slate-700/40'
+                          : styles.icon
                       }`}>
                       {isDone
-                        ? <CheckCircle className="w-6 h-6 text-green-400" />
+                        ? <CheckCircle className="w-5 h-5 text-green-400" />
                         : isLocked
-                          ? <Lock className="w-5 h-5 text-slate-500" />
-                          : <Icon className={`w-6 h-6 text-${m.color}-400`} />
+                          ? <Lock className="w-4 h-4 text-slate-500" />
+                          : <Icon className={`w-5 h-5 ${styles.iconText}`} />
                       }
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 pr-2">
                       <div className="flex flex-wrap items-baseline gap-2 mb-1">
                         <span className="text-xs text-slate-500 font-medium">Module {m.number}</span>
                         {isDone && (
-                          <span className="badge bg-green-900/40 text-green-400 text-xs">Complete</span>
+                          <span className="badge bg-green-900/40 text-green-400 border border-green-800/40 text-xs py-0.5">
+                            Complete
+                          </span>
                         )}
                         {!isDone && !isLocked && lessonCount > 0 && (
-                          <span className={`badge bg-${m.color}-900/40 text-${m.color}-300 text-xs`}>
+                          <span className={`badge text-xs py-0.5 border ${styles.badge}`}>
                             {lessonCount}/{m.lessons} lessons
                           </span>
                         )}
-                        {!isDone && !isLocked && lessonCount === 0 && (
-                          <span className="text-xs text-slate-600">{m.lessons} lessons</span>
-                        )}
                       </div>
-                      <h3 className="font-semibold text-white mb-2">{m.title}</h3>
+
+                      <h3 className="font-semibold text-white mb-2.5 text-[0.95rem] leading-snug">{m.title}</h3>
 
                       {/* Topic pills */}
                       <div className="flex flex-wrap gap-1.5">
                         {m.topics.map((t, ti) => (
                           <span key={t}
-                            className={`text-xs px-2 py-0.5 rounded-full
+                            className={`text-xs px-2 py-0.5 rounded-full border
                               ${ti < lessonCount && !isDone
-                                ? `bg-${m.color}-900/40 text-${m.color}-300 border border-${m.color}-800/40`
+                                ? styles.badge
                                 : isDone
-                                  ? 'bg-green-900/30 text-green-400 border border-green-800/30'
-                                  : 'bg-slate-800/60 text-slate-500 border border-slate-700/40'
+                                  ? 'bg-green-900/30 text-green-400 border-green-800/30'
+                                  : 'bg-slate-800/60 text-slate-500 border-slate-700/40'
                               }`}>
-                            {isDone || ti < lessonCount ? '✓ ' : ''}{t}
+                            {(isDone || ti < lessonCount) ? '✓ ' : ''}{t}
                           </span>
                         ))}
                       </div>
+
+                      {/* Progress bar within module card */}
+                      {!isDone && lessonCount > 0 && (
+                        <div className="mt-3 h-1 bg-slate-800 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ${styles.progressBar}`}
+                            style={{ width: `${(lessonCount / m.lessons) * 100}%` }}
+                          />
+                        </div>
+                      )}
+                      {isDone && (
+                        <div className="mt-3 h-1 bg-green-500/50 rounded-full" />
+                      )}
                     </div>
 
                     {/* CTA */}
                     {!isLocked && (
-                      <Link to={m.to}
-                        className={`flex-shrink-0 flex items-center gap-1 text-sm font-medium transition-colors
-                          ${isDone
-                            ? 'text-slate-500 hover:text-slate-300'
-                            : `text-${m.color}-400 hover:text-${m.color}-300`
-                          }`}>
+                      <Link
+                        to={m.to}
+                        className={`flex-shrink-0 flex items-center gap-1 text-sm font-medium
+                                    transition-colors self-start mt-0.5
+                                    ${isDone ? 'text-slate-500 hover:text-slate-300' : styles.link}`}
+                      >
                         {isDone ? 'Review' : lessonCount > 0 ? 'Continue' : 'Start'}
                         <ChevronRight className="w-4 h-4" />
                       </Link>
                     )}
                   </div>
                 </div>
-
-                {/* Progress bar within module */}
-                {!isDone && lessonCount > 0 && (
-                  <div className={`h-1 bg-slate-800`}>
-                    <div className={`h-full bg-${m.color}-500 transition-all duration-500`}
-                         style={{ width: `${(lessonCount / m.lessons) * 100}%` }} />
-                  </div>
-                )}
-                {isDone && <div className="h-1 bg-green-500/60" />}
               </div>
             )
           })}
         </div>
       </section>
 
-      {/* Why section */}
+      {/* ── Built for beginners ───────────────────────────────────── */}
       <section className="bg-slate-900/40 border-t border-slate-800 py-14">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <h2 className="text-xl font-bold text-white mb-8 text-center">Built for beginners</h2>
-          <div className="grid sm:grid-cols-3 gap-5">
+          <h2 className="text-xl font-bold text-white mb-8 text-center tracking-tight">Built for beginners</h2>
+          <div className="grid sm:grid-cols-3 gap-4">
             {[
-              { icon: '🧠', title: 'Intuition First', desc: 'Analogies before equations. You always know the "why" before the math.' },
-              { icon: '🎯', title: 'One Idea at a Time', desc: 'Each lesson is one concept. No information overload.' },
-              { icon: '✅', title: 'Checkpoints', desc: 'A quick quiz after every lesson confirms you understood before moving on.' },
-            ].map(({ icon, title, desc }) => (
+              {
+                icon: Brain,
+                iconBg:   'bg-indigo-900/40 border-indigo-800/50',
+                iconText: 'text-indigo-400',
+                title: 'Intuition First',
+                desc: 'Analogies before equations. You always understand the "why" before seeing the math.',
+              },
+              {
+                icon: Target,
+                iconBg:   'bg-violet-900/40 border-violet-800/50',
+                iconText: 'text-violet-400',
+                title: 'One Idea at a Time',
+                desc: 'Each lesson is exactly one concept. No information overload, ever.',
+              },
+              {
+                icon: CheckCircle,
+                iconBg:   'bg-green-900/40 border-green-800/50',
+                iconText: 'text-green-400',
+                title: 'Checkpoints',
+                desc: 'A quick quiz after every lesson confirms you understood before moving on.',
+              },
+            ].map(({ icon: Icon, iconBg, iconText, title, desc }) => (
               <div key={title} className="card text-center">
-                <div className="text-3xl mb-3">{icon}</div>
+                <div className={`w-11 h-11 rounded-xl border mx-auto mb-3 flex items-center justify-center ${iconBg}`}>
+                  <Icon className={`w-5 h-5 ${iconText}`} />
+                </div>
                 <h3 className="font-semibold text-white mb-1.5 text-sm">{title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">{desc}</p>
               </div>
@@ -270,7 +411,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ── Footer ───────────────────────────────────────────────── */}
       <footer className="border-t border-slate-800 py-8 text-center text-sm text-slate-600">
         <div className="flex items-center justify-center gap-2 mb-1">
           <Atom className="w-4 h-4 text-indigo-600" />
