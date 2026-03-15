@@ -4,7 +4,7 @@ import ModuleLayout from '../components/ModuleLayout'
 import Quiz from '../components/Quiz'
 import DeepDive from '../components/DeepDive'
 import StepNav from '../components/StepNav'
-import { MathDisplay, Math as InlineMath } from '../components/MathBlock'
+import { MathDisplay, MathInline as InlineMath } from '../components/MathBlock'
 import { useProgress } from '../hooks/useProgress'
 
 /* ── Visuals ──────────────────────────────────────────────────────────────── */

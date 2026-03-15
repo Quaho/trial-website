@@ -5,7 +5,7 @@ import Quiz from '../components/Quiz'
 import DeepDive from '../components/DeepDive'
 import StepNav from '../components/StepNav'
 import CodeBlock from '../components/CodeBlock'
-import { MathDisplay, Math as InlineMath } from '../components/MathBlock'
+import { MathDisplay, MathInline as InlineMath } from '../components/MathBlock'
 import { useProgress } from '../hooks/useProgress'
 
 /* ── Code snippets ────────────────────────────────────────────────────────── */

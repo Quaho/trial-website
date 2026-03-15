@@ -1,7 +1,7 @@
 import 'katex/dist/katex.min.css'
 import { InlineMath, BlockMath } from 'react-katex'
 
-export function Math({ children }) {
+export function MathInline({ children }) {
   return <InlineMath math={children} />
 }
 
