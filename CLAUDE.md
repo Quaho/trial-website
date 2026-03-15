@@ -1,174 +1,180 @@
-# CLAUDE.md — Quantum Computing Education Website
+# CLAUDE.md — Quantum Learning Site Redesign
 
-## Project Goal
-Build a polished, beginner-friendly educational website that teaches quantum computing
-from first principles through Qiskit. Target: curious beginners with no prior QC knowledge.
+## Project Audit (March 2026)
 
-## Audience
-- Complete beginners to quantum computing
-- May have some programming experience (Python helpful for Qiskit section)
-- No physics degree required
+### What exists
+React 18 + Vite + Tailwind CSS v3 + KaTeX + React Router v6 + Framer Motion.
+4 module pages (Intuition, BraKet, PhaseAngle, Qiskit) plus a Home page.
+Custom components: Navbar, LearningPath, ModuleCard, ModuleLayout, SummaryBox,
+MistakesBox, CodeBlock, MathBlock. Progress tracked in localStorage via useProgress hook.
 
-## Tech Stack
-- **Framework**: React 18 + Vite
-- **Styling**: Tailwind CSS v3
-- **Icons**: Lucide React
-- **Math rendering**: KaTeX (via react-katex)
-- **Routing**: React Router v6
-- **Animations**: Framer Motion (light usage)
-- **No backend** — fully static, deploy anywhere
+### Strengths
+- Pedagogically sound: intuition-first order, analogies, common mistakes sections
+- Clean component architecture, accessible markup, responsive layout
+- Solid interactive tools: StateExplorer (slider), PhaseExplorer (unit circle), BlochExplorer (2D Bloch sphere)
+- KaTeX math rendering, copy-button code blocks, progress persistence
+- Dark theme, consistent indigo/violet/amber color system
 
-## Module Plan
+### Weaknesses — what must change
+- **Walls of text**: every module is one long scrolling page; no bite-sized chunking
+- **No checkpoints**: learner can scroll through without absorbing anything
+- **No diagrams-first flow**: text paragraph precedes visuals instead of following them
+- **No lesson progress within modules**: only module-level completion
+- **Interactive tools are buried**: sandwiched between prose, not the centerpiece
+- **CodeBlock has no syntax highlighting**: Python code is unreadable wall of white
+- **Home page doesn't communicate "course journey"** strongly enough
+- **Module cards are too vague**: descriptions don't show what you'll actually learn
+- **No quiz/checkpoint component** exists at all
 
-### Module 0 — Landing Page
-- Hero section with tagline
-- Visual learning path (4 steps)
-- Progress overview widget
-- "Start Learning" CTA
+---
 
-### Module 1 — Big-Picture Intuition
-Topics: bits vs qubits, superposition, measurement, interference, why QC matters
-- Animated bit-vs-qubit visual
-- Superposition coin flip analogy
-- Measurement collapse explanation
-- Interference wave analogy
-- Real-world QC applications
+## Redesign Strategy
 
-### Module 2 — Bra-Ket Notation
-Topics: |0⟩, |1⟩, bras, kets, inner products, simple state examples
-- Notation cheat sheet
-- Interactive state builder
-- Inner product examples
-- Common mistakes section
+### Core mental model shift
+Current: long essay with interactive widgets embedded
+Target: short card-based lessons where **the visual is slide 1**, explanation is slide 2,
+example is slide 3, and checkpoint is the "door" to the next lesson.
 
-### Module 3 — Phase & Measurement Angles
-Topics: intuition → math → visual
-- Bloch sphere intuition
-- Phase angle explained visually
-- Measurement angle and basis
-- Interactive angle explorer (SVG)
-- Common confusions
+### Lesson unit structure (non-negotiable)
+Every lesson = exactly this sequence:
+1. **Concept card** — one key idea, headline + 1-sentence hook
+2. **Visual** — diagram, animation, or interactive first (before any prose)
+3. **Explanation** — max 3 short sentences or 3 bullet points
+4. **Example** — one concrete worked example
+5. **Checkpoint** — 1 multiple-choice question; must answer to proceed
+6. **Deep dive** (optional, collapsible) — extra math or context for curious learners
 
-### Module 4 — Qiskit
-Topics: what it is, simple circuits, basic gates, beginner examples
-- Setup instructions
-- First circuit walkthrough
-- Gate reference (H, X, CNOT, measure)
-- Bell state example
-- Code snippets with syntax highlighting
+### Teaching sequence (unchanged)
+1. Ideas & Intuition (Module 1)
+2. Bra-Ket Notation (Module 2)
+3. Phase & Measurement Angle (Module 3)
+4. Qiskit (Module 4)
 
-## Coding Rules
-- Functional components only, no class components
-- Co-locate styles with components (Tailwind utilities)
-- Reuse shared components from `src/components/`
-- Module pages live in `src/pages/`
-- Keep files under 300 lines; split if larger
-- No inline style attributes — use Tailwind classes
-- All math rendered with KaTeX, never plain text formulas
-- Code examples use a consistent `<CodeBlock>` component
+---
 
-## UX Rules
-- Mobile-first responsive design
-- Smooth scroll navigation
-- Progress stored in localStorage
-- Each module has: intro, content sections, summary box, common mistakes
-- Visual learning path always visible in header/nav
-- Consistent color theme: indigo/violet for quantum, green for correct, amber for warnings
-- Accessible: proper aria labels, sufficient color contrast
+## Content Simplification Rules
+- Max 3 sentences per prose block (then stop or use bullets)
+- No paragraph > 60 words
+- Lead with the visual, follow with words
+- One concept per section — no combining two ideas in one block
+- Avoid jargon without immediate plain-language translation
+- Analogies before equations, always
+- Every equation must be followed by a "in plain English this means…" line
 
-## Directory Structure
-```
-trial-website/
-├── CLAUDE.md
-├── index.html
-├── package.json
-├── vite.config.js
-├── tailwind.config.js
-├── postcss.config.js
-├── src/
-│   ├── main.jsx
-│   ├── App.jsx
-│   ├── index.css
-│   ├── components/
-│   │   ├── Navbar.jsx
-│   │   ├── ProgressTracker.jsx
-│   │   ├── ModuleCard.jsx
-│   │   ├── SummaryBox.jsx
-│   │   ├── MistakesBox.jsx
-│   │   ├── CodeBlock.jsx
-│   │   ├── MathBlock.jsx
-│   │   └── LearningPath.jsx
-│   ├── pages/
-│   │   ├── Home.jsx
-│   │   ├── Intuition.jsx
-│   │   ├── BraKet.jsx
-│   │   ├── PhaseAngle.jsx
-│   │   └── Qiskit.jsx
-│   └── hooks/
-│       └── useProgress.js
-```
+---
 
-## Git Workflow
-- Work in small milestones
-- Update CLAUDE.md checklist before each commit
-- Commit message format: `feat: <milestone description>`
-- Push to origin/main after each commit
-- Never commit broken/non-building code
+## Diagram Strategy
+- **Bits vs Qubits**: animated toggle showing bit (0/1) vs qubit (superposition blob)
+- **Superposition**: coin-flip animation (spinning → landing → collapsing)
+- **Measurement collapse**: before/after diagram with arrow
+- **Interference**: animated wave SVG (constructive vs destructive)
+- **Bloch sphere**: keep existing 2D interactive, promote it to lesson centerpiece
+- **Bra-ket states**: visual vector cards (column vs row vectors)
+- **Inner product**: dot-product visual (two vectors → scalar)
+- **Phase**: unit circle stays, add labeled tick marks for common angles
+- **Quantum gates**: circuit diagram visuals (wire + gate box notation)
+- **Bell state**: step-by-step circuit animation
+
+All diagrams: SVG preferred, labeled, dark-theme friendly, mobile-safe.
+
+---
+
+## Interaction Strategy
+- **Sliders**: keep existing (amplitude, phase angle, theta/phi for Bloch)
+- **Multiple-choice checkpoints**: new Quiz component after every lesson
+- **Reveal/collapse**: "See the math" collapsible for deep-dives
+- **Animated diagrams**: use Framer Motion for entrance animations on key visuals
+- **Step navigator**: within each module, prev/next lesson buttons with lesson dot indicator
+- **Copy buttons**: keep on CodeBlock; add syntax highlighting
+
+---
+
+## Architecture Changes
+- Add `src/components/Quiz.jsx` — multiple-choice checkpoint with feedback
+- Add `src/components/LessonCard.jsx` — wrapper for one lesson (concept + visual + text + example + quiz)
+- Add `src/components/DeepDive.jsx` — collapsible deep-dive section
+- Add `src/components/StepNav.jsx` — within-module lesson navigator (dots + prev/next)
+- Refactor `src/components/CodeBlock.jsx` — add Prism.js syntax highlighting
+- Refactor all 4 module pages: break into arrays of lesson objects, rendered as step sequence
+- Update `src/hooks/useProgress.js` — track lesson-level completion within modules
+
+---
+
+## Progress System
+- **Module level**: existing (4 modules, mark complete button)
+- **Lesson level**: NEW — track which lessons within a module are done
+- Checkpoint pass = lesson complete
+- All lessons complete = module complete (auto-trigger)
+- Navbar shows module progress bar (existing)
+- Within module: dot indicator shows which lesson you're on
+
+---
 
 ## Progress Checklist
 
-### Setup
-- [x] Inspect repo
-- [x] Create CLAUDE.md
-- [x] Initialize Vite + React project
-- [x] Install dependencies (Tailwind, React Router, KaTeX, Lucide, Framer Motion)
-- [x] Configure Tailwind
-- [x] Set up base layout and routing
+### Foundation
+- [x] Audit existing site
+- [x] Write CLAUDE.md
+- [x] Build Quiz component (multiple-choice checkpoint)
+- [x] Build DeepDive (collapsible deep dive) component
+- [x] Build StepNav component (lesson dots + prev/next)
+- [x] Update useProgress for lesson-level tracking
 
-### Milestone 1 — Shell & Navigation
-- [x] App shell with Navbar
-- [x] React Router routes
-- [x] useProgress hook
-- [x] Landing page skeleton
+### Module Restructure
+- [x] Milestone A: Home page redesign — lesson counts, per-module progress bars, topic pills
+- [x] Milestone B: Intuition module — 5 bite-sized lessons with interactive visuals + checkpoints
+- [x] Milestone C: BraKet module — 4 lessons with StateExplorer + checkpoints
+- [x] Milestone D: PhaseAngle module — 5 lessons with PhaseExplorer + BlochExplorer + checkpoints
+- [x] Milestone E: Qiskit module — 5 lessons with code + circuit visuals + checkpoints
 
-### Milestone 2 — Landing Page
-- [x] Hero section
-- [x] Visual learning path component
-- [x] Module cards
-- [x] Progress overview
+### Polish
+- [ ] Milestone F: CodeBlock syntax highlighting (Prism.js)
+- [ ] Milestone G: Mobile audit + final polish
+- [ ] Milestone H: Deploy to GitHub Pages
 
-### Milestone 3 — Module 1: Intuition
-- [x] Bits vs Qubits section
-- [x] Superposition explanation
-- [x] Measurement & interference
-- [x] Why QC matters
-- [x] Summary + mistakes
+---
 
-### Milestone 4 — Module 2: Bra-Ket
-- [x] Notation intro
-- [x] Ket/bra/inner product sections
-- [x] Notation cheat sheet
-- [x] Interactive state examples
-- [x] Summary + mistakes
+## Git Workflow
+- Branch: main
+- Commit format: `feat: milestone <X> — <description>`
+- Deploy: `npm run deploy` (gh-pages)
+- Never commit non-building code
+- Update this checklist before each commit
 
-### Milestone 5 — Module 3: Phase & Angles
-- [x] Intuition-first explanation
-- [x] Phase angle math + visuals
-- [x] Measurement angle and basis
-- [x] Interactive SVG angle explorer
-- [x] Summary + mistakes
+---
 
-### Milestone 6 — Module 4: Qiskit
-- [x] What is Qiskit section
-- [x] Setup guide
-- [x] First circuit walkthrough
-- [x] Gate reference
-- [x] Bell state example
-- [x] Summary
+## Tech Stack
+- React 18 + Vite
+- Tailwind CSS v3
+- Lucide React (icons)
+- KaTeX / react-katex (math)
+- React Router v6
+- Framer Motion (animations)
+- Prism.js (syntax highlighting — to add)
+- No backend — fully static
 
-### Milestone 7 — Polish & Push
-- [x] Mobile responsiveness audit
-- [x] Accessibility pass
-- [x] Progress tracker wired end-to-end
-- [x] Final visual polish
-- [x] Final commit + push
+## Directory Structure
+```
+src/
+├── components/
+│   ├── Navbar.jsx
+│   ├── ProgressTracker.jsx
+│   ├── ModuleCard.jsx
+│   ├── ModuleLayout.jsx
+│   ├── SummaryBox.jsx
+│   ├── MistakesBox.jsx
+│   ├── CodeBlock.jsx          ← add Prism.js
+│   ├── MathBlock.jsx
+│   ├── LearningPath.jsx
+│   ├── Quiz.jsx               ← NEW
+│   ├── DeepDive.jsx           ← NEW
+│   └── StepNav.jsx            ← NEW
+├── pages/
+│   ├── Home.jsx               ← redesign
+│   ├── Intuition.jsx          ← restructure into lessons
+│   ├── BraKet.jsx             ← restructure into lessons
+│   ├── PhaseAngle.jsx         ← restructure into lessons
+│   └── Qiskit.jsx             ← restructure into lessons
+└── hooks/
+    └── useProgress.js         ← extend for lesson tracking
+```

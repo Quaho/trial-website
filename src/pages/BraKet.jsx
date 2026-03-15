@@ -1,59 +1,54 @@
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../components/ModuleLayout'
-import SummaryBox from '../components/SummaryBox'
-import MistakesBox from '../components/MistakesBox'
+import Quiz from '../components/Quiz'
+import DeepDive from '../components/DeepDive'
+import StepNav from '../components/StepNav'
 import { MathDisplay, Math } from '../components/MathBlock'
-import { useState } from 'react'
+import { useProgress } from '../hooks/useProgress'
 
-function NotationCard({ symbol, name, read, example, children }) {
+/* ── Visuals ──────────────────────────────────────────────────────────────── */
+
+function VectorVisual() {
   return (
-    <div className="card my-4">
-      <div className="flex items-start gap-4">
-        <div className="w-16 h-16 flex-shrink-0 rounded-xl bg-indigo-900/40 border border-indigo-700/50
-                        flex items-center justify-center text-2xl font-mono text-indigo-300">
-          {symbol}
+    <div className="my-6 flex flex-col sm:flex-row gap-4">
+      <div className="flex-1 card text-center py-6">
+        <p className="text-xs text-indigo-400 uppercase tracking-wider mb-3">Ket |ψ⟩ = column vector</p>
+        <div className="font-mono text-2xl text-indigo-300 my-2">
+          <MathDisplay>{'\\begin{pmatrix} \\alpha \\\\ \\beta \\end{pmatrix}'}</MathDisplay>
         </div>
-        <div>
-          <h4 className="font-semibold text-white">{name}</h4>
-          <p className="text-xs text-slate-500 mb-1">Pronounced: "{read}"</p>
-          <div className="text-sm text-slate-400">{children}</div>
-          {example && <p className="mt-2 text-xs font-mono text-indigo-300">{example}</p>}
+        <p className="text-xs text-slate-500 mt-2">Points "into" the computation</p>
+      </div>
+      <div className="hidden sm:flex items-center text-slate-600 font-bold text-2xl">→</div>
+      <div className="flex-1 card text-center py-6">
+        <p className="text-xs text-violet-400 uppercase tracking-wider mb-3">Bra ⟨ψ| = row vector</p>
+        <div className="font-mono text-2xl text-violet-300 my-2">
+          <MathDisplay>{'\\begin{pmatrix} \\alpha^* & \\beta^* \\end{pmatrix}'}</MathDisplay>
         </div>
+        <p className="text-xs text-slate-500 mt-2">The "mirror" of the ket</p>
       </div>
     </div>
   )
 }
 
-function CheatSheet() {
-  const items = [
-    { sym: '|ψ⟩', name: 'Ket', desc: 'A quantum state (column vector)' },
-    { sym: '⟨ψ|', name: 'Bra', desc: 'Conjugate transpose of a ket (row vector)' },
-    { sym: '⟨φ|ψ⟩', name: 'Braket', desc: 'Inner product — overlap between two states' },
-    { sym: '|0⟩', name: 'Zero ket', desc: 'Basis state representing classical 0' },
-    { sym: '|1⟩', name: 'One ket', desc: 'Basis state representing classical 1' },
-    { sym: '|+⟩', name: 'Plus ket', desc: 'Equal superposition: (|0⟩+|1⟩)/√2' },
-    { sym: '|−⟩', name: 'Minus ket', desc: 'Equal superposition: (|0⟩−|1⟩)/√2' },
-    { sym: 'α, β', name: 'Amplitudes', desc: 'Complex numbers; |α|²+|β|²=1' },
-  ]
+function BasisStatesVisual() {
   return (
-    <div className="my-6 overflow-x-auto">
-      <table className="w-full text-sm border-collapse">
-        <thead>
-          <tr className="border-b border-slate-700">
-            <th className="py-2 px-3 text-left text-slate-500 font-medium">Symbol</th>
-            <th className="py-2 px-3 text-left text-slate-500 font-medium">Name</th>
-            <th className="py-2 px-3 text-left text-slate-500 font-medium">Meaning</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-800">
-          {items.map(({ sym, name, desc }) => (
-            <tr key={sym} className="hover:bg-slate-800/30">
-              <td className="py-2.5 px-3 font-mono text-indigo-300 text-base">{sym}</td>
-              <td className="py-2.5 px-3 text-slate-300 font-medium">{name}</td>
-              <td className="py-2.5 px-3 text-slate-400">{desc}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="my-6 flex gap-4 flex-col sm:flex-row">
+      {[
+        { label: '|0⟩', color: 'indigo', vec: ['1', '0'], desc: 'Classical 0 — north pole of Bloch sphere' },
+        { label: '|1⟩', color: 'violet', vec: ['0', '1'], desc: 'Classical 1 — south pole of Bloch sphere' },
+      ].map(({ label, color, vec, desc }) => (
+        <div key={label} className={`flex-1 card text-center border-${color}-800/40`}>
+          <div className={`text-xl font-mono text-${color}-300 mb-3`}>{label}</div>
+          <div className={`inline-block bg-${color}-950/40 rounded-xl p-4 font-mono text-${color}-200 mb-3`}>
+            <div className="flex flex-col items-center gap-1">
+              <div className={`w-10 h-10 bg-${color}-900/60 border border-${color}-600 rounded-lg flex items-center justify-center text-lg`}>{vec[0]}</div>
+              <div className={`w-10 h-10 bg-${color}-900/60 border border-${color}-600 rounded-lg flex items-center justify-center text-lg`}>{vec[1]}</div>
+            </div>
+          </div>
+          <p className="text-xs text-slate-500">{desc}</p>
+        </div>
+      ))}
     </div>
   )
 }
@@ -66,26 +61,21 @@ function StateExplorer() {
 
   return (
     <div className="card border-indigo-800/40 my-6">
-      <h4 className="font-semibold text-white mb-1">Interactive: State Explorer</h4>
-      <p className="text-sm text-slate-400 mb-4">
-        Drag the slider to set α. β is calculated so that |α|² + |β|² = 1.
-      </p>
+      <p className="text-sm font-semibold text-white mb-1">Try it: State Explorer</p>
+      <p className="text-xs text-slate-400 mb-4">Drag to set α. β is auto-calculated so |α|² + |β|² = 1.</p>
 
       <div className="mb-4">
         <div className="flex justify-between text-xs text-slate-500 mb-1">
           <span>α = {alpha.toFixed(3)}</span>
           <span>β = {beta.toFixed(3)}</span>
         </div>
-        <input
-          type="range" min="0" max="1" step="0.001"
-          value={alpha}
+        <input type="range" min="0" max="1" step="0.001" value={alpha}
           onChange={e => setAlpha(parseFloat(e.target.value))}
           className="w-full accent-indigo-500"
-          aria-label={`Alpha amplitude: ${alpha.toFixed(3)}`}
-        />
+          aria-label={`Alpha amplitude: ${alpha.toFixed(3)}`} />
       </div>
 
-      <div className="bg-slate-900 rounded-xl p-4 font-mono text-center text-lg mb-4">
+      <div className="bg-slate-900 rounded-xl p-4 font-mono text-center text-base mb-4">
         <span className="text-indigo-300">|ψ⟩ = {alpha.toFixed(3)}</span>
         <span className="text-slate-500"> |0⟩ + </span>
         <span className="text-violet-300">{beta.toFixed(3)}</span>
@@ -93,208 +83,292 @@ function StateExplorer() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-indigo-950/40 rounded-lg p-3 text-center">
-          <div className="text-2xl font-bold text-indigo-300">{p0}%</div>
-          <div className="text-xs text-slate-500 mt-0.5">P(measuring 0)</div>
-          <div className="mt-2 h-2 bg-slate-800 rounded-full overflow-hidden">
-            <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${p0}%` }} />
+        {[
+          { pct: p0, label: 'P(measuring 0)', color: 'indigo' },
+          { pct: p1, label: 'P(measuring 1)', color: 'violet' },
+        ].map(({ pct, label, color }) => (
+          <div key={label} className={`bg-${color}-950/40 rounded-lg p-3 text-center`}>
+            <div className={`text-2xl font-bold text-${color}-300`}>{pct}%</div>
+            <div className="text-xs text-slate-500 mt-0.5">{label}</div>
+            <div className="mt-2 h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div className={`h-full bg-${color}-500 rounded-full transition-all duration-300`}
+                   style={{ width: `${pct}%` }} />
+            </div>
           </div>
-        </div>
-        <div className="bg-violet-950/40 rounded-lg p-3 text-center">
-          <div className="text-2xl font-bold text-violet-300">{p1}%</div>
-          <div className="text-xs text-slate-500 mt-0.5">P(measuring 1)</div>
-          <div className="mt-2 h-2 bg-slate-800 rounded-full overflow-hidden">
-            <div className="h-full bg-violet-500 rounded-full" style={{ width: `${p1}%` }} />
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   )
 }
 
-const SUMMARY = [
-  'Bra-ket notation is a compact, powerful language for describing quantum states and operations.',
-  '|ψ⟩ (ket) is a column vector representing a quantum state. ⟨ψ| (bra) is its conjugate transpose.',
-  'The inner product ⟨φ|ψ⟩ measures "overlap" between states. Orthogonal states have inner product 0.',
-  '|0⟩ and |1⟩ are the computational basis states, analogous to 0 and 1 in classical computing.',
-  'Any qubit state is α|0⟩ + β|1⟩, where |α|² + |β|² = 1 (probabilities must sum to 1).',
-  'The amplitudes α and β are complex numbers, not just probabilities — they carry phase information.',
+function InnerProductVisual() {
+  const examples = [
+    { label: '⟨0|0⟩ = 1', desc: 'A state has 100% overlap with itself', math: '\\langle 0|0\\rangle = 1', badge: 'Self' },
+    { label: '⟨0|1⟩ = 0', desc: '|0⟩ and |1⟩ are orthogonal — zero overlap', math: '\\langle 0|1\\rangle = 0', badge: 'Orthogonal' },
+    { label: '⟨+|0⟩ = 1/√2', desc: '|+⟩ is "halfway" between the basis states', math: '\\langle +|0\\rangle = \\tfrac{1}{\\sqrt{2}}', badge: 'Partial' },
+    { label: '|⟨φ|ψ⟩|² = P', desc: 'Squared magnitude = measurement probability', math: 'P(\\phi) = |\\langle \\phi | \\psi \\rangle|^2', badge: 'Key Rule' },
+  ]
+  return (
+    <div className="grid sm:grid-cols-2 gap-3 my-6">
+      {examples.map(({ label, desc, math, badge }) => (
+        <div key={label} className="card">
+          <div className="flex justify-between items-start mb-1">
+            <code className="text-indigo-300 font-mono text-sm">{label}</code>
+            <span className="badge bg-slate-800 text-slate-400 text-xs">{badge}</span>
+          </div>
+          <p className="text-slate-400 text-xs mb-2">{desc}</p>
+          <div className="text-center bg-slate-900/50 rounded-lg py-2">
+            <Math>{math}</Math>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function CheatSheetVisual() {
+  const items = [
+    { sym: '|ψ⟩', name: 'Ket', desc: 'Quantum state (column vector)' },
+    { sym: '⟨ψ|', name: 'Bra', desc: 'Conjugate transpose (row vector)' },
+    { sym: '⟨φ|ψ⟩', name: 'Inner product', desc: 'Overlap between two states' },
+    { sym: '|0⟩, |1⟩', name: 'Basis kets', desc: 'Classical 0 and 1 analogs' },
+    { sym: '|+⟩, |−⟩', name: 'Superposition kets', desc: '(|0⟩±|1⟩)/√2' },
+    { sym: 'α, β', name: 'Amplitudes', desc: 'Complex; |α|²+|β|²=1' },
+  ]
+  return (
+    <div className="overflow-x-auto my-6 rounded-xl border border-slate-700">
+      <table className="w-full text-sm border-collapse">
+        <thead>
+          <tr className="border-b border-slate-700 bg-slate-900/50">
+            <th className="py-2.5 px-4 text-left text-slate-500 font-medium">Symbol</th>
+            <th className="py-2.5 px-4 text-left text-slate-500 font-medium">Name</th>
+            <th className="py-2.5 px-4 text-left text-slate-500 font-medium">Meaning</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-800">
+          {items.map(({ sym, name, desc }) => (
+            <tr key={sym} className="hover:bg-slate-800/20">
+              <td className="py-2.5 px-4 font-mono text-indigo-300 text-base">{sym}</td>
+              <td className="py-2.5 px-4 text-slate-300 font-medium">{name}</td>
+              <td className="py-2.5 px-4 text-slate-400">{desc}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+/* ── Lessons ──────────────────────────────────────────────────────────────── */
+
+const LESSONS = [
+  {
+    title: 'Kets — Writing Quantum States',
+    hook: 'A ket |ψ⟩ is just a column vector with a fancy bracket.',
+    bullets: [
+      '|0⟩ and |1⟩ are the two basis states — quantum analogs of classical 0 and 1.',
+      'Any qubit state is a mix: |ψ⟩ = α|0⟩ + β|1⟩, where α and β are complex numbers.',
+      'The rule: |α|² + |β|² = 1. Probabilities always sum to 100%.',
+    ],
+    visual: <BasisStatesVisual />,
+    example: (
+      <div>
+        <MathDisplay>{'|\\psi\\rangle = \\alpha|0\\rangle + \\beta|1\\rangle = \\begin{pmatrix} \\alpha \\\\ \\beta \\end{pmatrix}'}</MathDisplay>
+        <p className="text-xs text-slate-500 text-center -mt-2">In plain English: "|ψ⟩ has amplitude α for 0 and amplitude β for 1."</p>
+      </div>
+    ),
+    quiz: {
+      question: 'For a valid qubit state α|0⟩ + β|1⟩, what must be true?',
+      choices: [
+        'α and β must be positive real numbers',
+        '|α|² + |β|² = 1',
+        'α + β = 1',
+        'α and β must be equal',
+      ],
+      correct: 1,
+    },
+    deepDive: (
+      <div className="space-y-2 text-sm text-slate-400">
+        <p>α and β are complex numbers, not just real numbers. This means they have both a
+        magnitude and a phase angle. The probability of measuring 0 is |α|² (magnitude squared),
+        which is always a real positive number.</p>
+        <p>This distinction — amplitudes (complex) vs probabilities (real, non-negative) — is
+        the key to understanding interference. Negative or imaginary amplitudes can cancel each
+        other, something probabilities can never do.</p>
+      </div>
+    ),
+  },
+  {
+    title: 'Explore the State Space',
+    hook: 'Drag the slider to see how amplitudes control measurement probabilities.',
+    bullets: [
+      'At α=1, β=0: the state is pure |0⟩. You always measure 0.',
+      'At α=0.707, β=0.707: equal superposition. 50/50 chance of 0 or 1.',
+      'At α=0, β=1: the state is pure |1⟩. You always measure 1.',
+    ],
+    visual: <StateExplorer />,
+    example: (
+      <div className="card bg-slate-900/50 text-sm text-slate-400">
+        <p><strong className="text-white">The equal superposition state</strong> α = β = 1/√2 ≈ 0.707 is written |+⟩.
+        It's what you get when you apply a Hadamard gate to |0⟩. You'll see it everywhere in quantum computing.</p>
+      </div>
+    ),
+    quiz: {
+      question: 'If α = 0 and β = 1, what happens when you measure the qubit?',
+      choices: [
+        'You get 0 with 100% probability',
+        'You get 1 with 100% probability',
+        'You get 0 or 1 with equal probability',
+        'The qubit stays in superposition',
+      ],
+      correct: 1,
+    },
+  },
+  {
+    title: 'Bras — The Mirror Image',
+    hook: 'A bra ⟨ψ| is the conjugate transpose of a ket — a row vector.',
+    bullets: [
+      'Every ket has a matching bra. |ψ⟩ → ⟨ψ|.',
+      'Bra = row vector with complex-conjugated entries (α → α*).',
+      'Together, "bra" + "ket" = "braket" — Dirac\'s pun on "bracket."',
+    ],
+    visual: <VectorVisual />,
+    example: (
+      <div>
+        <MathDisplay>{'\\langle 0| = \\begin{pmatrix} 1 & 0 \\end{pmatrix} \\qquad \\langle 1| = \\begin{pmatrix} 0 & 1 \\end{pmatrix}'}</MathDisplay>
+        <p className="text-xs text-slate-500 text-center -mt-2">For real amplitudes, the bra is just the ket turned sideways.</p>
+      </div>
+    ),
+    quiz: {
+      question: 'What is ⟨ψ| (a bra)?',
+      choices: [
+        'The same as |ψ⟩, just written differently',
+        'The conjugate transpose of |ψ⟩ — a row vector',
+        'The probability of measuring ψ',
+        'The inverse of the ket',
+      ],
+      correct: 1,
+    },
+  },
+  {
+    title: 'Inner Products & Overlap',
+    hook: '⟨φ|ψ⟩ measures how "similar" two quantum states are.',
+    bullets: [
+      'The inner product combines a bra with a ket to give a single number.',
+      '⟨0|1⟩ = 0: the basis states are orthogonal — completely different.',
+      '|⟨φ|ψ⟩|² gives the probability of measuring |φ⟩ when the state is |ψ⟩.',
+    ],
+    visual: <InnerProductVisual />,
+    example: (
+      <div>
+        <CheatSheetVisual />
+      </div>
+    ),
+    quiz: {
+      question: 'What is ⟨0|1⟩?',
+      choices: ['1', '0', '1/√2', '-1'],
+      correct: 1,
+    },
+    deepDive: (
+      <div className="space-y-2 text-sm text-slate-400">
+        <p>The inner product ⟨φ|ψ⟩ is computed as: multiply each component of ⟨φ| (conjugated)
+        by the corresponding component of |ψ⟩, then sum. For real amplitudes, this is just the
+        standard dot product.</p>
+        <p>Orthogonal states (inner product = 0) are "distinguishable" — a measurement can tell
+        them apart with certainty. Non-orthogonal states always have some ambiguity.</p>
+      </div>
+    ),
+  },
 ]
 
-const MISTAKES = [
-  {
-    mistake: '"α and β are probabilities directly."',
-    clarification: 'α and β are amplitudes — complex numbers. The probabilities are |α|² and |β|². This distinction matters because amplitudes can be negative or complex, enabling interference.',
-  },
-  {
-    mistake: '"⟨0| is the same as |0⟩."',
-    clarification: 'No — |0⟩ is a column vector (ket); ⟨0| is its conjugate transpose, a row vector (bra). The braket ⟨0|1⟩ is 0 (they\'re orthogonal); |0⟩⟨0| is an outer product (a matrix).',
-  },
-  {
-    mistake: '"A qubit is just a probabilistic bit — a coin with certain odds."',
-    clarification: 'Probabilities are classical (always ≥ 0). Amplitudes are quantum (can be negative/complex). The difference is physical: negative amplitudes cause interference, which pure probability theory can\'t explain.',
-  },
-]
+/* ── Module Page ──────────────────────────────────────────────────────────── */
 
 export default function BraKet() {
+  const [step, setStep] = useState(0)
+  const { markDone, markLessonPassed, getLessonPassed, completed } = useProgress()
+  const passed = getLessonPassed('braket', LESSONS.length)
+  const allPassed = passed.every(Boolean)
+  const lesson = LESSONS[step]
+
+  useEffect(() => {
+    if (allPassed && !completed['braket']) markDone('braket')
+  }, [allPassed])
+
+  function handleQuizPass() {
+    markLessonPassed('braket', step)
+  }
+
   return (
     <ModuleLayout
       moduleId="braket"
       title="Bra-Ket Notation"
-      subtitle="The mathematical language physicists and quantum programmers use to describe quantum states."
+      subtitle={`Lesson ${step + 1} of ${LESSONS.length} — ${lesson.title}`}
       prev={{ to: '/intuition', label: 'Module 1: Intuition' }}
       next={{ to: '/phase', label: 'Module 3: Phase & Angles' }}
     >
-      {/* Section 1: Why notation */}
-      <section className="mb-12">
-        <h2 className="section-heading">Why Do We Need Special Notation?</h2>
-        <p className="section-sub">A language designed for quantum states</p>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={step}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.2 }}
+        >
+          {/* Hook */}
+          <div className="mb-6 p-5 rounded-2xl bg-indigo-950/30 border border-indigo-800/40 text-center">
+            <p className="text-lg sm:text-xl font-semibold text-white leading-snug">{lesson.hook}</p>
+          </div>
 
-        <div className="prose-quantum">
-          <p>
-            In module 1, we talked about qubits being "in superposition of 0 and 1."
-            But to actually <em>compute</em> with qubits, we need precise math.
-            Bra-ket notation (also called <strong className="text-white">Dirac notation</strong>),
-            invented by physicist Paul Dirac, gives us a clean way to write quantum states,
-            operations, and measurements.
-          </p>
-          <p>
-            Don't be intimidated by the angle brackets — the concepts are simpler than they look.
-          </p>
-        </div>
-      </section>
+          {/* Visual */}
+          {lesson.visual}
 
-      {/* Section 2: Kets */}
-      <section className="mb-12">
-        <h2 className="section-heading">Kets: Quantum States</h2>
-        <p className="section-sub">How we write a quantum state</p>
+          {/* Bullets */}
+          <ul className="space-y-2 my-5">
+            {lesson.bullets.map((b, i) => (
+              <li key={i} className="flex gap-3 items-start text-sm text-slate-300">
+                <span className="mt-0.5 w-5 h-5 rounded-full bg-indigo-900/60 border border-indigo-700/50
+                                 flex items-center justify-center text-indigo-400 text-xs font-bold flex-shrink-0">
+                  {i + 1}
+                </span>
+                {b}
+              </li>
+            ))}
+          </ul>
 
-        <div className="prose-quantum">
-          <p>
-            A <strong className="text-white">ket</strong> is written as <code className="text-indigo-300">|ψ⟩</code>
-            (the letter inside is just a label). It represents a quantum state as a column vector.
-            The two most important kets are:
-          </p>
-        </div>
+          {/* Example */}
+          <div className="my-4">{lesson.example}</div>
 
-        <MathDisplay>{'|0\\rangle = \\begin{pmatrix} 1 \\\\ 0 \\end{pmatrix} \\qquad |1\\rangle = \\begin{pmatrix} 0 \\\\ 1 \\end{pmatrix}'}</MathDisplay>
+          {/* Deep dive */}
+          {lesson.deepDive && (
+            <DeepDive title="Deep Dive">{lesson.deepDive}</DeepDive>
+          )}
 
-        <div className="prose-quantum">
-          <p>
-            These are the <strong className="text-white">computational basis states</strong>.
-            Think of them as the quantum analogs of classical 0 and 1.
-            Any qubit state is a combination of these two:
-          </p>
-        </div>
+          {/* Quiz */}
+          <Quiz
+            question={lesson.quiz.question}
+            choices={lesson.quiz.choices}
+            correct={lesson.quiz.correct}
+            onPass={handleQuizPass}
+          />
 
-        <MathDisplay>{'|\\psi\\rangle = \\alpha|0\\rangle + \\beta|1\\rangle = \\begin{pmatrix} \\alpha \\\\ \\beta \\end{pmatrix}'}</MathDisplay>
-
-        <div className="card my-4 bg-slate-900/50">
-          <p className="text-sm text-slate-400">
-            Where <Math>{'\\alpha'}</Math> and <Math>{'\\beta'}</Math> are complex numbers satisfying{' '}
-            <Math>{'|\\alpha|^2 + |\\beta|^2 = 1'}</Math>. This ensures the probabilities of getting
-            0 or 1 sum to 100%.
-          </p>
-        </div>
-
-        <NotationCard symbol="|ψ⟩" name="Ket" read="ket psi">
-          A column vector representing a quantum state. The label inside (ψ, 0, 1, +, etc.)
-          is just a name. |0⟩ means "the state corresponding to classical 0."
-        </NotationCard>
-
-        <StateExplorer />
-      </section>
-
-      {/* Section 3: Bras */}
-      <section className="mb-12">
-        <h2 className="section-heading">Bras: The Other Half</h2>
-        <p className="section-sub">The "mirror image" of a ket</p>
-
-        <div className="prose-quantum">
-          <p>
-            Every ket has a corresponding <strong className="text-white">bra</strong>, written <code className="text-indigo-300">⟨ψ|</code>.
-            The bra is the <em>conjugate transpose</em> (also called Hermitian conjugate or dagger) of the ket —
-            a row vector with complex-conjugated entries.
-          </p>
-        </div>
-
-        <MathDisplay>{'|\\psi\\rangle = \\begin{pmatrix} \\alpha \\\\ \\beta \\end{pmatrix} \\quad \\Rightarrow \\quad \\langle\\psi| = \\begin{pmatrix} \\alpha^* & \\beta^* \\end{pmatrix}'}</MathDisplay>
-
-        <div className="prose-quantum">
-          <p>
-            For real amplitudes (which is often the case in introductory examples), the bra is just
-            the row version of the ket: <Math>{'\\langle 0| = (1,\\, 0)'}</Math> and <Math>{'\\langle 1| = (0,\\, 1)'}</Math>.
-          </p>
-        </div>
-
-        <NotationCard symbol="⟨ψ|" name="Bra" read="bra psi">
-          The conjugate transpose of a ket. A row vector. Together, bra + ket = "braket."
-          (Yes, Dirac named it after a bracket — he had a sense of humor.)
-        </NotationCard>
-      </section>
-
-      {/* Section 4: Inner product */}
-      <section className="mb-12">
-        <h2 className="section-heading">Inner Products: Measuring Overlap</h2>
-        <p className="section-sub">⟨φ|ψ⟩ tells you how "similar" two states are</p>
-
-        <div className="prose-quantum">
-          <p>
-            The <strong className="text-white">inner product</strong> <Math>{'\\langle \\phi | \\psi \\rangle'}</Math> combines
-            a bra and a ket to produce a single number (a scalar). Geometrically, it measures how much
-            the two states overlap.
-          </p>
-        </div>
-
-        <MathDisplay>{'\\langle \\phi | \\psi \\rangle = \\sum_i \\phi_i^* \\psi_i'}</MathDisplay>
-
-        <div className="prose-quantum">
-          <p>Key facts about inner products:</p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-4 my-4">
-          {[
-            {
-              label: '⟨0|0⟩ = 1',
-              desc: 'A state\'s overlap with itself is 1 (it\'s normalized)',
-              math: '\\langle 0|0\\rangle = (1)(1) + (0)(0) = 1',
-            },
-            {
-              label: '⟨0|1⟩ = 0',
-              desc: '|0⟩ and |1⟩ are orthogonal — totally different states',
-              math: '\\langle 0|1\\rangle = (1)(0) + (0)(1) = 0',
-            },
-            {
-              label: '⟨+|0⟩ = 1/√2',
-              desc: '|+⟩ has 50% overlap with |0⟩',
-              math: '\\langle +|0\\rangle = \\tfrac{1}{\\sqrt{2}}',
-            },
-            {
-              label: '|⟨φ|ψ⟩|² = probability',
-              desc: 'Squared magnitude = probability of measuring |φ⟩ when in state |ψ⟩',
-              math: 'P(\\phi) = |\\langle \\phi | \\psi \\rangle|^2',
-            },
-          ].map(({ label, desc, math }) => (
-            <div key={label} className="card">
-              <code className="text-indigo-300 font-mono text-sm">{label}</code>
-              <p className="text-slate-400 text-sm mt-1 mb-2">{desc}</p>
-              <div className="text-center">
-                <Math>{math}</Math>
-              </div>
+          {step === LESSONS.length - 1 && allPassed && (
+            <div className="my-6 p-5 rounded-2xl bg-green-950/30 border border-green-800/40 text-center">
+              <div className="text-2xl mb-2">🎉</div>
+              <p className="text-green-300 font-semibold">Module 2 Complete!</p>
+              <p className="text-slate-400 text-sm mt-1">Head to Module 3 to learn about phase angles.</p>
             </div>
-          ))}
-        </div>
-      </section>
+          )}
+        </motion.div>
+      </AnimatePresence>
 
-      {/* Cheat sheet */}
-      <section className="mb-8">
-        <h2 className="section-heading">Notation Cheat Sheet</h2>
-        <p className="section-sub">Quick reference for all the symbols</p>
-        <CheatSheet />
-      </section>
-
-      <SummaryBox points={SUMMARY} />
-      <MistakesBox items={MISTAKES} />
+      <StepNav
+        steps={LESSONS.length}
+        current={step}
+        passed={passed}
+        onNext={() => setStep(s => s + 1)}
+        onPrev={() => setStep(s => s - 1)}
+        onGoto={setStep}
+      />
     </ModuleLayout>
   )
 }
