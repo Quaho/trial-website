@@ -29,8 +29,10 @@ export default function StepNav({ steps, current, passed = [], onNext, onPrev, o
               aria-selected={isCurrent}
               aria-label={`Lesson ${i + 1}${isDone ? ' (completed)' : ''}`}
               onClick={() => {
-                // Allow going back freely, going forward only if previous passed
-                if (i <= current || passed[i - 1]) onGoto?.(i)
+                if (i <= current || passed[i - 1]) {
+                  window.scrollTo(0, 0)
+                  onGoto?.(i)
+                }
               }}
               className={`rounded-full transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400
                 ${isCurrent
@@ -48,7 +50,7 @@ export default function StepNav({ steps, current, passed = [], onNext, onPrev, o
       {/* Counter + Prev / Next */}
       <div className="flex items-center gap-3 w-full max-w-sm">
         <button
-          onClick={onPrev}
+          onClick={() => { window.scrollTo(0, 0); onPrev?.() }}
           disabled={isFirst}
           className={`btn-secondary flex-shrink-0 px-3 py-2 text-sm ${isFirst ? 'opacity-30 cursor-not-allowed' : ''}`}
           aria-label="Previous lesson"
@@ -63,7 +65,7 @@ export default function StepNav({ steps, current, passed = [], onNext, onPrev, o
 
         {!isLast ? (
           <button
-            onClick={onNext}
+            onClick={() => { window.scrollTo(0, 0); onNext?.() }}
             disabled={!canGoNext}
             title={!canGoNext ? 'Answer the checkpoint to continue' : ''}
             className={`btn-primary flex-shrink-0 px-3 py-2 text-sm ${!canGoNext ? 'opacity-40 cursor-not-allowed' : ''}`}

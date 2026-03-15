@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Intuition from './pages/Intuition'
 import BraKet from './pages/BraKet'
@@ -9,6 +10,7 @@ import Qiskit from './pages/Qiskit'
 export default function App() {
   return (
     <div className="min-h-screen bg-slate-950">
+      <ScrollToTop />
       <a href="#main-content" className="skip-link">Skip to main content</a>
       <Navbar />
       <main id="main-content">
