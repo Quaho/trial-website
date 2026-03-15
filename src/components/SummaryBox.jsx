@@ -2,7 +2,7 @@ import { BookOpen } from 'lucide-react'
 
 export default function SummaryBox({ points }) {
   return (
-    <div className="bg-indigo-950/50 border border-indigo-800/50 rounded-2xl p-6 my-8">
+    <div className="bg-indigo-950/50 border border-indigo-800/50 rounded-2xl p-6 my-8" role="region" aria-label="Module summary">
       <div className="flex items-center gap-2 mb-4">
         <BookOpen className="w-5 h-5 text-indigo-400" />
         <h3 className="font-semibold text-indigo-300">Module Summary</h3>

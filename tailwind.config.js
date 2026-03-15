@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: '375px',
+      },
       colors: {
         quantum: {
           50:  '#eef2ff',

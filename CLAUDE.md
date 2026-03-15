@@ -167,8 +167,8 @@ trial-website/
 - [x] Summary
 
 ### Milestone 7 — Polish & Push
-- [ ] Mobile responsiveness audit
-- [ ] Accessibility pass
+- [x] Mobile responsiveness audit
+- [x] Accessibility pass
 - [x] Progress tracker wired end-to-end
-- [ ] Final visual polish
-- [ ] Final commit + push
+- [x] Final visual polish
+- [x] Final commit + push

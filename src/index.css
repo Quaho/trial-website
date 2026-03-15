@@ -47,12 +47,14 @@
 
   .btn-primary {
     @apply inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500
-           text-white font-medium rounded-xl transition-colors duration-150 cursor-pointer;
+           text-white font-medium rounded-xl transition-colors duration-150 cursor-pointer
+           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400;
   }
 
   .btn-secondary {
     @apply inline-flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700
-           text-slate-200 font-medium rounded-xl border border-slate-700 transition-colors duration-150 cursor-pointer;
+           text-slate-200 font-medium rounded-xl border border-slate-700 transition-colors duration-150 cursor-pointer
+           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400;
   }
 
   .module-progress-dot {
@@ -60,10 +62,35 @@
   }
 }
 
+/* Skip-to-content link */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: #4f46e5;
+  color: #fff;
+  border-radius: 0 0 0.5rem 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.1s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
 /* KaTeX overrides */
 .katex {
   font-size: 1.05em !important;
   color: inherit;
+}
+
+/* Prevent wide equations from overflowing on mobile */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.25rem;
 }
 
 /* Code block scrollbar */

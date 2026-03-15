@@ -81,6 +81,7 @@ function StateExplorer() {
           value={alpha}
           onChange={e => setAlpha(parseFloat(e.target.value))}
           className="w-full accent-indigo-500"
+          aria-label={`Alpha amplitude: ${alpha.toFixed(3)}`}
         />
       </div>
 

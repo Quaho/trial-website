@@ -31,7 +31,7 @@ export default function ModuleLayout({ moduleId, title, subtitle, prev, next, ch
           {!done ? (
             <button
               onClick={() => markDone(moduleId)}
-              className="btn-primary"
+              className="btn-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
             >
               <CheckCircle className="w-4 h-4" />
               Mark as Complete

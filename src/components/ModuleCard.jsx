@@ -7,6 +7,7 @@ export default function ModuleCard({ number, title, description, to, icon: Icon,
       to={locked ? '#' : to}
       className={`group card-hover flex items-start gap-4 ${locked ? 'opacity-50 cursor-not-allowed' : ''}`}
       onClick={e => locked && e.preventDefault()}
+      aria-disabled={locked || undefined}
     >
       <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-lg
                        ${completed ? 'bg-green-600/20 text-green-400' : 'bg-indigo-600/20 text-indigo-400'}`}>

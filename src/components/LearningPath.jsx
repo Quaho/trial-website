@@ -34,8 +34,9 @@ export default function LearningPath() {
             </span>
           </Link>
           {i < STEPS.length - 1 && (
-            <div className={`w-12 sm:w-16 h-0.5 mx-1 mb-5 transition-colors
-                             ${completed[STEPS[i].id] ? 'bg-green-600' : 'bg-slate-700'}`} />
+            <div className={`hidden xs:block w-12 sm:w-16 h-0.5 mx-1 mb-5 transition-colors
+                             ${completed[STEPS[i].id] ? 'bg-green-600' : 'bg-slate-700'}`}
+                 aria-hidden="true" />
           )}
         </div>
       ))}

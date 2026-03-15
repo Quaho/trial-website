@@ -92,6 +92,7 @@ function PhaseExplorer() {
             type="range" min="0" max="360" value={phiDeg}
             onChange={e => setPhiDeg(parseInt(e.target.value))}
             className="w-full accent-violet-500"
+            aria-label={`Phase angle: ${phiDeg} degrees`}
           />
           <div className="mt-4 bg-slate-900 rounded-xl p-3 font-mono text-sm text-center">
             <span className="text-violet-300">e<sup>iφ</sup></span>
@@ -140,7 +141,8 @@ function BlochExplorer() {
             </div>
             <input type="range" min="0" max="180" value={thetaDeg}
                    onChange={e => setThetaDeg(parseInt(e.target.value))}
-                   className="w-full accent-indigo-500" />
+                   className="w-full accent-indigo-500"
+                   aria-label={`Polar angle theta: ${thetaDeg} degrees`} />
             <div className="flex justify-between text-xs text-slate-600 mt-0.5">
               <span>|0⟩</span><span>|+⟩</span><span>|1⟩</span>
             </div>
@@ -153,7 +155,8 @@ function BlochExplorer() {
             </div>
             <input type="range" min="0" max="360" value={phiDeg}
                    onChange={e => setPhiDeg(parseInt(e.target.value))}
-                   className="w-full accent-violet-500" />
+                   className="w-full accent-violet-500"
+                   aria-label={`Phase angle phi: ${phiDeg} degrees`} />
           </div>
 
           <div className="bg-slate-900 rounded-xl p-3 font-mono text-xs">

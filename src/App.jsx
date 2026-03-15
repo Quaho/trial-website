@@ -9,8 +9,9 @@ import Qiskit from './pages/Qiskit'
 export default function App() {
   return (
     <div className="min-h-screen bg-slate-950">
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       <Navbar />
-      <main>
+      <main id="main-content">
         <Routes>
           <Route path="/"          element={<Home />} />
           <Route path="/intuition" element={<Intuition />} />

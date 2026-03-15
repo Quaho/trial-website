@@ -7,7 +7,7 @@ export function Math({ children }) {
 
 export function MathDisplay({ children }) {
   return (
-    <div className="my-4 flex justify-center">
+    <div className="my-4 w-full overflow-x-auto">
       <BlockMath math={children} />
     </div>
   )
