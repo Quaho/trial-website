@@ -5,7 +5,7 @@ import Quiz from '../components/Quiz'
 import DeepDive from '../components/DeepDive'
 import StepNav from '../components/StepNav'
 import CodeBlock from '../components/CodeBlock'
-import { MathDisplay, Math } from '../components/MathBlock'
+import { MathDisplay, Math as InlineMath } from '../components/MathBlock'
 import { useProgress } from '../hooks/useProgress'
 
 /* ── Code snippets ────────────────────────────────────────────────────────── */
@@ -180,7 +180,7 @@ function GateCardsVisual() {
             </div>
           </div>
           <div className="bg-slate-950 rounded-lg p-2 text-center">
-            <Math>{matrix}</Math>
+            <InlineMath>{matrix}</InlineMath>
           </div>
         </div>
       ))}

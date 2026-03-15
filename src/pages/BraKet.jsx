@@ -4,7 +4,7 @@ import ModuleLayout from '../components/ModuleLayout'
 import Quiz from '../components/Quiz'
 import DeepDive from '../components/DeepDive'
 import StepNav from '../components/StepNav'
-import { MathDisplay, Math } from '../components/MathBlock'
+import { MathDisplay, Math as InlineMath } from '../components/MathBlock'
 import { useProgress } from '../hooks/useProgress'
 
 /* ── Visuals ──────────────────────────────────────────────────────────────── */
@@ -118,7 +118,7 @@ function InnerProductVisual() {
           </div>
           <p className="text-slate-400 text-xs mb-2">{desc}</p>
           <div className="text-center bg-slate-900/50 rounded-lg py-2">
-            <Math>{math}</Math>
+            <InlineMath>{math}</InlineMath>
           </div>
         </div>
       ))}
