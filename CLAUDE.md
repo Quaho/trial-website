@@ -1,34 +1,42 @@
-# CLAUDE.md — Quantum Learning Site
+# CLAUDE.md — QuantumLeap Learning Site
 
 ## Project Status (March 2026)
 
 ### Stack
 React 18 + Vite + Tailwind CSS v3 + KaTeX + React Router v6 + Framer Motion + Prism.js.
-4 module pages (Intuition, BraKet, PhaseAngle, Qiskit) + Home.
+13 modules + Home + Glossary + Roadmap + Mini Challenges pages.
 Components: Navbar, ModuleLayout, LessonCard, DiagramFrame, Quiz, DeepDive, StepNav,
-SummaryBox, MistakesBox, CodeBlock, MathBlock, LearningPath.
+SummaryBox, MistakesBox, CodeBlock, MathBlock, LearningPath, ModuleCard.
 Progress tracked in localStorage via useProgress hook (module + lesson level).
 
 ### Completed
-- All 4 modules restructured into bite-sized lessons (LessonCard sequence)
+- All 4 original modules restructured into bite-sized lessons (LessonCard sequence)
 - Quiz checkpoints with pass/retry and session persistence
-- StepNav with dot indicators and locked-lesson logic
+- StepNav with dot indicators, connecting lines, and locked-lesson logic
 - DeepDive collapsible sections
 - CodeBlock with Prism.js syntax highlighting (Python + Bash)
 - Home page with lesson counts, per-module progress bars, topic pills
 - useProgress: module + lesson level tracking
+- Full visual redesign: design system, Inter font, orb animations, refined components
 
 ---
 
 ## Product Vision
 
-**"Khan Academy meets Apple-like polish for quantum computing."**
+**"The best first friendly visual path into quantum computing."**
 
-A guided, visual-first course that makes quantum computing approachable for curious beginners.
+A guided, visual-first course that makes quantum computing approachable for curious beginners
+and takes them all the way to understanding core algorithms and real hardware constraints.
 Every screen answers exactly one question: *what is the one idea I'm learning right now?*
 
 Target feel: welcoming, premium, interactive, structured. Never a wall of text. Never cramped.
 Every lesson reduces cognitive load. Every interaction is obvious on first use.
+
+**Teach like 3Blue1Brown + Khan Academy + Brilliant. Not like a textbook.**
+- Diagram first, notation second
+- Analogy first, equation second
+- Progressive reveal, not information dump
+- Winnable in 3–7 minutes per lesson
 
 ---
 
@@ -64,12 +72,21 @@ Accent / Interactive:
 - Focus ring: `indigo-400`
 
 Module accent colors (used consistently per module):
-| Module        | Accent       | Use                                          |
-|---------------|--------------|----------------------------------------------|
-| 1 – Intuition | `indigo`     | hero gradient, pills, numbered bullets       |
-| 2 – BraKet    | `violet`     | hero gradient, pills, numbered bullets       |
-| 3 – Phase     | `purple`     | hero gradient, pills, numbered bullets       |
-| 4 – Qiskit    | `fuchsia`    | hero gradient, pills, numbered bullets       |
+| Module                  | Accent     | Use                                    |
+|-------------------------|------------|----------------------------------------|
+| 1 – Intuition           | `indigo`   | hero gradient, pills, numbered bullets |
+| 2 – BraKet              | `violet`   | hero gradient, pills, numbered bullets |
+| 3 – Phase               | `purple`   | hero gradient, pills, numbered bullets |
+| 4 – Qiskit              | `fuchsia`  | hero gradient, pills, numbered bullets |
+| 5 – Single-Qubit Gates  | `sky`      | hero gradient, pills, numbered bullets |
+| 6 – Multi-Qubit Systems | `cyan`     | hero gradient, pills, numbered bullets |
+| 7 – Entanglement        | `teal`     | hero gradient, pills, numbered bullets |
+| 8 – Quantum Circuits    | `emerald`  | hero gradient, pills, numbered bullets |
+| 9 – Measurement & Basis | `amber`    | hero gradient, pills, numbered bullets |
+| 10 – Core Algorithms    | `orange`   | hero gradient, pills, numbered bullets |
+| 11 – Qiskit Labs        | `rose`     | hero gradient, pills, numbered bullets |
+| 12 – Noise & Hardware   | `slate`    | hero gradient, pills, numbered bullets |
+| 13 – Use Cases          | `lime`     | hero gradient, pills, numbered bullets |
 
 State colors:
 - Success: `green-400 / green-500 / green-900/30`
@@ -113,6 +130,8 @@ Use Framer Motion. All motion must improve understanding or confirm an action �
 | Button hover                | `scale 1.004` max                       | 150ms    |
 | Button press                | `scale 0.996`                           | 100ms    |
 | Hero orbs                   | slow CSS `@keyframes` drift/pulse       | 8–12s    |
+| Circuit stepper             | gate slide-in `x -20→0` + opacity      | 250ms    |
+| Module celebration          | confetti-style scale + opacity burst    | 600ms    |
 
 **Respect `prefers-reduced-motion`** — wrap all decorative motion in a check.
 Never animate > 1 element simultaneously unless they are part of the same semantic unit.
@@ -132,25 +151,43 @@ Every interactive element must have:
 
 ## Component Architecture
 
-### Existing — keep and polish
-| Component         | Role                                        | Key changes              |
-|-------------------|---------------------------------------------|--------------------------|
-| `Navbar`          | Site navigation + progress pill             | Animated mobile menu     |
-| `ModuleLayout`    | Module page wrapper + hero + sticky header  | Color-coded per module   |
-| `LessonCard`      | One lesson (concept→visual→bullets→quiz)    | Section labels + spacing |
-| `DiagramFrame`    | Accessible figure wrapper for visuals       | Subtle label bar polish  |
-| `Quiz`            | Multiple-choice checkpoint                  | Success pulse animation  |
-| `StepNav`         | Dot nav + prev/next within module           | Connecting line, cleaner |
-| `DeepDive`        | Collapsible deep-dive section               | No major changes needed  |
-| `CodeBlock`       | Syntax-highlighted code (Prism.js)          | Done — no changes needed |
-| `MathBlock`       | KaTeX math display                          | No changes needed        |
+### Existing — keep and extend
+| Component         | Role                                        |
+|-------------------|---------------------------------------------|
+| `Navbar`          | Site navigation + progress pill             |
+| `ModuleLayout`    | Module page wrapper + hero + sticky header  |
+| `LessonCard`      | One lesson (concept→visual→bullets→quiz)    |
+| `ModuleCard`      | Home page module card with progress         |
+| `DiagramFrame`    | Accessible figure wrapper for visuals       |
+| `Quiz`            | Multiple-choice checkpoint                  |
+| `StepNav`         | Dot nav + prev/next within module           |
+| `DeepDive`        | Collapsible deep-dive section               |
+| `CodeBlock`       | Syntax-highlighted code (Prism.js)          |
+| `MathBlock`       | KaTeX math display (MathInline + MathDisplay)|
+| `SummaryBox`      | Module summary card with numbered bullets   |
+| `MistakesBox`     | Common misconceptions amber warning box     |
+| `LearningPath`    | 4-module progress flow (to be extended)     |
+| `ScrollToTop`     | Scroll effect on route change               |
+
+### New components to build
+| Component         | Role                                          |
+|-------------------|-----------------------------------------------|
+| `CircuitStepper`  | Step through gates one at a time, show state  |
+| `GateAnimator`    | Visualize how a gate transforms a qubit state |
+| `GlossaryTooltip` | Hover tooltip linking to glossary terms       |
+| `CourseRoadmap`   | Visual dependency graph of all modules        |
+| `MiniChallenge`   | Short timed concept-check card                |
 
 ### Global CSS (`index.css`)
-- Import Inter font via `@import`
-- New utilities: `.lesson-label`, `.section-label`, `.concept-pill`, `.module-dot-line`
-- Refined `.btn-primary` (subtle gradient)
-- Improved `.card` and `.card-hover`
-- Add `.gradient-text` for branded headings
+- Inter font import
+- Orb keyframe animations (float, float-slow, float-alt)
+- `.prose-quantum`, `.gradient-text`, `.lesson-label`, `.section-label`
+- `.concept-pill`, `.module-dot-line`, `.btn-primary`, `.btn-secondary`, `.btn-ghost`
+- `.card`, `.card-hover`, `.card-interactive`
+- Prism.js token colors
+- `.katex` and `.katex-display` overrides
+- `.skip-link` accessibility
+- `prefers-reduced-motion` media query guards
 
 ---
 
@@ -158,114 +195,130 @@ Every interactive element must have:
 
 ```
 / (Home)
-  ├── Hero — course value prop + progress CTA
+  ├── Hero — value prop + progress CTA + orb background
   ├── Course at a glance — 5-step lesson structure
-  ├── Module list — 4 cards, ordered, locked/unlocked states
+  ├── Module list — 13 cards, ordered, locked/unlocked, prerequisite labels
   └── "Built for beginners" — 3 pillars
 
+/roadmap
+  ├── Visual dependency graph of all 13 modules
+  ├── Locked/unlocked states
+  ├── Jump-to-module links
+  └── Estimated time per module
+
+/glossary
+  ├── Alphabetical term list
+  ├── One-sentence definition + analogy
+  └── Links back to lessons where term appears
+
+/challenges
+  ├── Circuit reading drills
+  ├── State prediction drills
+  └── Misconception correction cards
+
 /intuition (Module 1 — indigo)
-  ├── Lesson 1: Bits vs Qubits
-  ├── Lesson 2: What is Superposition?
-  ├── Lesson 3: Measurement Collapse
-  ├── Lesson 4: Interference
-  └── Lesson 5: Why Quantum Computing?
+  5 lessons: Bits vs Qubits, Superposition, Measurement, Interference, Why QC?
 
 /braket (Module 2 — violet)
-  ├── Lesson 1: What is Bra-Ket Notation?
-  ├── Lesson 2: Ket States |ψ⟩
-  ├── Lesson 3: Bra States ⟨ψ|
-  └── Lesson 4: Inner Products
+  4 lessons: Bra-Ket Notation, Ket States, Bra States, Inner Products
 
 /phase (Module 3 — purple)
-  ├── Lesson 1: What is Phase?
-  ├── Lesson 2: Unit Circle Explorer
-  ├── Lesson 3: Bloch Sphere
-  ├── Lesson 4: Measurement Bases
-  └── Lesson 5: Real Algorithms
+  5 lessons: Phase, Unit Circle, Bloch Sphere, Measurement Bases, Algorithms
 
 /qiskit (Module 4 — fuchsia)
-  ├── Lesson 1: What is Qiskit?
-  ├── Lesson 2: Your First Circuit
-  ├── Lesson 3: Essential Gates
-  ├── Lesson 4: Bell State
-  └── Lesson 5: Next Steps
+  5 lessons: What is Qiskit?, First Circuit, Essential Gates, Bell State, Next Steps
+
+/gates (Module 5 — sky)
+  6 lessons: Gates as Actions, X Gate, Z Gate, Hadamard, S and T Gates, Visual Summary
+
+/multiqubit (Module 6 — cyan)
+  5 lessons: One to Two Qubits, Basis States, Tensor Product Intuition,
+             Separable States, Reading Amplitudes
+
+/entanglement (Module 7 — teal)
+  5 lessons: Correlation vs Entanglement, Bell State Creation, Why It Can't Factor,
+             Measurement Effects, Common Misconceptions
+
+/circuits (Module 8 — emerald)
+  5 lessons: How to Read a Circuit, Wires/Gates/Measurement, State Evolution,
+             Bell State Circuit, Circuit to Code
+
+/measurement (Module 9 — amber)
+  5 lessons: Computational Basis, Measuring in Different Basis, Why Basis Matters,
+             Probability from Amplitudes, Basis-Change via Hadamard
+
+/algorithms (Module 10 — orange)
+  5 lessons: Deutsch-Jozsa, Grover's Search, Phase Kickback, Why Shor Matters,
+             Quantum Advantage
+
+/labs (Module 11 — rose)
+  5 lessons: Create a Circuit, Apply Gates and Measure, Simulate and Read Counts,
+             Bell Pair in Qiskit, Mini Experiments
+
+/noise (Module 12 — slate)
+  5 lessons: Ideal vs Real Hardware, Noise and Decoherence, No-Cloning Theorem,
+             Repetition-Code Intuition, Why Error Correction Is Hard
+
+/usecases (Module 13 — lime)
+  5 lessons: Chemistry and Materials, Optimization, Cryptography,
+             ML: Promise vs Reality, Current Limitations
 ```
+
+---
+
+## Lesson Structure (Non-Negotiable)
+
+Every lesson must follow this exact order:
+1. **Lesson N of M label** — small pill
+2. **Hook headline** — H2, large bold, ≤ 10 words, verb-led or question-led
+3. **Hook subtitle** — 1 sentence, slate-400
+4. **Visual** — SVG diagram, interactive, or animation (DiagramFrame wrapper)
+5. **Key ideas** — numbered list, ≤ 3 bullets, ≤ 20 words each (styled box)
+6. **Worked example** — labeled box with icon, concrete and specific
+7. **Deep Dive** — optional, behind DeepDive collapse (math, derivations)
+8. **Checkpoint** — Quiz component, must pass to advance
+
+No wall-of-text. No paragraph > 60 words. No symbols without plain-English explanation.
 
 ---
 
 ## Homepage Design
 
 ### Hero section
-- **Layered background**: 3 colored orbs (indigo + violet + fuchsia) with blur-3xl,
-  slow CSS drift animation, pointer-events-none
-- **Badge**: "Free · Visual · Beginner-Friendly" with Atom icon
-- **H1**: "Learn Quantum Computing" — gradient on "Quantum Computing" (indigo→violet)
-- **Sub**: "4 modules · 19 lessons · interactive diagrams · no physics degree required"
-- **Progress bar** (if started): max-w-xs centered, shows lessons done
-- **CTA**: "Start Learning →" (primary) or "Continue — Module Name →" if in progress
+- Layered background: 3 colored orbs (indigo + violet + fuchsia) with blur-3xl, slow CSS drift
+- Badge: "Free · Visual · Beginner-Friendly" with Atom icon
+- H1: "Learn Quantum Computing" — gradient on "Quantum Computing"
+- Sub: "13 modules · 63 lessons · interactive diagrams · no physics degree required"
+- Progress bar (if started): max-w-xs centered, shows lessons done
+- CTA: "Start Learning →" or "Continue — Module Name →" if in progress
 
-### Course at a glance (5-step strip)
-Replace emoji icons with Lucide icons in numbered colored circles.
-Show as horizontal flow (desktop) or 2-col grid (mobile).
-Numbered 1–5 with connecting dots between steps.
-Steps: Key Idea → Visual First → 3-Line Explanation → Worked Example → Checkpoint Quiz
-
-### Module cards
-Each card:
-- **Left border accent** (4px, module color) instead of bottom bar
-- Module number as large faint watermark ("01") top-right, very low opacity
-- Icon + "Module N" label
-- Bold module title
-- Topic pills (completed pills → colored, incomplete → slate)
-- Inline progress bar (slim, at bottom of content area, not card bottom)
-- CTA link: "Start →" / "Continue →" / "Review →"
-- Locked state: 50% opacity, lock icon, no hover effect
-
-### "Built for beginners" cards
-3 feature cards with:
-- Icon in a colored rounded square (not just plain icon)
-- Short bold title
-- 2-sentence max description
+### Module cards (updated for 13 modules)
+- Left border accent (4px, module color)
+- Module number watermark top-right, very low opacity
+- Icon + "Module N" label + estimated time badge
+- Bold module title + 1-line description
+- Topic pills (completed → colored, incomplete → slate)
+- Inline progress bar (slim)
+- CTA: "Start →" / "Continue →" / "Review →"
+- Locked state: 50% opacity, lock icon, prerequisite label, no hover
 
 ---
 
 ## Module Page Design
 
 ### Hero
-Per-module gradient background:
-- Module 1: `from-indigo-950/70 to-slate-950`
-- Module 2: `from-violet-950/70 to-slate-950`
-- Module 3: `from-purple-950/70 to-slate-950`
-- Module 4: `from-fuchsia-950/70 to-slate-950`
-
-Content:
-- Back link (← Home)
-- "Module N" label (small, colored pill)
-- H1: module title
-- Subtitle tagline
-- Lesson count badge ("5 lessons")
+Per-module gradient background using module accent color.
 
 ### Sticky mini-header
-When scrolling:
 - Module title (truncated)
-- Lesson counter "Lesson 2 of 5"
-- Dot indicators (small, current = colored pill shape)
-- Progress percentage "40%"
-
-### Lesson card sequence
-Each lesson (`LessonCard`) renders:
-1. Lesson N of M label (small pill)
-2. Hook headline (H2, large bold)
-3. Hook subtitle (slate-400, 1 sentence)
-4. Visual / interactive (DiagramFrame or raw JSX)
-5. "Key ideas" section (numbered list, styled box)
-6. "Worked example" section (labeled box with icon)
-7. "See the math" deep dive (DeepDive, violet)
-8. Checkpoint quiz (Quiz, indigo)
+- "Lesson 2 of 5" counter
+- Dot indicators (current = colored pill shape)
+- Progress percentage
 
 ### Module footer
-- "Mark as Complete" button (only shows after all lessons passed)
-- → Next module link on right
+- "Mark as Complete" (only after all lessons passed)
+- → Next module link
+- Module celebration animation on first completion
 
 ---
 
@@ -273,24 +326,47 @@ Each lesson (`LessonCard`) renders:
 
 - Height: 56px (`h-14`)
 - Background: `bg-slate-950/90 backdrop-blur`
-- Logo: Atom icon + "QuantumLeap" in bold
-- Desktop links: pill shape, active = `bg-indigo-600 text-white`, inactive = hover `bg-slate-800`
-- Progress indicator: thin bar + "N/19" text
-- Mobile: hamburger → animated slide-down menu (Framer Motion AnimatePresence)
+- Logo: Atom icon + "QuantumLeap"
+- Desktop links: pill shape, active = `bg-indigo-600 text-white`
+- Progress indicator: thin bar + "N/63" text
+- Mobile: hamburger → animated slide-down (AnimatePresence)
+- With 13 modules: group into "Foundations / Circuits / Advanced" dropdown sections
+
+---
+
+## Module Color Map
+
+```js
+const MODULE_STYLES = {
+  intuition:   { gradient: 'from-indigo-950/70',  accent: 'text-indigo-400',  border: 'border-indigo-800/40',  bg: 'bg-indigo-900/20',  bullet: 'bg-indigo-900/60 border-indigo-700/50 text-indigo-400',  num: '01' },
+  braket:      { gradient: 'from-violet-950/70',  accent: 'text-violet-400',  border: 'border-violet-800/40',  bg: 'bg-violet-900/20',  bullet: 'bg-violet-900/60 border-violet-700/50 text-violet-400',  num: '02' },
+  phase:       { gradient: 'from-purple-950/70',  accent: 'text-purple-400',  border: 'border-purple-800/40',  bg: 'bg-purple-900/20',  bullet: 'bg-purple-900/60 border-purple-700/50 text-purple-400',  num: '03' },
+  qiskit:      { gradient: 'from-fuchsia-950/70', accent: 'text-fuchsia-400', border: 'border-fuchsia-800/40', bg: 'bg-fuchsia-900/20', bullet: 'bg-fuchsia-900/60 border-fuchsia-700/50 text-fuchsia-400', num: '04' },
+  gates:       { gradient: 'from-sky-950/70',     accent: 'text-sky-400',     border: 'border-sky-800/40',     bg: 'bg-sky-900/20',     bullet: 'bg-sky-900/60 border-sky-700/50 text-sky-400',           num: '05' },
+  multiqubit:  { gradient: 'from-cyan-950/70',    accent: 'text-cyan-400',    border: 'border-cyan-800/40',    bg: 'bg-cyan-900/20',    bullet: 'bg-cyan-900/60 border-cyan-700/50 text-cyan-400',         num: '06' },
+  entanglement:{ gradient: 'from-teal-950/70',    accent: 'text-teal-400',    border: 'border-teal-800/40',    bg: 'bg-teal-900/20',    bullet: 'bg-teal-900/60 border-teal-700/50 text-teal-400',         num: '07' },
+  circuits:    { gradient: 'from-emerald-950/70', accent: 'text-emerald-400', border: 'border-emerald-800/40', bg: 'bg-emerald-900/20', bullet: 'bg-emerald-900/60 border-emerald-700/50 text-emerald-400', num: '08' },
+  measurement: { gradient: 'from-amber-950/70',   accent: 'text-amber-400',   border: 'border-amber-800/40',   bg: 'bg-amber-900/20',   bullet: 'bg-amber-900/60 border-amber-700/50 text-amber-400',     num: '09' },
+  algorithms:  { gradient: 'from-orange-950/70',  accent: 'text-orange-400',  border: 'border-orange-800/40',  bg: 'bg-orange-900/20',  bullet: 'bg-orange-900/60 border-orange-700/50 text-orange-400',   num: '10' },
+  labs:        { gradient: 'from-rose-950/70',    accent: 'text-rose-400',    border: 'border-rose-800/40',    bg: 'bg-rose-900/20',    bullet: 'bg-rose-900/60 border-rose-700/50 text-rose-400',         num: '11' },
+  noise:       { gradient: 'from-slate-800/70',   accent: 'text-slate-400',   border: 'border-slate-700/40',   bg: 'bg-slate-800/20',   bullet: 'bg-slate-800/60 border-slate-600/50 text-slate-400',      num: '12' },
+  usecases:    { gradient: 'from-lime-950/70',    accent: 'text-lime-400',    border: 'border-lime-800/40',    bg: 'bg-lime-900/20',    bullet: 'bg-lime-900/60 border-lime-700/50 text-lime-400',         num: '13' },
+}
+```
 
 ---
 
 ## Apple HIG-Inspired Patterns
 
-1. **Progressive disclosure** — Deep math is always behind DeepDive, not shown by default
-2. **One focused task** — Each lesson screen has one learning goal; nothing competes
-3. **Feedback immediacy** — Every tap/click gets instant visual feedback (< 150ms)
-4. **Spatial consistency** — Same component always appears in same position
-5. **Accessible affordances** — Every button has an aria-label, focus rings are visible
-6. **Clarity over decoration** — Gradients and motion enhance understanding, not aesthetics
-7. **Restrained palette** — Only 2–3 colors on any given screen
-8. **Breathing room** — Never pack content; use generous padding
-9. **Confirmatory feedback** — Success state is obvious (green, icon, message)
+1. **Progressive disclosure** — Deep math always behind DeepDive
+2. **One focused task** — Each lesson has one learning goal
+3. **Feedback immediacy** — Every tap gets visual feedback (< 150ms)
+4. **Spatial consistency** — Same component always in same position
+5. **Accessible affordances** — Every button has aria-label, focus rings visible
+6. **Clarity over decoration** — Gradients and motion enhance understanding
+7. **Restrained palette** — Only 2–3 colors per screen
+8. **Breathing room** — Generous padding, never cramped
+9. **Confirmatory feedback** — Success state obvious (green, icon, message)
 10. **Forgiving UX** — Wrong answer = retry immediately, no penalty
 
 ---
@@ -308,7 +384,7 @@ Each lesson (`LessonCard`) renders:
 - No information conveyed by color alone (icons + text always accompany color)
 - Mobile: tap targets ≥ 44px
 - `prefers-reduced-motion`: disable all decorative animation
-- Skip-to-content link (already in index.css)
+- Skip-to-content link (in index.css)
 - Screen reader: lesson progress announced via `aria-live="polite"` when advancing
 
 ---
@@ -321,25 +397,7 @@ All diagrams must be:
 - Captioned below (via DiagramFrame description prop)
 - Mobile-safe: fluid width, no fixed pixel sizes for containers
 - Colorblind-safe: don't rely solely on red/green; use icons + labels
-- Accessible: `role="img"` + `aria-label` on the figure wrapper
-
-Diagram catalog (one per lesson):
-| Lesson                | Visual type               | Key elements                          |
-|-----------------------|---------------------------|---------------------------------------|
-| Bits vs Qubits        | Toggle comparison         | 0/1 box vs superposition blob         |
-| Superposition         | Scaling table             | n qubits → 2ⁿ states grid            |
-| Measurement collapse  | Before/after split        | wave → spike with arrow               |
-| Interference          | Wave SVG                  | constructive vs destructive           |
-| Why QC?               | Bar chart or info card    | exponential speedup                   |
-| Ket notation          | Vector card               | column vector visual                  |
-| State explorer        | Interactive slider        | amplitude visualization               |
-| Bra notation          | Row vector card           | transposed visual                     |
-| Inner product         | Two vectors → scalar      | dot product animation                 |
-| Phase                 | Unit circle               | labeled tick marks at 0, π/2, π, 3π/2|
-| Bloch sphere          | 2D interactive            | theta/phi sliders                     |
-| Measurement bases     | Basis comparison          | Z-basis vs X-basis arrows             |
-| Quantum gates         | Circuit wire + box        | H, X, CNOT gates                      |
-| Bell state            | Step-by-step circuit      | 2-qubit state evolution               |
+- Accessible: `role="img"` + `aria-label` on figure wrapper
 
 ---
 
@@ -347,22 +405,11 @@ Diagram catalog (one per lesson):
 
 ### Voice
 - Friendly, intelligent, calm, precise
-- Direct without being abrupt
 - Analogies before equations
 - Never condescending; always encouraging
 
-### Headlines
-- Verb-led or question-led: "Superposition isn't magic — it's probability."
-- Max 10 words
-- No jargon without immediate plain-English translation
-
 ### Buttons
-- "Start Learning" → not "Begin Course"
-- "Continue →" → not "Proceed to next lesson"
-- "Check answer" → not "Submit"
-- "Retry" → not "Try again"
-- "See the math" → not "View mathematical derivation"
-- "Mark as Complete" → not "Finish module"
+- "Start Learning" / "Continue →" / "Check answer" / "Retry" / "See the math" / "Mark as Complete"
 
 ### Feedback copy
 - Correct: "Exactly right. Continue below."
@@ -373,155 +420,127 @@ Diagram catalog (one per lesson):
 - Course done: "You've finished the course."
 
 ### Lesson labels
-- "Lesson 1 of 5" (not "Step 1/5" or "1.")
-- "Key ideas" (not "Summary" or "Takeaways")
-- "Worked example" (not "Example" alone)
-- "Deep Dive — optional" (not "Advanced")
-- "Checkpoint" (not "Quiz" or "Test")
-
-### Tooltip copy
-- Locked dot: "Finish lesson N first"
-- Locked Next button: "Answer the checkpoint to continue"
+- "Lesson 1 of 5" / "Key ideas" / "Worked example" / "Deep Dive — optional" / "Checkpoint"
 
 ---
 
-## Concrete React/Tailwind/Framer Motion Patterns
+## New Module Details
 
-### Animated hero orbs (Home page)
-```jsx
-// CSS keyframes in index.css
-// @keyframes float { 0%,100% { transform: translateY(0) scale(1) }
-//                    50% { transform: translateY(-20px) scale(1.05) } }
-// .orb-float { animation: float 10s ease-in-out infinite }
-// .orb-float-slow { animation: float 14s ease-in-out infinite reverse }
+### Module 5 — Single-Qubit Gates (`/gates` — sky)
+6 lessons: Gates as Actions · X Gate (bit flip) · Z Gate (phase flip) · Hadamard (basis changer) · S and T Gates · Visual Summary
+New component needed: `GateAnimator` — shows before/after qubit state on Bloch sphere
 
-<div className="absolute inset-0 pointer-events-none overflow-hidden">
-  <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px]
-                  bg-indigo-600/10 rounded-full blur-3xl orb-float" />
-  <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px]
-                  bg-violet-600/8 rounded-full blur-3xl orb-float-slow" />
-  <div className="absolute bottom-1/4 left-1/3 w-[250px] h-[250px]
-                  bg-fuchsia-600/6 rounded-full blur-3xl orb-float" />
-</div>
-```
+### Module 6 — Multi-Qubit Systems (`/multiqubit` — cyan)
+5 lessons: One Qubit to Two · Basis States |00⟩ etc. · Tensor Product Intuition · Separable States · Reading Amplitudes
+Visual: 2×2 amplitude grid, basis state table
 
-### Staggered entrance (Framer Motion)
-```jsx
-const container = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } }
-const item = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0, transition: { duration: 0.35 } } }
-<motion.div variants={container} initial="hidden" animate="show">
-  <motion.h1 variants={item}>...</motion.h1>
-  <motion.p variants={item}>...</motion.p>
-  <motion.div variants={item}>...</motion.div>
-</motion.div>
-```
+### Module 7 — Entanglement (`/entanglement` — teal)
+5 lessons: Correlation vs Entanglement · Bell State Creation · Why It Can't Factor · Measurement Effects · Misconceptions
+Visual: paired-outcome visualizer, Bell circuit animation
 
-### Animated mobile menu (Navbar)
-```jsx
-<AnimatePresence>
-  {open && (
-    <motion.div
-      initial={{ height: 0, opacity: 0 }}
-      animate={{ height: 'auto', opacity: 1 }}
-      exit={{ height: 0, opacity: 0 }}
-      transition={{ duration: 0.2, ease: 'easeInOut' }}
-      style={{ overflow: 'hidden' }}
-      className="md:hidden border-t border-slate-800 bg-slate-950"
-    >
-      {/* menu items */}
-    </motion.div>
-  )}
-</AnimatePresence>
-```
+### Module 8 — Quantum Circuits (`/circuits` — emerald)
+5 lessons: Reading a Circuit · Wires/Gates/Measurement · State Evolution · Bell State Circuit · Circuit to Code
+New component needed: `CircuitStepper` — step through a circuit gate by gate with state shown
 
-### Quiz success pulse
-```jsx
-<motion.div
-  animate={justPassed ? { scale: [1, 1.008, 1] } : {}}
-  transition={{ duration: 0.3 }}
-  className={`rounded-2xl border overflow-hidden transition-colors duration-300
-    ${justPassed ? 'border-green-600/50 bg-green-950/15' : 'border-indigo-800/40 bg-indigo-950/20'}`}
->
-```
+### Module 9 — Measurement & Basis (`/measurement` — amber)
+5 lessons: Computational Basis · Measuring in Different Basis · Why Basis Matters · Probability from Amplitudes · Basis-Change via H
+Visual: live probability bars, toggle between Z-basis and X-basis
 
-### Module color map (ModuleLayout / LessonCard)
-```js
-const MODULE_STYLES = {
-  intuition: { gradient: 'from-indigo-950/70',  accent: 'text-indigo-400', border: 'border-indigo-800/40', bg: 'bg-indigo-900/20', bullet: 'bg-indigo-900/60 border-indigo-700/50 text-indigo-400', num: '01' },
-  braket:    { gradient: 'from-violet-950/70',  accent: 'text-violet-400', border: 'border-violet-800/40', bg: 'bg-violet-900/20', bullet: 'bg-violet-900/60 border-violet-700/50 text-violet-400', num: '02' },
-  phase:     { gradient: 'from-purple-950/70',  accent: 'text-purple-400', border: 'border-purple-800/40', bg: 'bg-purple-900/20', bullet: 'bg-purple-900/60 border-purple-700/50 text-purple-400', num: '03' },
-  qiskit:    { gradient: 'from-fuchsia-950/70', accent: 'text-fuchsia-400', border: 'border-fuchsia-800/40', bg: 'bg-fuchsia-900/20', bullet: 'bg-fuchsia-900/60 border-fuchsia-700/50 text-fuchsia-400', num: '04' },
-}
-```
+### Module 10 — Core Algorithms (`/algorithms` — orange)
+5 lessons: Deutsch-Jozsa · Grover's Search · Phase Kickback · Why Shor Matters · Quantum Advantage
+Visual: oracle black-box, amplitude amplification animation
 
-### StepNav connecting line
-```jsx
-<div className="relative flex items-center gap-2">
-  {Array.from({ length: steps }, (_, i) => (
-    <Fragment key={i}>
-      <button className={`rounded-full transition-all duration-200 ...`} />
-      {i < steps - 1 && (
-        <div className={`h-px flex-1 transition-colors duration-300
-          ${passed[i] ? 'bg-green-600/50' : 'bg-slate-700/50'}`} />
-      )}
-    </Fragment>
-  ))}
-</div>
-```
+### Module 11 — Qiskit Labs (`/labs` — rose)
+5 lessons: Create a Circuit · Apply Gates and Measure · Simulate and Read Counts · Bell Pair · Mini Experiments
+Features: copy-to-clipboard code blocks, "predict before reveal" checkpoints
+
+### Module 12 — Noise & Hardware (`/noise` — slate)
+5 lessons: Ideal vs Real Hardware · Noise and Decoherence · No-Cloning Theorem · Repetition-Code Intuition · Why Error Correction Is Hard
+Visual: noise slider, decoherence animation, repetition-code diagram
+
+### Module 13 — Use Cases (`/usecases` — lime)
+5 lessons: Chemistry & Materials · Optimization · Cryptography · ML: Promise vs Reality · Current Limitations
+Visual: "good fit / bad fit" sorting cards, realism meter
 
 ---
 
-## Build Plan (Remaining Milestones)
+## Extra Pages
 
-### Milestone F — Design System + Visual Polish (current)
-Priority order:
-1. `src/index.css` — Inter font, orb keyframes, new utilities, refined components
-2. `src/pages/Home.jsx` — animated hero, step flow, redesigned module cards
-3. `src/components/Navbar.jsx` — animated mobile menu, polished active states
-4. `src/components/ModuleLayout.jsx` — color-coded hero, decorative number watermark
-5. `src/components/LessonCard.jsx` — section labels, better visual hierarchy
-6. `src/components/Quiz.jsx` — success pulse animation, green glow on correct
-7. `src/components/StepNav.jsx` — connecting line between dots, cleaner design
-8. `src/components/DiagramFrame.jsx` — minor polish to header bar
+### `/roadmap` — Course Roadmap
+- Visual dependency graph of all 13 modules
+- Locked/unlocked per progress
+- Jump-to-module CTAs
+- Estimated time per module (~30 min each)
+- Track labels: Foundations / Circuits / Advanced
 
-### Milestone G — Mobile audit + final polish
-- Test all pages at 375px, 390px, 430px (iPhone SE, 14, 15 Pro Max)
-- Fix any overflow, cramped tap targets, or truncation issues
-- Add `prefers-reduced-motion` guards around all animations
-- Audit color contrast with Chrome DevTools accessibility panel
-- Test keyboard navigation flow end-to-end
+### `/glossary` — Glossary
+Terms: amplitude, phase, basis, superposition, entanglement, interference, unitary, decoherence,
+oracle, tensor product, qubit, gate, circuit, measurement, Bell state, Hadamard, error correction
+Each entry: one-sentence definition + plain-English analogy + links to relevant lessons
 
-### Milestone H — Deploy
-- `npm run deploy` (gh-pages)
-- Verify BrowserRouter basename is correct
-- Confirm all routes work on GitHub Pages
+### `/challenges` — Mini Challenges
+- Circuit reading drills
+- State prediction drills
+- Misconception correction cards (true/false with explanation)
+- No progress gating — always accessible
 
 ---
 
 ## Git Workflow
 - Branch: main
-- Commit format: `feat: milestone <X> — <description>`
+- Commit format: `feat: milestone <X> — <description>` or `feat: module N — <title>`
 - Deploy: `npm run deploy`
 - Never commit non-building code
 - Update progress checklist before each commit
+- Check in with user after each milestone
 
 ---
 
-## Progress Checklist
+## Build Plan — Milestones
 
-### Foundation
-- [x] Audit existing site + write CLAUDE.md
-- [x] Quiz, DeepDive, StepNav components
-- [x] useProgress (module + lesson level)
+### Foundation (done)
+- [x] Audit + CLAUDE.md
+- [x] Quiz, DeepDive, StepNav, useProgress
+- [x] Modules 1–4 with lessons and checkpoints
+- [x] Visual redesign: design system, Home, Navbar, components
 
-### Module Restructure
-- [x] Milestone A: Home page — lesson counts, progress bars, topic pills
-- [x] Milestone B: Intuition module — 5 lessons + checkpoints
-- [x] Milestone C: BraKet module — 4 lessons + checkpoints
-- [x] Milestone D: PhaseAngle module — 5 lessons + checkpoints
-- [x] Milestone E: Qiskit module — 5 lessons + checkpoints
+### Milestone 1 — Polish existing modules
+- [ ] Audit all 4 modules: fix any UX rough edges, diagram gaps, quiz quality
+- [ ] Ensure StepNav, DeepDive, Quiz are rock-solid and reusable
+- [x] Create `/src/data/modules.js` — single source of truth for all 13 modules + style maps
+- [x] Update Navbar — grouped dropdown nav (Foundations/Circuits/Advanced), 13 modules, lesson progress
+- [x] Update useProgress — imports MODULES from data, exposes totalLessons + getTotalLessonsDone
+- [x] Update Home.jsx — imports from data file, prereq-based locking logic
+- [x] Update ModuleLayout.jsx — imports MODULE_LAYOUT_STYLES from data file
+- [x] Add routes for all 13 modules + extras (ComingSoon stubs for new ones)
+- [x] Create ComingSoon.jsx placeholder page for unbuilt modules
 
-### Polish
-- [ ] Milestone F: Full visual redesign — design system, Home, Navbar, components
-- [ ] Milestone G: Mobile audit + accessibility + reduced motion
-- [ ] Milestone H: Deploy to GitHub Pages
+### Milestone 2 — Module 5 + Module 6
+- [ ] Module 5: Single-Qubit Gates (`/gates`, sky) — 6 lessons + GateAnimator component
+- [ ] Module 6: Multi-Qubit Systems (`/multiqubit`, cyan) — 5 lessons + amplitude grid visual
+
+### Milestone 3 — Module 7 + Module 8
+- [ ] Module 7: Entanglement (`/entanglement`, teal) — 5 lessons + paired-outcome visual
+- [ ] Module 8: Quantum Circuits (`/circuits`, emerald) — 5 lessons + CircuitStepper component
+
+### Milestone 4 — Module 9 + Module 10
+- [ ] Module 9: Measurement & Basis (`/measurement`, amber) — 5 lessons + live probability bars
+- [ ] Module 10: Core Algorithms (`/algorithms`, orange) — 5 lessons + amplitude amplification visual
+
+### Milestone 5 — Module 11 + 12 + 13
+- [ ] Module 11: Qiskit Labs (`/labs`, rose) — 5 lessons + predict-before-reveal checkpoints
+- [ ] Module 12: Noise & Hardware (`/noise`, slate) — 5 lessons + noise slider visual
+- [ ] Module 13: Use Cases (`/usecases`, lime) — 5 lessons + realism meter visual
+
+### Milestone 6 — Extra Pages
+- [ ] `/roadmap` — visual course map with dependency graph
+- [ ] `/glossary` — full term list with definitions + lesson links
+- [ ] `/challenges` — mini challenge cards (circuit drills, state predictions)
+
+### Milestone 7 — Mobile, Accessibility, Deploy
+- [ ] Test all pages at 375px, 390px, 430px
+- [ ] Fix overflow, cramped tap targets, truncation
+- [ ] `prefers-reduced-motion` guards on all animations
+- [ ] WCAG AA contrast audit
+- [ ] Keyboard navigation end-to-end
+- [ ] `npm run deploy` to GitHub Pages

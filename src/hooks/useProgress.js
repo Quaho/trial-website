@@ -1,13 +1,7 @@
 import { useState, useEffect } from 'react'
+import { MODULES, TOTAL_LESSONS } from '../data/modules'
 
-const STORAGE_KEY = 'quantum_progress_v2'
-
-const MODULES = [
-  { id: 'intuition', label: 'Big-Picture Intuition' },
-  { id: 'braket',    label: 'Bra-Ket Notation' },
-  { id: 'phase',     label: 'Phase & Measurement' },
-  { id: 'qiskit',    label: 'Qiskit' },
-]
+const STORAGE_KEY = 'quantum_progress_v3'
 
 function load() {
   try {
@@ -33,7 +27,7 @@ export function useProgress() {
     }))
   }
 
-  /** Mark a specific lesson as passed (checkpoint answered correctly) */
+  /** Mark a specific lesson checkpoint as passed */
   function markLessonPassed(moduleId, lessonIndex) {
     setState(prev => {
       const key = `${moduleId}:${lessonIndex}`
@@ -49,9 +43,16 @@ export function useProgress() {
     return !!state.lessons[`${moduleId}:${lessonIndex}`]
   }
 
-  /** Get array of passed booleans for a module's lessons */
+  /** Get array of passed booleans for all lessons in a module */
   function getLessonPassed(moduleId, total) {
     return Array.from({ length: total }, (_, i) => isLessonPassed(moduleId, i))
+  }
+
+  /** Count total lesson checkpoints passed across all modules */
+  function getTotalLessonsDone() {
+    return MODULES.reduce((sum, m) => {
+      return sum + getLessonPassed(m.id, m.lessons).filter(Boolean).length
+    }, 0)
   }
 
   function reset() {
@@ -59,7 +60,7 @@ export function useProgress() {
   }
 
   const completed = state.modules
-  const count = Object.values(completed).filter(Boolean).length
+  const modulesCompleted = Object.values(completed).filter(Boolean).length
 
   return {
     completed,
@@ -67,9 +68,13 @@ export function useProgress() {
     markLessonPassed,
     isLessonPassed,
     getLessonPassed,
+    getTotalLessonsDone,
     reset,
-    count,
+    // module-level counts
+    count: modulesCompleted,
     total: MODULES.length,
     modules: MODULES,
+    // lesson-level counts
+    totalLessons: TOTAL_LESSONS,
   }
 }

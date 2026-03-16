@@ -1,42 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react'
 import { useProgress } from '../hooks/useProgress'
-
-/* Per-module explicit style maps — full class strings for Tailwind JIT */
-const MODULE_STYLES = {
-  intuition: {
-    num:      '01',
-    gradient: 'from-indigo-950/70 via-indigo-950/20',
-    accent:   'text-indigo-400',
-    dotCurrent: 'bg-indigo-400',
-    dotDone:    'bg-green-500',
-    dotEmpty:   'bg-slate-700',
-  },
-  braket: {
-    num:      '02',
-    gradient: 'from-violet-950/70 via-violet-950/20',
-    accent:   'text-violet-400',
-    dotCurrent: 'bg-violet-400',
-    dotDone:    'bg-green-500',
-    dotEmpty:   'bg-slate-700',
-  },
-  phase: {
-    num:      '03',
-    gradient: 'from-purple-950/70 via-purple-950/20',
-    accent:   'text-purple-400',
-    dotCurrent: 'bg-purple-400',
-    dotDone:    'bg-green-500',
-    dotEmpty:   'bg-slate-700',
-  },
-  qiskit: {
-    num:      '04',
-    gradient: 'from-fuchsia-950/70 via-fuchsia-950/20',
-    accent:   'text-fuchsia-400',
-    dotCurrent: 'bg-fuchsia-400',
-    dotDone:    'bg-green-500',
-    dotEmpty:   'bg-slate-700',
-  },
-}
+import { MODULE_LAYOUT_STYLES } from '../data/modules'
 
 const DEFAULT_STYLE = {
   num: '00',
@@ -60,7 +25,7 @@ const DEFAULT_STYLE = {
 export default function ModuleLayout({ moduleId, title, subtitle, prev, next, stepInfo, children }) {
   const { completed, markDone } = useProgress()
   const done = completed[moduleId]
-  const style = MODULE_STYLES[moduleId] || DEFAULT_STYLE
+  const style = MODULE_LAYOUT_STYLES[moduleId] || DEFAULT_STYLE
 
   // Progress percentage for sticky header
   const lessonsDone = stepInfo?.passed?.filter(Boolean).length ?? 0

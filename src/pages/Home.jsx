@@ -2,101 +2,11 @@ import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
-  Atom, Zap, BookOpen, GitBranch, Code2,
-  ArrowRight, CheckCircle, Lock, ChevronRight,
+  Atom, ArrowRight, CheckCircle, Lock, ChevronRight,
   Lightbulb, Eye, AlignLeft, FlaskConical, Brain, Target,
 } from 'lucide-react'
 import { useProgress } from '../hooks/useProgress'
-
-/* ── Module data ─────────────────────────────────────────────────────── */
-const MODULES = [
-  {
-    id: 'intuition',
-    to: '/intuition',
-    icon: Zap,
-    number: 1,
-    title: 'Big-Picture Intuition',
-    lessons: 5,
-    topics: ['Bits vs qubits', 'Superposition', 'Measurement collapse', 'Interference', 'Why QC matters'],
-  },
-  {
-    id: 'braket',
-    to: '/braket',
-    icon: BookOpen,
-    number: 2,
-    title: 'Bra-Ket Notation',
-    lessons: 4,
-    topics: ['Kets |ψ⟩', 'State explorer', 'Bras ⟨ψ|', 'Inner products'],
-  },
-  {
-    id: 'phase',
-    to: '/phase',
-    icon: GitBranch,
-    number: 3,
-    title: 'Phase & Measurement Angles',
-    lessons: 5,
-    topics: ['What is phase?', 'Unit circle explorer', 'Bloch sphere', 'Measurement bases', 'Real algorithms'],
-  },
-  {
-    id: 'qiskit',
-    to: '/qiskit',
-    icon: Code2,
-    number: 4,
-    title: 'Qiskit',
-    lessons: 5,
-    topics: ['What is Qiskit?', 'First circuit', 'Essential gates', 'Bell state', 'Next steps'],
-  },
-]
-
-/* Per-module explicit style maps — full class strings so Tailwind JIT detects them */
-const MODULE_STYLES = {
-  intuition: {
-    num: '01',
-    icon:        'bg-indigo-900/40 border-indigo-700/50',
-    iconText:    'text-indigo-400',
-    badge:       'bg-indigo-900/40 text-indigo-300 border-indigo-800/40',
-    progressBar: 'bg-indigo-500',
-    link:        'text-indigo-400 hover:text-indigo-300',
-    leftBorder:  'border-l-indigo-500/60',
-    watermark:   'text-indigo-900/30',
-    hover:       'hover:border-indigo-700/40',
-  },
-  braket: {
-    num: '02',
-    icon:        'bg-violet-900/40 border-violet-700/50',
-    iconText:    'text-violet-400',
-    badge:       'bg-violet-900/40 text-violet-300 border-violet-800/40',
-    progressBar: 'bg-violet-500',
-    link:        'text-violet-400 hover:text-violet-300',
-    leftBorder:  'border-l-violet-500/60',
-    watermark:   'text-violet-900/30',
-    hover:       'hover:border-violet-700/40',
-  },
-  phase: {
-    num: '03',
-    icon:        'bg-purple-900/40 border-purple-700/50',
-    iconText:    'text-purple-400',
-    badge:       'bg-purple-900/40 text-purple-300 border-purple-800/40',
-    progressBar: 'bg-purple-500',
-    link:        'text-purple-400 hover:text-purple-300',
-    leftBorder:  'border-l-purple-500/60',
-    watermark:   'text-purple-900/30',
-    hover:       'hover:border-purple-700/40',
-  },
-  qiskit: {
-    num: '04',
-    icon:        'bg-fuchsia-900/40 border-fuchsia-700/50',
-    iconText:    'text-fuchsia-400',
-    badge:       'bg-fuchsia-900/40 text-fuchsia-300 border-fuchsia-800/40',
-    progressBar: 'bg-fuchsia-500',
-    link:        'text-fuchsia-400 hover:text-fuchsia-300',
-    leftBorder:  'border-l-fuchsia-500/60',
-    watermark:   'text-fuchsia-900/30',
-    hover:       'hover:border-fuchsia-700/40',
-  },
-}
-
-const TOTAL_LESSONS = MODULES.reduce((sum, m) => sum + m.lessons, 0)
+import { MODULES, MODULE_STYLES, TOTAL_LESSONS } from '../data/modules'
 
 /* ── Framer Motion variants ─────────────────────────────────────────── */
 const heroContainer = {
@@ -251,7 +161,7 @@ export default function Home() {
             const isDone = !!completed[m.id]
             const passed = getLessonPassed(m.id, m.lessons)
             const lessonCount = passed.filter(Boolean).length
-            const isLocked = idx > 0 && !completed[MODULES[idx - 1].id]
+            const isLocked = m.prereqs.length > 0 && !m.prereqs.every(id => completed[id])
             const Icon = m.icon
             const styles = MODULE_STYLES[m.id]
 
