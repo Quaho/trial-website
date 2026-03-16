@@ -6,6 +6,8 @@ import Intuition from './pages/Intuition'
 import BraKet from './pages/BraKet'
 import PhaseAngle from './pages/PhaseAngle'
 import Qiskit from './pages/Qiskit'
+import Gates from './pages/Gates'
+import MultiQubit from './pages/MultiQubit'
 import ComingSoon from './pages/ComingSoon'
 
 export default function App() {
@@ -24,8 +26,8 @@ export default function App() {
           <Route path="/qiskit"    element={<Qiskit />} />
 
           {/* New modules — stubs until content is built */}
-          <Route path="/gates"        element={<ComingSoon moduleId="gates" />} />
-          <Route path="/multiqubit"   element={<ComingSoon moduleId="multiqubit" />} />
+          <Route path="/gates"        element={<Gates />} />
+          <Route path="/multiqubit"   element={<MultiQubit />} />
           <Route path="/entanglement" element={<ComingSoon moduleId="entanglement" />} />
           <Route path="/circuits"     element={<ComingSoon moduleId="circuits" />} />
           <Route path="/measurement"  element={<ComingSoon moduleId="measurement" />} />

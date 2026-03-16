@@ -429,6 +429,7 @@ export default function Qiskit() {
       title="Qiskit"
       subtitle={`Lesson ${step + 1} of ${LESSONS.length} — ${lesson.title}`}
       prev={{ to: '/phase', label: 'Module 3: Phase & Angles' }}
+      next={{ to: '/gates', label: 'Module 5: Single-Qubit Gates' }}
     >
       <AnimatePresence mode="wait">
         <motion.div
@@ -477,9 +478,9 @@ export default function Qiskit() {
 
           {step === LESSONS.length - 1 && allPassed && (
             <div className="my-6 p-5 rounded-2xl bg-green-950/30 border border-green-800/40 text-center">
-              <div className="text-2xl mb-2">🏆</div>
-              <p className="text-green-300 font-semibold">Course Complete!</p>
-              <p className="text-slate-400 text-sm mt-1">All 4 modules done. You've learned quantum computing from scratch.</p>
+              <div className="text-2xl mb-2">🎉</div>
+              <p className="text-green-300 font-semibold">Module 4 complete.</p>
+              <p className="text-slate-400 text-sm mt-1">Head to Module 5 to explore single-qubit gates.</p>
             </div>
           )}
         </motion.div>
