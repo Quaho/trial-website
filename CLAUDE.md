@@ -505,8 +505,8 @@ Each entry: one-sentence definition + plain-English analogy + links to relevant 
 - [x] Visual redesign: design system, Home, Navbar, components
 
 ### Milestone 1 — Polish existing modules
-- [ ] Audit all 4 modules: fix any UX rough edges, diagram gaps, quiz quality
-- [ ] Ensure StepNav, DeepDive, Quiz are rock-solid and reusable
+- [x] Audit all 4 modules: fix any UX rough edges, diagram gaps, quiz quality
+- [x] Ensure StepNav, DeepDive, Quiz are rock-solid and reusable
 - [x] Create `/src/data/modules.js` — single source of truth for all 13 modules + style maps
 - [x] Update Navbar — grouped dropdown nav (Foundations/Circuits/Advanced), 13 modules, lesson progress
 - [x] Update useProgress — imports MODULES from data, exposes totalLessons + getTotalLessonsDone
@@ -516,12 +516,12 @@ Each entry: one-sentence definition + plain-English analogy + links to relevant 
 - [x] Create ComingSoon.jsx placeholder page for unbuilt modules
 
 ### Milestone 2 — Module 5 + Module 6
-- [ ] Module 5: Single-Qubit Gates (`/gates`, sky) — 6 lessons + GateAnimator component
-- [ ] Module 6: Multi-Qubit Systems (`/multiqubit`, cyan) — 5 lessons + amplitude grid visual
+- [x] Module 5: Single-Qubit Gates (`/gates`, sky) — 6 lessons + GateAnimator component
+- [x] Module 6: Multi-Qubit Systems (`/multiqubit`, cyan) — 5 lessons + amplitude grid visual
 
 ### Milestone 3 — Module 7 + Module 8
-- [ ] Module 7: Entanglement (`/entanglement`, teal) — 5 lessons + paired-outcome visual
-- [ ] Module 8: Quantum Circuits (`/circuits`, emerald) — 5 lessons + CircuitStepper component
+- [x] Module 7: Entanglement (`/entanglement`, teal) — 5 lessons + paired-outcome visual
+- [x] Module 8: Quantum Circuits (`/circuits`, emerald) — 5 lessons + CircuitStepper component
 
 ### Milestone 4 — Module 9 + Module 10
 - [ ] Module 9: Measurement & Basis (`/measurement`, amber) — 5 lessons + live probability bars

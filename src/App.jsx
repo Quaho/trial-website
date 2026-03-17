@@ -8,6 +8,8 @@ import PhaseAngle from './pages/PhaseAngle'
 import Qiskit from './pages/Qiskit'
 import Gates from './pages/Gates'
 import MultiQubit from './pages/MultiQubit'
+import Entanglement from './pages/Entanglement'
+import Circuits from './pages/Circuits'
 import ComingSoon from './pages/ComingSoon'
 
 export default function App() {
@@ -28,8 +30,8 @@ export default function App() {
           {/* New modules — stubs until content is built */}
           <Route path="/gates"        element={<Gates />} />
           <Route path="/multiqubit"   element={<MultiQubit />} />
-          <Route path="/entanglement" element={<ComingSoon moduleId="entanglement" />} />
-          <Route path="/circuits"     element={<ComingSoon moduleId="circuits" />} />
+          <Route path="/entanglement" element={<Entanglement />} />
+          <Route path="/circuits"     element={<Circuits />} />
           <Route path="/measurement"  element={<ComingSoon moduleId="measurement" />} />
           <Route path="/algorithms"   element={<ComingSoon moduleId="algorithms" />} />
           <Route path="/labs"         element={<ComingSoon moduleId="labs" />} />

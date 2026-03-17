@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../components/ModuleLayout'
-import Quiz from '../components/Quiz'
-import DeepDive from '../components/DeepDive'
+import LessonCard from '../components/LessonCard'
 import StepNav from '../components/StepNav'
 import { MathDisplay, MathInline as InlineMath } from '../components/MathBlock'
 import { useProgress } from '../hooks/useProgress'
@@ -428,7 +427,8 @@ export default function PhaseAngle() {
     <ModuleLayout
       moduleId="phase"
       title="Phase & Measurement Angles"
-      subtitle={`Lesson ${step + 1} of ${LESSONS.length} — ${lesson.title}`}
+      subtitle="The hidden dimension that powers quantum algorithms."
+      stepInfo={{ current: step, total: LESSONS.length, passed }}
       prev={{ to: '/braket', label: 'Module 2: Bra-Ket' }}
       next={{ to: '/qiskit', label: 'Module 4: Qiskit' }}
     >
@@ -440,47 +440,18 @@ export default function PhaseAngle() {
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.2 }}
         >
-          {/* Hook */}
-          <div className="mb-6 p-5 rounded-2xl bg-indigo-950/30 border border-indigo-800/40 text-center">
-            <p className="text-lg sm:text-xl font-semibold text-white leading-snug">{lesson.hook}</p>
-          </div>
-
-          {/* Visual */}
-          {lesson.visual}
-
-          {/* Bullets */}
-          <ul className="space-y-2 my-5">
-            {lesson.bullets.map((b, i) => (
-              <li key={i} className="flex gap-3 items-start text-sm text-slate-300">
-                <span className="mt-0.5 w-5 h-5 rounded-full bg-indigo-900/60 border border-indigo-700/50
-                                 flex items-center justify-center text-indigo-400 text-xs font-bold flex-shrink-0">
-                  {i + 1}
-                </span>
-                {b}
-              </li>
-            ))}
-          </ul>
-
-          {/* Example */}
-          <div className="my-4">{lesson.example}</div>
-
-          {/* Deep dive */}
-          {lesson.deepDive && (
-            <DeepDive title="Deep Dive">{lesson.deepDive}</DeepDive>
-          )}
-
-          {/* Quiz */}
-          <Quiz
-            question={lesson.quiz.question}
-            choices={lesson.quiz.choices}
-            correct={lesson.quiz.correct}
+          <LessonCard
+            lesson={lesson}
+            lessonIndex={step}
+            totalLessons={LESSONS.length}
+            isPassed={passed[step]}
             onPass={handleQuizPass}
           />
 
           {step === LESSONS.length - 1 && allPassed && (
-            <div className="my-6 p-5 rounded-2xl bg-green-950/30 border border-green-800/40 text-center">
+            <div className="mt-6 p-5 rounded-2xl bg-green-950/30 border border-green-800/40 text-center">
               <div className="text-2xl mb-2">🎉</div>
-              <p className="text-green-300 font-semibold">Module 3 Complete!</p>
+              <p className="text-green-300 font-semibold">Module 3 complete.</p>
               <p className="text-slate-400 text-sm mt-1">Head to Module 4 to write real Qiskit code.</p>
             </div>
           )}
