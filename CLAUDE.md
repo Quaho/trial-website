@@ -524,8 +524,8 @@ Each entry: one-sentence definition + plain-English analogy + links to relevant 
 - [x] Module 8: Quantum Circuits (`/circuits`, emerald) — 5 lessons + CircuitStepper component
 
 ### Milestone 4 — Module 9 + Module 10
-- [ ] Module 9: Measurement & Basis (`/measurement`, amber) — 5 lessons + live probability bars
-- [ ] Module 10: Core Algorithms (`/algorithms`, orange) — 5 lessons + amplitude amplification visual
+- [x] Module 9: Measurement & Basis (`/measurement`, amber) — 5 lessons + live probability bars
+- [x] Module 10: Core Algorithms (`/algorithms`, orange) — 5 lessons + amplitude amplification visual
 
 ### Milestone 5 — Module 11 + 12 + 13
 - [ ] Module 11: Qiskit Labs (`/labs`, rose) — 5 lessons + predict-before-reveal checkpoints
