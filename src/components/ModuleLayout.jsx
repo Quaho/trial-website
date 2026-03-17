@@ -60,14 +60,14 @@ export default function ModuleLayout({ moduleId, title, subtitle, prev, next, st
             </Link>
           )}
 
-          {/* Module number badge */}
-          <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
-                           text-xs font-semibold border border-slate-700/50 bg-slate-800/40 mb-3
-                           ${style.accent}`}>
-            Module {style.num}
+          <div className="flex items-center gap-3 mb-2 flex-wrap">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">{title}</h1>
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
+                              text-xs font-semibold border border-slate-700/50 bg-slate-800/40
+                              ${style.accent}`}>
+              Module {style.num}
+            </span>
           </div>
-
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2 tracking-tight">{title}</h1>
           {subtitle && <p className="text-slate-400 text-base leading-relaxed">{subtitle}</p>}
 
           {/* Lesson count badge */}
