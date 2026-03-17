@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { MotionConfig } from 'framer-motion'
 import Navbar from './components/Navbar'
 import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
@@ -15,10 +16,13 @@ import Algorithms from './pages/Algorithms'
 import Labs from './pages/Labs'
 import Noise from './pages/Noise'
 import UseCases from './pages/UseCases'
-import ComingSoon from './pages/ComingSoon'
+import Roadmap from './pages/Roadmap'
+import Glossary from './pages/Glossary'
+import Challenges from './pages/Challenges'
 
 export default function App() {
   return (
+    <MotionConfig reducedMotion="user">
     <div className="min-h-screen bg-slate-950">
       <ScrollToTop />
       <a href="#main-content" className="skip-link">Skip to main content</a>
@@ -43,12 +47,13 @@ export default function App() {
           <Route path="/noise"        element={<Noise />} />
           <Route path="/usecases"     element={<UseCases />} />
 
-          {/* Extra pages — stubs */}
-          <Route path="/roadmap"    element={<ComingSoon moduleId="roadmap" />} />
-          <Route path="/glossary"   element={<ComingSoon moduleId="glossary" />} />
-          <Route path="/challenges" element={<ComingSoon moduleId="challenges" />} />
+          {/* Extra pages */}
+          <Route path="/roadmap"    element={<Roadmap />} />
+          <Route path="/glossary"   element={<Glossary />} />
+          <Route path="/challenges" element={<Challenges />} />
         </Routes>
       </main>
     </div>
+    </MotionConfig>
   )
 }

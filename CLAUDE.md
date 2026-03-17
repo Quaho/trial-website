@@ -528,9 +528,9 @@ Each entry: one-sentence definition + plain-English analogy + links to relevant 
 - [x] Module 10: Core Algorithms (`/algorithms`, orange) — 5 lessons + amplitude amplification visual
 
 ### Milestone 5 — Module 11 + 12 + 13
-- [ ] Module 11: Qiskit Labs (`/labs`, rose) — 5 lessons + predict-before-reveal checkpoints
-- [ ] Module 12: Noise & Hardware (`/noise`, slate) — 5 lessons + noise slider visual
-- [ ] Module 13: Use Cases (`/usecases`, lime) — 5 lessons + realism meter visual
+- [x] Module 11: Qiskit Labs (`/labs`, rose) — 5 lessons + predict-before-reveal checkpoints
+- [x] Module 12: Noise & Hardware (`/noise`, slate) — 5 lessons + noise slider visual
+- [x] Module 13: Use Cases (`/usecases`, lime) — 5 lessons + realism meter visual
 
 ### Milestone 6 — Extra Pages
 - [ ] `/roadmap` — visual course map with dependency graph
