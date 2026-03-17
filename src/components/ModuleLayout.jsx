@@ -53,7 +53,7 @@ export default function ModuleLayout({ moduleId, title, subtitle, prev, next, st
             <Link
               to={prev.to}
               className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-white
-                         mb-4 transition-colors"
+                         mb-6 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
               {prev.label}
