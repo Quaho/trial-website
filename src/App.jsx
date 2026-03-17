@@ -12,6 +12,9 @@ import Entanglement from './pages/Entanglement'
 import Circuits from './pages/Circuits'
 import Measurement from './pages/Measurement'
 import Algorithms from './pages/Algorithms'
+import Labs from './pages/Labs'
+import Noise from './pages/Noise'
+import UseCases from './pages/UseCases'
 import ComingSoon from './pages/ComingSoon'
 
 export default function App() {
@@ -36,9 +39,9 @@ export default function App() {
           <Route path="/circuits"     element={<Circuits />} />
           <Route path="/measurement"  element={<Measurement />} />
           <Route path="/algorithms"   element={<Algorithms />} />
-          <Route path="/labs"         element={<ComingSoon moduleId="labs" />} />
-          <Route path="/noise"        element={<ComingSoon moduleId="noise" />} />
-          <Route path="/usecases"     element={<ComingSoon moduleId="usecases" />} />
+          <Route path="/labs"         element={<Labs />} />
+          <Route path="/noise"        element={<Noise />} />
+          <Route path="/usecases"     element={<UseCases />} />
 
           {/* Extra pages — stubs */}
           <Route path="/roadmap"    element={<ComingSoon moduleId="roadmap" />} />
