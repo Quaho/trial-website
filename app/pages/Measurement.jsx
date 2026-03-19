@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
@@ -383,9 +384,18 @@ const LESSONS = [
     hookSub: 'The computational (Z) basis is the default — but it\'s not the only option.',
     visual: <ComputationalBasisVisual />,
     bullets: [
-      'The Z basis has two outcomes: |0⟩ and |1⟩. This is the default in every quantum computer.',
-      'P(outcome) = |amplitude|². Square the amplitude to get the probability.',
-      'After measurement the qubit collapses — the superposition is destroyed.',
+      <>
+        The Z <GlossaryTooltip term="Basis">basis</GlossaryTooltip> has two outcomes: |0⟩ and |1⟩. This is
+        the default in every quantum computer.
+      </>,
+      <>
+        P(outcome) = |<GlossaryTooltip term="Amplitude">amplitude</GlossaryTooltip>|². Square the amplitude
+        to get the probability.
+      </>,
+      <>
+        After <GlossaryTooltip term="Measurement">measurement</GlossaryTooltip> the qubit collapses — the
+        superposition is destroyed.
+      </>,
     ],
     example: (
       <div>
@@ -450,7 +460,10 @@ const LESSONS = [
     visual: <WhyBasisMattersVisual />,
     bullets: [
       '|0⟩ is certain in Z, random in X. |+⟩ is certain in X, random in Z.',
-      '|+⟩ and |−⟩ differ only in phase. Z can\'t see phase — X can.',
+      <>
+        |+⟩ and |−⟩ differ only in <GlossaryTooltip term="Phase">phase</GlossaryTooltip>. Z can&apos;t see
+        phase — X can.
+      </>,
       'Quantum algorithms choose measurement bases to extract exactly the information they need.',
     ],
     example: (

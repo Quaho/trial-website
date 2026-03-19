@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
@@ -383,8 +384,15 @@ const LESSONS = [
     hookSub: 'Gates are the verbs of quantum computing.',
     visual: <GateConceptVisual />,
     bullets: [
-      'Every gate is a unitary matrix \u2014 it preserves probabilities and is always reversible.',
-      'Gates rotate the state on the Bloch sphere. Different gates rotate around different axes.',
+      <>
+        Every <GlossaryTooltip term="Gate">gate</GlossaryTooltip> is a{' '}
+        <GlossaryTooltip term="Unitary">unitary</GlossaryTooltip> matrix \u2014 it preserves probabilities
+        and is always reversible.
+      </>,
+      <>
+        Gates rotate the <GlossaryTooltip term="Qubit">qubit</GlossaryTooltip> state on the Bloch sphere.
+        Different gates rotate around different axes.
+      </>,
       'Combining gates in sequence builds algorithms \u2014 like assembling a recipe from steps.',
     ],
     example: (
@@ -459,7 +467,10 @@ const LESSONS = [
     hookSub: 'Phase changes are silent \u2014 until you look from a different angle.',
     visual: <ZGateVisual />,
     bullets: [
-      'Z|0\u27E9 = |0\u27E9 and Z|1\u27E9 = \u2212|1\u27E9. Only the phase of |1\u27E9 changes.',
+      <>
+        Z|0\u27E9 = |0\u27E9 and Z|1\u27E9 = \u2212|1\u27E9. Only the{' '}
+        <GlossaryTooltip term="Phase">phase</GlossaryTooltip> of |1\u27E9 changes.
+      </>,
       'Measure in Z basis: probabilities are identical. Z is completely invisible.',
       'Measure in X basis: Z turns |+\u27E9 into |\u2212\u27E9. The phase flip is now detectable.',
     ],
@@ -497,7 +508,10 @@ const LESSONS = [
     hookSub: 'It\u2019s the most-used gate in quantum computing \u2014 and it\u2019s its own inverse.',
     visual: <HadamardVisual />,
     bullets: [
-      'H|0\u27E9 = |+\u27E9 and H|1\u27E9 = |\u2212\u27E9. It creates superposition from definite states.',
+      <>
+        The <GlossaryTooltip term="Hadamard">Hadamard</GlossaryTooltip> gate maps |0\u27E9 to |+\u27E9 and
+        |1\u27E9 to |\u2212\u27E9. It creates superposition from definite states.
+      </>,
       'H|+\u27E9 = |0\u27E9 and H|\u2212\u27E9 = |1\u27E9. Applied again, it undoes itself: HH = I.',
       'H converts between Z-basis and X-basis \u2014 it starts nearly every quantum algorithm.',
     ],

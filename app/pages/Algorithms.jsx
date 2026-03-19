@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
@@ -363,7 +364,11 @@ const LESSONS = [
     bullets: [
       'Problem: is f(x) constant (same output for all inputs) or balanced (different outputs)?',
       'Classical: must query f twice to be sure. Quantum: one query always suffices.',
-      'The trick: superposition queries all inputs at once, interference reveals the pattern.',
+      <>
+        The trick: <GlossaryTooltip term="Superposition">superposition</GlossaryTooltip> queries all
+        inputs at once, <GlossaryTooltip term="Interference">interference</GlossaryTooltip> reveals the
+        pattern.
+      </>,
     ],
     example: (
       <div>
@@ -396,7 +401,10 @@ const LESSONS = [
     hookSub: 'Not exponential — but quadratic speedup is still remarkable.',
     visual: <GroverVisual />,
     bullets: [
-      'Oracle marks the target by flipping its amplitude\'s sign: positive → negative.',
+      <>
+        <GlossaryTooltip term="Oracle">Oracle</GlossaryTooltip> marks the target by flipping its{' '}
+        <GlossaryTooltip term="Amplitude">amplitude</GlossaryTooltip>&apos;s sign: positive → negative.
+      </>,
       'Diffusion operator inverts all amplitudes about the mean — boosting the target.',
       'Repeat √N times. The target\'s probability grows to ~100%.',
     ],

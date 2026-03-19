@@ -1,7 +1,7 @@
 # TASKS.md — Current Backlog
 
 ## Completed
-- **[TASK-001–013]** All APPROVED (a11y sweep, accent bullets, aria-live, mobile polish, celebration animation, GlossaryTooltip)
+- **[TASK-001–014]** All APPROVED (a11y sweep, accent bullets, aria-live, mobile polish, celebration animation, GlossaryTooltip, tooltip integration)
 
 ## Active
 (none)

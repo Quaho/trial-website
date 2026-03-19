@@ -5,6 +5,7 @@ import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import CodeBlock from '../../components/CodeBlock'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
 
@@ -732,8 +733,12 @@ const LESSONS = [
     hookSub: 'A quantum circuit is a diagram that shows the exact sequence of operations on qubits \u2014 read left to right, just like a timeline.',
     visual: <CircuitAnatomyVisual />,
     bullets: [
-      'Wires run horizontally \u2014 each wire is one qubit.',
-      'Gates sit on wires \u2014 they transform the qubit state.',
+      <>
+        Wires run horizontally \u2014 each wire is one <GlossaryTooltip term="Qubit">qubit</GlossaryTooltip>.
+      </>,
+      <>
+        <GlossaryTooltip term="Gate">Gates</GlossaryTooltip> sit on wires \u2014 they transform the qubit state.
+      </>,
       'Time flows left to right \u2014 earlier operations are on the left.',
     ],
     example: (
@@ -745,7 +750,8 @@ const LESSONS = [
     ),
     deepDive: (
       <div className="space-y-2 text-sm text-slate-400">
-        <p>Circuit diagrams let you see parallelism &mdash; gates on different wires at the same
+        <p><GlossaryTooltip term="Circuit">Circuit</GlossaryTooltip> diagrams let you see parallelism
+        &mdash; gates on different wires at the same
         time column happen simultaneously. Code is sequential, but circuits show the structure of an
         algorithm at a glance.</p>
       </div>
@@ -769,7 +775,10 @@ const LESSONS = [
     bullets: [
       'Wires carry quantum information \u2014 one wire per qubit, all start in |0\u27E9.',
       'Gates are reversible operations \u2014 every gate has an undo (its inverse).',
-      'Measurement collapses the qubit \u2014 it\u2019s irreversible and always comes last.',
+      <>
+        <GlossaryTooltip term="Measurement">Measurement</GlossaryTooltip> collapses the qubit \u2014 it\u2019s
+        irreversible and always comes last.
+      </>,
     ],
     example: (
       <div className="card bg-slate-900/50 text-sm text-slate-400">

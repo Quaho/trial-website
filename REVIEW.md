@@ -1,5 +1,10 @@
 # REVIEW.md — Review Log
 
+## TASK-014: Integrate GlossaryTooltip into lesson content
+- Status: **APPROVED**
+- Reviewer: Claude (manager)
+- Findings: 50 tooltip wrappings across all 13 module pages. First meaningful occurrence per lesson, max ~1 per lesson on average. No tooltips in headings, quizzes, or math. Terms wrapped: qubit, superposition, measurement, amplitude, interference, basis, phase, gate, unitary, Hadamard, entanglement, Bell state, circuit, oracle, decoherence, error correction, tensor product. Build passes.
+
 ## TASK-013: GlossaryTooltip component
 - Status: **APPROVED**
 - Reviewer: Claude (manager)

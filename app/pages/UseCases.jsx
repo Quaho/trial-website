@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
 
@@ -534,7 +535,11 @@ const LESSONS = [
     visual: <ChemistryVisual />,
     bullets: [
       'Simulating molecules is exponentially hard for classical computers \u2014 every electron doubles the complexity.',
-      'Quantum computers can simulate quantum systems naturally \u2014 it\u2019s what Feynman originally envisioned.',
+      <>
+        Quantum computers can simulate quantum systems naturally \u2014 including{' '}
+        <GlossaryTooltip term="Entanglement">entanglement</GlossaryTooltip>, which is what makes many
+        molecules hard to model classically.
+      </>,
       'Drug discovery, battery design, and fertilizer production could all benefit from better molecular simulation.',
     ],
     example: (
@@ -565,7 +570,11 @@ const LESSONS = [
     visual: <OptimizationVisual />,
     bullets: [
       'Many real-world problems are about finding the best solution among astronomically many options.',
-      'Quantum approaches like QAOA and quantum annealing explore solution spaces differently \u2014 but proven advantage is limited.',
+      <>
+        Quantum approaches like QAOA and quantum annealing explore solution spaces differently using
+        effects such as <GlossaryTooltip term="Superposition">superposition</GlossaryTooltip> \u2014 but
+        proven advantage is limited.
+      </>,
       'Logistics, finance, and scheduling are the most-hyped applications, but classical algorithms are strong competitors.',
     ],
     example: (
@@ -683,7 +692,10 @@ const LESSONS = [
     visual: <LimitationsVisual />,
     bullets: [
       'Today\u2019s quantum computers are "NISQ" \u2014 Noisy Intermediate-Scale Quantum. Useful but limited.',
-      'The gap between current hardware and fault-tolerant quantum computing is roughly 1,000x in qubit count and 100x in error reduction.',
+      <>
+        The gap between current hardware and fault-tolerant quantum computing is roughly 1,000x in{' '}
+        <GlossaryTooltip term="Qubit">qubit</GlossaryTooltip> count and 100x in error reduction.
+      </>,
       'Quantum computing is real and advancing fast, but transformative applications are still years away.',
     ],
     example: (

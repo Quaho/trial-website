@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
@@ -490,9 +491,15 @@ const LESSONS = [
     hookSub: 'Every qubit is a ticking clock \u2014 its quantum information leaks away into the environment.',
     visual: <DecoherenceVisual />,
     bullets: [
-      'T1 (relaxation): the qubit loses energy and falls to |0\u27E9, like a ball rolling downhill.',
+      <>
+        T1 (relaxation): the <GlossaryTooltip term="Qubit">qubit</GlossaryTooltip> loses energy and falls
+        to |0\u27E9, like a ball rolling downhill.
+      </>,
       'T2 (dephasing): the qubit\u2019s phase information scrambles, like a spinning coin wobbling.',
-      'Both happen spontaneously \u2014 the longer your circuit runs, the more errors accumulate.',
+      <>
+        Both happen spontaneously \u2014 together they drive{' '}
+        <GlossaryTooltip term="Decoherence">decoherence</GlossaryTooltip> as your circuit runs.
+      </>,
     ],
     example: (
       <div className="card bg-slate-900/50 text-sm text-slate-400">
@@ -573,7 +580,7 @@ const LESSONS = [
     ],
     example: (
       <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Error correction in action:</strong> Encode |0&#x27E9;
+        <p><strong className="text-white"><GlossaryTooltip term="Error Correction">Error correction</GlossaryTooltip> in action:</strong> Encode |0&#x27E9;
         &rarr; |000&#x27E9;. If noise flips qubit 2: |010&#x27E9;. Syndrome measurement detects
         &ldquo;qubit 2 differs&rdquo; and flips it back, without ever reading the actual value.</p>
       </div>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
@@ -264,8 +265,14 @@ const LESSONS = [
     hook: 'Quantum amplitudes have a "direction" — and that direction enables interference.',
     bullets: [
       'Classical probabilities are always ≥ 0 and cannot cancel each other.',
-      'Quantum amplitudes can be negative or complex — they have a direction (phase).',
-      'Two amplitudes pointing opposite directions cancel: destructive interference.',
+      <>
+        Quantum amplitudes can be negative or complex — they have a direction (
+        <GlossaryTooltip term="Phase">phase</GlossaryTooltip>).
+      </>,
+      <>
+        Two amplitudes pointing opposite directions cancel: destructive{' '}
+        <GlossaryTooltip term="Interference">interference</GlossaryTooltip>.
+      </>,
     ],
     visual: <PhaseIntuitionVisual />,
     example: (
@@ -387,7 +394,11 @@ const LESSONS = [
     title: 'Where Phase Shows Up',
     hook: 'Phase is the secret ingredient in almost every quantum algorithm.',
     bullets: [
-      "Hadamard gate: creates equal-phase superposition — the starting point of most algorithms.",
+      <>
+        Hadamard gate: creates equal-phase{' '}
+        <GlossaryTooltip term="Superposition">superposition</GlossaryTooltip> — the starting point of
+        most algorithms.
+      </>,
       "Grover's algorithm: uses phase kickback to mark the answer, then interference to amplify it.",
       'Quantum Fourier Transform: rotates phases around the Bloch sphere — basis of Shor\'s algorithm.',
     ],

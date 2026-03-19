@@ -4,6 +4,7 @@ import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
 import CodeBlock from '../../components/CodeBlock'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
@@ -281,8 +282,14 @@ const LESSONS = [
     title: 'Your First Circuit',
     hook: 'Three gates: create a qubit, put it in superposition, measure it.',
     bullets: [
-      'QuantumCircuit(1, 1) — 1 qubit, 1 classical bit for the result.',
-      'qc.h(0) — Hadamard gate puts qubit 0 into equal superposition.',
+      <>
+        QuantumCircuit(1, 1) — 1 <GlossaryTooltip term="Qubit">qubit</GlossaryTooltip>, 1 classical bit
+        for the result.
+      </>,
+      <>
+        qc.h(0) — Hadamard <GlossaryTooltip term="Gate">gate</GlossaryTooltip> puts qubit 0 into equal{' '}
+        <GlossaryTooltip term="Superposition">superposition</GlossaryTooltip>.
+      </>,
       'qc.measure(0, 0) — collapses qubit 0 into classical bit 0.',
     ],
     visual: <CircuitDiagramVisual />,
@@ -304,7 +311,8 @@ const LESSONS = [
     },
     deepDive: (
       <div className="space-y-2 text-sm text-slate-400">
-        <p>Important: Qiskit builds a circuit <em>description</em> — nothing runs until you call
+        <p>Important: Qiskit builds a <GlossaryTooltip term="Circuit">circuit</GlossaryTooltip>{' '}
+        <em>description</em> — nothing runs until you call
         simulator.run(). Think of it like writing a recipe. Calling run() is when you actually cook.</p>
         <p>Each "shot" is one run of the full circuit. The output is a count of how many times each
         classical bit pattern appeared. You never see the raw quantum amplitudes — only the

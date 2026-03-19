@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
@@ -318,9 +319,15 @@ const LESSONS = [
     hookSub: "This exponential scaling is the source of quantum computing\u2019s power.",
     visual: <QubitScalingVisual />,
     bullets: [
-      'One qubit has 2 amplitudes (\u03B1|0\u27E9 + \u03B2|1\u27E9). Two qubits have 4. Three have 8.',
+      <>
+        One <GlossaryTooltip term="Qubit">qubit</GlossaryTooltip> has 2 amplitudes (\u03B1|0\u27E9 +
+        \u03B2|1\u27E9). Two qubits have 4. Three have 8.
+      </>,
       'n qubits need 2\u207F amplitudes \u2014 exponential growth. This is the engine of quantum computing.',
-      'Each amplitude corresponds to one computational basis state, like |01\u27E9 or |110\u27E9.',
+      <>
+        Each amplitude corresponds to one computational <GlossaryTooltip term="Basis">basis</GlossaryTooltip>{' '}
+        state, like |01\u27E9 or |110\u27E9.
+      </>,
     ],
     example: (
       <div className="card bg-slate-900/50 text-sm text-slate-400">
@@ -373,7 +380,10 @@ const LESSONS = [
     hookSub: 'Concatenate labels, multiply amplitudes \u2014 that\u2019s the core rule.',
     visual: <TensorProductVisual />,
     bullets: [
-      '|0\u27E9 \u2297 |1\u27E9 = |01\u27E9. Concatenate the labels and multiply the amplitudes.',
+      <>
+        The <GlossaryTooltip term="Tensor Product">tensor product</GlossaryTooltip> combines labels and
+        amplitudes: |0\u27E9 \u2297 |1\u27E9 = |01\u27E9.
+      </>,
       '|+\u27E9 \u2297 |0\u27E9 = (|00\u27E9 + |10\u27E9)/\u221A2. Each term in |+\u27E9 pairs with |0\u27E9.',
       'The tensor product describes independent qubits \u2014 no correlations, no entanglement.',
     ],
@@ -413,7 +423,10 @@ const LESSONS = [
     bullets: [
       'Separable: |\u03C8\u27E9 \u2297 |\u03C6\u27E9 \u2014 each qubit has its own independent state.',
       'Entangled: (|00\u27E9 + |11\u27E9)/\u221A2 \u2014 cannot be written as a product of single-qubit states.',
-      'Entanglement creates correlations impossible classically \u2014 you\u2019ll explore this in Module 7.',
+      <>
+        <GlossaryTooltip term="Entanglement">Entanglement</GlossaryTooltip> creates correlations impossible
+        classically \u2014 you\u2019ll explore this in Module 7.
+      </>,
     ],
     example: (
       <div className="card bg-amber-950/10 border-amber-800/30 text-sm text-slate-400">

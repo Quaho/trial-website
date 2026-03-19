@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
@@ -166,7 +167,10 @@ const LESSONS = [
     title: 'Kets — Writing Quantum States',
     hook: 'A ket |ψ⟩ is just a column vector with a fancy bracket.',
     bullets: [
-      '|0⟩ and |1⟩ are the two basis states — quantum analogs of classical 0 and 1.',
+      <>
+        |0⟩ and |1⟩ are the two <GlossaryTooltip term="Basis">basis</GlossaryTooltip> states — quantum
+        analogs of classical 0 and 1.
+      </>,
       'Any qubit state is a mix: |ψ⟩ = α|0⟩ + β|1⟩, where α and β are complex numbers.',
       'The rule: |α|² + |β|² = 1. Probabilities always sum to 100%.',
     ],
@@ -174,7 +178,10 @@ const LESSONS = [
     example: (
       <div>
         <MathDisplay>{'|\\psi\\rangle = \\alpha|0\\rangle + \\beta|1\\rangle = \\begin{pmatrix} \\alpha \\\\ \\beta \\end{pmatrix}'}</MathDisplay>
-        <p className="text-xs text-slate-500 text-center -mt-2">In plain English: "|ψ⟩ has amplitude α for 0 and amplitude β for 1."</p>
+        <p className="text-xs text-slate-500 text-center -mt-2">
+          In plain English: "|ψ⟩ has <GlossaryTooltip term="Amplitude">amplitude</GlossaryTooltip> α for 0
+          and amplitude β for 1."
+        </p>
       </div>
     ),
     quiz: {
@@ -193,7 +200,8 @@ const LESSONS = [
         magnitude and a phase angle. The probability of measuring 0 is |α|² (magnitude squared),
         which is always a real positive number.</p>
         <p>This distinction — amplitudes (complex) vs probabilities (real, non-negative) — is
-        the key to understanding interference. Negative or imaginary amplitudes can cancel each
+        the key to understanding <GlossaryTooltip term="Interference">interference</GlossaryTooltip>.
+        Negative or imaginary amplitudes can cancel each
         other, something probabilities can never do.</p>
       </div>
     ),

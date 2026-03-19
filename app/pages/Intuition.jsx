@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
 
@@ -207,8 +208,14 @@ const LESSONS = [
     hook: 'A qubit can hold 0, 1, or both at the same time.',
     bullets: [
       'Classical bits are always exactly 0 or 1 — like a light switch.',
-      'Qubits can be 0, 1, or a superposition of both — like a spinning coin.',
-      'The difference is only visible while computing. Measurement forces a definite 0 or 1.',
+      <>
+        <GlossaryTooltip term="Qubit">Qubits</GlossaryTooltip> can be 0, 1, or a{' '}
+        <GlossaryTooltip term="Superposition">superposition</GlossaryTooltip> of both — like a spinning coin.
+      </>,
+      <>
+        The difference is only visible while computing.{' '}
+        <GlossaryTooltip term="Measurement">Measurement</GlossaryTooltip> forces a definite 0 or 1.
+      </>,
     ],
     visual: <BitVsQubitVisual />,
     example: (
@@ -271,7 +278,10 @@ const LESSONS = [
     hook: 'Looking at a qubit destroys the superposition — forever.',
     bullets: [
       'Measuring a qubit collapses it to either 0 or 1, probabilistically.',
-      'The probability depends on how the superposition was set up (the amplitudes).',
+      <>
+        The probability depends on how the superposition was set up (the{' '}
+        <GlossaryTooltip term="Amplitude">amplitudes</GlossaryTooltip>).
+      </>,
       "You can't undo this. Measurement is irreversible — a one-way door.",
     ],
     visual: <MeasurementVisual />,
@@ -298,7 +308,10 @@ const LESSONS = [
     hook: 'Quantum algorithms use interference to amplify right answers and cancel wrong ones.',
     bullets: [
       'Quantum amplitudes (unlike probabilities) can be negative or complex.',
-      'Constructive interference: two amplitudes pointing the same way → bigger amplitude.',
+      <>
+        Constructive <GlossaryTooltip term="Interference">interference</GlossaryTooltip>: two amplitudes
+        pointing the same way → bigger amplitude.
+      </>,
       'Destructive interference: two amplitudes pointing opposite ways → cancel out.',
     ],
     visual: <WaveInterferenceVisual />,

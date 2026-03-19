@@ -4,6 +4,7 @@ import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
 import CodeBlock from '../../components/CodeBlock'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
 
@@ -475,8 +476,13 @@ const LESSONS = [
     hookSub: 'Import Qiskit, create a QuantumCircuit, and see what you get.',
     visual: <CircuitSetupVisual />,
     bullets: [
-      'Qiskit circuits are built by calling methods on a QuantumCircuit object.',
-      'The number you pass sets how many qubits.',
+      <>
+        Qiskit <GlossaryTooltip term="Circuit">circuits</GlossaryTooltip> are built by calling methods on
+        a QuantumCircuit object.
+      </>,
+      <>
+        The number you pass sets how many <GlossaryTooltip term="Qubit">qubits</GlossaryTooltip>.
+      </>,
       'Every circuit starts with all qubits in |0\u27E9.',
     ],
     example: (
@@ -541,7 +547,8 @@ const LESSONS = [
     example: (
       <div className="card bg-slate-900/50 text-sm text-slate-400">
         <p>
-          <strong className="text-white">Example:</strong> For a Bell state circuit,{' '}
+          <strong className="text-white">Example:</strong> For a{' '}
+          <GlossaryTooltip term="Bell State">Bell state</GlossaryTooltip> circuit,{' '}
           <code className="text-rose-300 font-mono">{'counts \u2248 {\'00\': 512, \'11\': 512}'}</code>.
           Each run is random, so exact numbers vary.
         </p>
@@ -595,7 +602,10 @@ const LESSONS = [
     visual: <ExperimentsVisual />,
     bullets: [
       'The GHZ state extends Bell pairs to 3+ qubits: equal mix of |000\u27E9 and |111\u27E9.',
-      'A single H gate on |0\u27E9 gives 50/50 between |0\u27E9 and |1\u27E9 over many shots.',
+      <>
+        A single H <GlossaryTooltip term="Gate">gate</GlossaryTooltip> on |0\u27E9 gives 50/50 between
+        |0\u27E9 and |1\u27E9 over many shots.
+      </>,
       'These experiments build intuition for how quantum circuits behave.',
     ],
     example: (

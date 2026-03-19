@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
@@ -357,7 +358,10 @@ const LESSONS = [
     visual: <CorrelationVisual />,
     bullets: [
       'Classical correlation: outcomes are predetermined. Opening one envelope reveals the other.',
-      'Quantum entanglement: outcomes are genuinely undetermined until measurement.',
+      <>
+        Quantum <GlossaryTooltip term="Entanglement">entanglement</GlossaryTooltip>: outcomes are genuinely
+        undetermined until <GlossaryTooltip term="Measurement">measurement</GlossaryTooltip>.
+      </>,
       'Bell\u2019s theorem (1964) proved no local hidden variable theory can reproduce quantum predictions.',
     ],
     example: (
@@ -394,9 +398,15 @@ const LESSONS = [
     hook: 'One Hadamard plus one CNOT \u2014 that\u2019s all it takes to create maximal entanglement.',
     visual: <BellCreationVisual />,
     bullets: [
-      'H on qubit 0 creates superposition: |00\u27E9 \u2192 (|00\u27E9 + |10\u27E9)/\u221A2.',
+      <>
+        H on <GlossaryTooltip term="Qubit">qubit</GlossaryTooltip> 0 creates superposition: |00\u27E9 \u2192
+        (|00\u27E9 + |10\u27E9)/\u221A2.
+      </>,
       'CNOT entangles: when qubit 0 is |1\u27E9, qubit 1 flips. Result: (|00\u27E9 + |11\u27E9)/\u221A2.',
-      'This is the Bell state |\u03A6\u207A\u27E9 \u2014 the simplest and most famous entangled state.',
+      <>
+        This is the <GlossaryTooltip term="Bell State">Bell state</GlossaryTooltip> |\u03A6\u207A\u27E9 \u2014
+        the simplest and most famous entangled state.
+      </>,
     ],
     example: (
       <div>
