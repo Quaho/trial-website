@@ -94,6 +94,13 @@ export default function ModuleLayout({ moduleId, title, subtitle, prev, next, st
       {/* ── Sticky lesson-progress mini-header ──────────────────── */}
       {stepInfo && (
         <div className="sticky top-14 z-30 bg-slate-950/95 backdrop-blur border-b border-slate-800/80">
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            className="sr-only"
+          >
+            {`Lesson ${stepInfo.current + 1} of ${stepInfo.total}`}
+          </div>
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between">
             <span className="text-sm font-medium text-slate-400 truncate mr-3 max-w-[180px] sm:max-w-none">
               {title}

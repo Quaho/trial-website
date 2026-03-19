@@ -1,61 +1,74 @@
 # agent.md — Current Codex Task
 
-## TASK-009: Navbar accessibility — focus-visible outlines + Escape key handling
+## TASK-010: Add aria-live region for lesson progress announcements
 
 ### Why this task now
-The Navbar is present on every page and has multiple interactive elements with no `focus-visible` outlines and no keyboard dismiss (Escape) behavior. This is the last major component missing focus ring coverage, and Escape-to-close is a standard a11y expectation for menus.
+CLAUDE.md explicitly requires: "Screen reader: lesson progress announced via `aria-live="polite"` when advancing." This is not implemented anywhere. Screen reader users currently get no announcement when they navigate between lessons. Since ModuleLayout wraps all 13 modules, a single change here covers the entire course.
 
 ### Relevant project standards from CLAUDE.md
-- Every interactive element must have: `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`
-- Focus ring color: `indigo-400` (nav uses indigo as primary accent)
-- Mobile nav open: `height 0→auto` slide down, 200ms
-- All interactive elements keyboard navigable
+- `aria-live="polite"` when advancing between lessons
+- Accessibility: no information conveyed by visual only
 
 ### Files involved
-- `components/Navbar.jsx` — the only file that needs changes
+- `components/ModuleLayout.jsx` — the only file that needs changes
 
 ### Requirements
 
-**1. Add focus-visible outlines to these elements:**
+Add a visually hidden `aria-live="polite"` region inside ModuleLayout that announces the current lesson position when `stepInfo.current` changes.
 
-- **Mobile hamburger button (~line 157)**: Add `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400`
-- **Desktop "Home" link (~line 101)**: Add `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400` (it's a Link styled as a button)
-- **Desktop dropdown trigger buttons (~line 28 in NavDropdown)**: Add `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400`
-- **Desktop dropdown menu links (~line 53 in NavDropdown)**: Add `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400` (inside the dropdown panel)
-- **Desktop Roadmap/Glossary links (~line 130)**: Add `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400`
-- **Mobile menu links** (~lines 195, 230, 264): Add `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400`
-- **Mobile group expand buttons (~line 212)**: Add `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400`
+**Implementation:**
 
-**2. Add Escape key handling:**
+1. Add a visually hidden `<div>` with `aria-live="polite"` inside the sticky header section (or just after it). The div should be screen-reader-only using this pattern:
+```jsx
+<div
+  aria-live="polite"
+  aria-atomic="true"
+  className="sr-only"
+>
+  {stepInfo ? `Lesson ${stepInfo.current + 1} of ${stepInfo.total}` : ''}
+</div>
+```
 
-- When the **mobile menu** is open, pressing Escape should close it (`setOpen(false)`).
-- When a **desktop NavDropdown** is open, pressing Escape should close it (`setOpen(false)`).
-- Use a `useEffect` with a `keydown` event listener for the mobile menu (in the main `Navbar` component).
-- Use a `useEffect` or `onKeyDown` on the dropdown wrapper for NavDropdown.
+2. Add the `sr-only` utility class to `app/index.css` if it doesn't already exist. Standard Tailwind includes it, but verify. The class should be:
+```css
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+```
+
+Note: Tailwind CSS v3 includes `sr-only` by default. If it's already available, do NOT add a duplicate definition in index.css. Only add it if `sr-only` is not recognized by Tailwind.
+
+3. The `aria-live` region will automatically announce when the text content changes (i.e., when the user navigates to a different lesson and `stepInfo.current` updates).
 
 ### Non-goals
-- Do not change nav layout, animation, or routing logic.
-- Do not change the dropdown positioning or styling.
-- Do not add focus trapping (just Escape dismiss).
+- Do not add announcements for quiz pass/fail (that's a separate concern).
+- Do not add focus management (moving focus on lesson change).
+- Do not change layout, styling, or animations.
 - Do not touch any other component.
 
 ### Acceptance criteria
-- [ ] All interactive elements in Navbar show focus rings on keyboard Tab
-- [ ] Pressing Escape closes the mobile menu when open
-- [ ] Pressing Escape closes a desktop dropdown when open
-- [ ] Focus rings use indigo-400
-- [ ] No visual change to mouse/touch interactions
+- [ ] A visually hidden `aria-live="polite"` region exists in ModuleLayout
+- [ ] It contains the current lesson position text ("Lesson X of Y")
+- [ ] Text updates when `stepInfo.current` changes
+- [ ] The region is invisible to sighted users
+- [ ] No visual layout changes
 - [ ] Build passes
 
 ### Verification steps
 1. `npm run build` — must pass
-2. Tab through the desktop nav — verify focus rings on Home, dropdowns, Roadmap, Glossary
-3. Open a dropdown, press Escape — verify it closes
-4. At mobile width, Tab to hamburger — verify focus ring
-5. Open mobile menu, press Escape — verify it closes
-6. Tab through mobile menu links — verify focus rings
+2. Inspect the DOM on any module page — verify the `aria-live` div exists with correct text
+3. Navigate between lessons — verify the div text updates
+4. Verify the div is not visible on screen
 
 ### Constraints
-- Touch only `components/Navbar.jsx`
-- Keep the diff focused on adding classes and the Escape handler
+- Touch only `components/ModuleLayout.jsx` (and `app/index.css` only if `sr-only` is missing)
+- Diff should be ~5 lines
 - Do not add new props or change the component API

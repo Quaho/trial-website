@@ -1,8 +1,8 @@
 # REVIEW.md — Review Log
 
-## TASK-008: Add focus-visible outlines to all remaining module page buttons
+## TASK-009: Navbar accessibility — focus-visible + Escape key handling
 - Status: **APPROVED**
 - Reviewer: Claude (manager)
-- Findings: All 9 pages covered. Correct per-module accent colors. Toggle buttons handled with contextual focus ring colors. Entanglement correctly skipped. Build passes.
+- Findings: All nav elements covered. Escape closes mobile menu and desktop dropdowns. Added aria-controls and type="button". Thorough implementation. Build passes.
 
-## TASK-007–001: All APPROVED
+## TASK-008–001: All APPROVED

@@ -9,13 +9,15 @@
 - **[TASK-006] Use module accent colors for LessonCard numbered bullets** — APPROVED
 - **[TASK-007] Add focus-visible outlines to Circuits.jsx inline buttons** — APPROVED
 - **[TASK-008] Add focus-visible outlines to all remaining module page buttons** — APPROVED
+- **[TASK-009] Navbar accessibility: focus-visible + Escape key handling** — APPROVED
 
 ## Active
-- **[TASK-009] Navbar accessibility: focus-visible outlines + Escape key handling**
+- **[TASK-010] Add aria-live region for lesson progress announcements**
   Status: ASSIGNED TO CODEX
-  Priority: accessibility
-  Files: components/Navbar.jsx
+  Priority: accessibility (screen reader)
+  Files: components/ModuleLayout.jsx
 
 ## Backlog (unordered, to be triaged)
 - Mobile polish audit at 375px/390px/430px
-- Desktop dropdown: close on Escape
+- Module completion celebration animation
+- GlossaryTooltip component
