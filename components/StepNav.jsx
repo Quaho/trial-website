@@ -42,8 +42,8 @@ export default function StepNav({ steps, current, passed = [], onNext, onPrev, o
                 <button
                   aria-label={`Lesson ${i + 1}${isDone ? ' (complete)' : isCurrent ? ' (current)' : ' (locked)'}`}
                   onClick={() => canNav && scrollAndGo(() => onGoto?.(i))}
-                  className={`rounded-full transition-all duration-200
-                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400
+                  className={`-m-2 p-2 box-content bg-clip-content rounded-full transition-all duration-200
+                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400
                     ${isCurrent
                       ? 'w-7 h-3 bg-indigo-400 cursor-pointer'
                       : isDone
