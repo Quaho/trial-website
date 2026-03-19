@@ -14,11 +14,13 @@ function BitVsQubitVisual() {
       <div className="flex gap-3 justify-center mb-4">
         <button onClick={() => setShowQubit(false)}
           className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400
             ${!showQubit ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'}`}>
           Classical Bit
         </button>
         <button onClick={() => setShowQubit(true)}
           className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors
+            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400
             ${showQubit ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'}`}>
           Qubit
         </button>
@@ -129,7 +131,8 @@ function MeasurementVisual() {
               <div className={`text-sm font-medium ${result === 0 ? 'text-green-400' : 'text-violet-400'}`}>
                 Collapsed to |{result}⟩
               </div>
-              <button onClick={reset} className="text-xs text-slate-500 hover:text-slate-300 underline underline-offset-2">
+              <button onClick={reset} className="text-xs text-slate-500 hover:text-slate-300 underline underline-offset-2 rounded
+                focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400">
                 Reset
               </button>
             </div>
