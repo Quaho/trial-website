@@ -4,6 +4,7 @@ import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
 import { useProgress } from '../../lib/hooks/useProgress'
+import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
 
 /* ── Visuals ──────────────────────────────────────────────────────────────── */
 
@@ -744,6 +745,7 @@ export default function UseCases() {
             totalLessons={LESSONS.length}
             isPassed={passed[step]}
             onPass={handleQuizPass}
+            bulletStyle={MODULE_LAYOUT_STYLES.usecases.bullet}
           />
 
           {step === LESSONS.length - 1 && allPassed && (

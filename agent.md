@@ -1,45 +1,106 @@
 # agent.md — Current Codex Task
 
-## TASK-004: Fix StepNav dot button focus offset and tap target size
+## TASK-006: Use module accent colors for LessonCard numbered bullets
 
 ### Why this task now
-The StepNav dot buttons already have `focus-visible:outline` but are missing `outline-offset-2`, which means the focus ring sits flush against the tiny dot and is hard to see. Additionally, the dots are only 12px tall (`w-3 h-3`), far below the 44px minimum tap target required by CLAUDE.md. This affects every module page — StepNav appears at the bottom of every lesson.
+The "Key ideas" numbered bullets in LessonCard are hardcoded to indigo (`bg-indigo-900/60 border-indigo-700/50 text-indigo-400`) regardless of which module the user is in. Per CLAUDE.md, each module has a distinct accent color that should be used for numbered bullets. This is a design consistency gap visible on every lesson across all 13 modules.
 
 ### Relevant project standards from CLAUDE.md
-- Focus: `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2`
-- Mobile: tap targets >= 44px
-- Accessibility: all interactive elements keyboard navigable with visible focus
+From the Module Color Map:
+```
+bullet: 'bg-indigo-900/60 border-indigo-700/50 text-indigo-400'   (Module 1)
+bullet: 'bg-violet-900/60 border-violet-700/50 text-violet-400'   (Module 2)
+bullet: 'bg-purple-900/60 border-purple-700/50 text-purple-400'   (Module 3)
+...etc per module accent color
+```
 
-### Files likely involved
-- `components/StepNav.jsx` — the only file that needs changes
+### Files involved
+1. `lib/data/modules.js` — add `bullet` field to `MODULE_LAYOUT_STYLES`
+2. `components/LessonCard.jsx` — accept and use a `bulletStyle` prop
+3. All 13 module pages in `app/pages/` — pass `bulletStyle` to `<LessonCard>`
 
 ### Requirements
-1. Add `focus-visible:outline-offset-2` to the dot `<button>` element (line 46 currently has `focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400` but no offset).
-2. Increase the clickable area of each dot button without changing its visual size. Add `p-2` padding to the button so the tap target becomes ~28px (the dot + padding). This is a practical improvement toward the 44px target without disrupting the compact dot layout.
-3. To prevent the padding from pushing dots apart too much, add `-m-2` (negative margin) to counteract the padding visually, keeping the dots at the same visual spacing.
+
+**Step 1: Add `bullet` to `MODULE_LAYOUT_STYLES` in `lib/data/modules.js`**
+
+Add a `bullet` field to each entry following this pattern (full Tailwind class strings for JIT):
+```js
+intuition:    { ..., bullet: 'bg-indigo-900/60 border-indigo-700/50 text-indigo-400' },
+braket:       { ..., bullet: 'bg-violet-900/60 border-violet-700/50 text-violet-400' },
+phase:        { ..., bullet: 'bg-purple-900/60 border-purple-700/50 text-purple-400' },
+qiskit:       { ..., bullet: 'bg-fuchsia-900/60 border-fuchsia-700/50 text-fuchsia-400' },
+gates:        { ..., bullet: 'bg-sky-900/60 border-sky-700/50 text-sky-400' },
+multiqubit:   { ..., bullet: 'bg-cyan-900/60 border-cyan-700/50 text-cyan-400' },
+entanglement: { ..., bullet: 'bg-teal-900/60 border-teal-700/50 text-teal-400' },
+circuits:     { ..., bullet: 'bg-emerald-900/60 border-emerald-700/50 text-emerald-400' },
+measurement:  { ..., bullet: 'bg-amber-900/60 border-amber-700/50 text-amber-400' },
+algorithms:   { ..., bullet: 'bg-orange-900/60 border-orange-700/50 text-orange-400' },
+labs:         { ..., bullet: 'bg-rose-900/60 border-rose-700/50 text-rose-400' },
+noise:        { ..., bullet: 'bg-slate-800/60 border-slate-600/50 text-slate-400' },
+usecases:     { ..., bullet: 'bg-lime-900/60 border-lime-700/50 text-lime-400' },
+```
+
+**Step 2: Update `components/LessonCard.jsx`**
+
+Add an optional `bulletStyle` prop (string). Default to the current indigo if not provided:
+```js
+const defaultBullet = 'bg-indigo-900/60 border-indigo-700/50 text-indigo-400'
+```
+
+Replace the hardcoded indigo classes on the bullet `<span>` (currently line 67-68) with:
+```jsx
+className={`mt-0.5 w-5 h-5 rounded-full border flex items-center justify-center text-xs font-bold flex-shrink-0 ${bulletStyle || defaultBullet}`}
+```
+
+**Step 3: Pass `bulletStyle` from each module page**
+
+In each module page file, import `MODULE_LAYOUT_STYLES` from the data file (if not already imported) and pass the bullet style to LessonCard:
+```jsx
+<LessonCard
+  lesson={lesson}
+  lessonIndex={step}
+  totalLessons={LESSONS.length}
+  isPassed={passed[step]}
+  onPass={handleQuizPass}
+  bulletStyle={MODULE_LAYOUT_STYLES.intuition.bullet}  // use the correct module key
+/>
+```
+
+The module pages and their keys:
+- Intuition.jsx → `intuition`
+- BraKet.jsx → `braket`
+- PhaseAngle.jsx → `phase`
+- Qiskit.jsx → `qiskit`
+- Gates.jsx → `gates`
+- MultiQubit.jsx → `multiqubit`
+- Entanglement.jsx → `entanglement`
+- Circuits.jsx → `circuits`
+- Measurement.jsx → `measurement`
+- Algorithms.jsx → `algorithms`
+- Labs.jsx → `labs`
+- Noise.jsx → `noise`
+- UseCases.jsx → `usecases`
 
 ### Non-goals
-- Do not change the dot visual appearance (colors, sizes, shapes).
-- Do not change navigation logic, tooltips, or connecting lines.
-- Do not touch Prev/Next buttons (they already have proper sizing).
-- Do not touch any other component.
+- Do not change lesson content, quiz logic, or visual layout.
+- Do not change the bullet size, font, or shape — only the color classes.
+- Do not modify any component other than LessonCard.
 
 ### Acceptance criteria
-- [ ] Dot buttons have `focus-visible:outline-offset-2` for visible focus ring separation
-- [ ] Dot tap targets are larger than before (padding-based expansion)
-- [ ] Visual dot spacing looks unchanged or nearly unchanged
-- [ ] Keyboard navigation through dots still works
-- [ ] Tooltips on locked dots still appear on hover
+- [ ] Each module's "Key ideas" bullets use that module's accent color
+- [ ] LessonCard defaults gracefully to indigo if no bulletStyle is passed
+- [ ] All 13 module pages pass the correct bulletStyle
+- [ ] No visual layout changes — only color differences
 - [ ] Build passes
 
 ### Verification steps
 1. `npm run build` — must pass
-2. Open any module page, Tab through the StepNav dots, verify focus ring has visible offset
-3. On mobile viewport (375px), verify dots are easier to tap
-4. Verify locked-dot tooltips still show on hover
-5. Verify connecting lines between dots look correct
+2. Open Module 1 (Intuition) — bullets should be indigo (same as before)
+3. Open Module 2 (BraKet) — bullets should be violet
+4. Open Module 5 (Gates) — bullets should be sky blue
+5. Spot-check 2-3 more modules for correct accent colors
 
 ### Constraints
-- Touch only `components/StepNav.jsx`
-- Keep the diff small — just add/modify classes on the dot button
-- Do not add new state variables or change component props
+- All Tailwind classes must be full static strings (no dynamic concatenation) for JIT
+- Keep LessonCard's default backward-compatible
+- Diff should be moderate: ~1 line per module page + small changes to LessonCard and modules.js

@@ -5,6 +5,7 @@ import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
+import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
 
 /* ── Visuals ──────────────────────────────────────────────────────────────── */
 
@@ -320,6 +321,7 @@ export default function BraKet() {
             totalLessons={LESSONS.length}
             isPassed={passed[step]}
             onPass={handleQuizPass}
+            bulletStyle={MODULE_LAYOUT_STYLES.braket.bullet}
           />
 
           {step === LESSONS.length - 1 && allPassed && (

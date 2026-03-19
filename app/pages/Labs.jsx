@@ -5,6 +5,7 @@ import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
 import CodeBlock from '../../components/CodeBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
+import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
 
 /* ── Visuals ──────────────────────────────────────────────────────────────── */
 
@@ -657,6 +658,7 @@ export default function Labs() {
             totalLessons={LESSONS.length}
             isPassed={passed[step]}
             onPass={handleQuizPass}
+            bulletStyle={MODULE_LAYOUT_STYLES.labs.bullet}
           />
 
           {step === LESSONS.length - 1 && allPassed && (

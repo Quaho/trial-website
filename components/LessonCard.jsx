@@ -2,6 +2,8 @@ import { CheckCircle, Lightbulb, FlaskConical } from 'lucide-react'
 import Quiz from './Quiz'
 import DeepDive from './DeepDive'
 
+const defaultBullet = 'bg-indigo-900/60 border-indigo-700/50 text-indigo-400'
+
 /**
  * Renders one complete lesson unit in the standardised sequence:
  *   lesson label → hook headline → visual → key ideas → example → deep dive → checkpoint
@@ -12,8 +14,9 @@ import DeepDive from './DeepDive'
  *   totalLessons – total count for the module
  *   isPassed     – true if this lesson's checkpoint was passed in a prior session
  *   onPass       – called when the checkpoint is answered correctly
+ *   bulletStyle  – optional module accent classes for numbered bullets
  */
-export default function LessonCard({ lesson, lessonIndex, totalLessons, isPassed, onPass }) {
+export default function LessonCard({ lesson, lessonIndex, totalLessons, isPassed, onPass, bulletStyle }) {
   const { hook, hookSub, visual, bullets, example, deepDive, quiz } = lesson
 
   return (
@@ -64,8 +67,8 @@ export default function LessonCard({ lesson, lessonIndex, totalLessons, isPassed
             {bullets.map((b, i) => (
               <li key={i} className="flex gap-3 items-start text-sm text-slate-300 leading-relaxed">
                 <span
-                  className="mt-0.5 w-5 h-5 rounded-full bg-indigo-900/60 border border-indigo-700/50
-                             flex items-center justify-center text-indigo-400 text-xs font-bold flex-shrink-0"
+                  className={`mt-0.5 w-5 h-5 rounded-full border flex items-center justify-center
+                             text-xs font-bold flex-shrink-0 ${bulletStyle || defaultBullet}`}
                 >
                   {i + 1}
                 </span>

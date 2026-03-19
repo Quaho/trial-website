@@ -6,6 +6,7 @@ import StepNav from '../../components/StepNav'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import CodeBlock from '../../components/CodeBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
+import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
 
 /* ── Visuals ──────────────────────────────────────────────────────────────── */
 
@@ -929,6 +930,7 @@ export default function Circuits() {
             totalLessons={LESSONS.length}
             isPassed={passed[step]}
             onPass={handleQuizPass}
+            bulletStyle={MODULE_LAYOUT_STYLES.circuits.bullet}
           />
 
           {step === LESSONS.length - 1 && allPassed && (
