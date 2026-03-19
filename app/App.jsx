@@ -21,6 +21,9 @@ const UseCases = lazy(() => import('./pages/UseCases'))
 const Roadmap = lazy(() => import('./pages/Roadmap'))
 const Glossary = lazy(() => import('./pages/Glossary'))
 const Challenges = lazy(() => import('./pages/Challenges'))
+const FirstCircuit = lazy(() => import('./pages/projects/FirstCircuit'))
+const BellExplorer = lazy(() => import('./pages/projects/BellExplorer'))
+const AlgorithmShowdown = lazy(() => import('./pages/projects/AlgorithmShowdown'))
 
 function RouteFallback() {
   return (
@@ -62,6 +65,9 @@ export default function App() {
               <Route path="/roadmap"    element={<Roadmap />} />
               <Route path="/glossary"   element={<Glossary />} />
               <Route path="/challenges" element={<Challenges />} />
+              <Route path="/projects/first-circuit" element={<FirstCircuit />} />
+              <Route path="/projects/bell-explorer" element={<BellExplorer />} />
+              <Route path="/projects/algorithm-showdown" element={<AlgorithmShowdown />} />
             </Routes>
           </Suspense>
         </main>

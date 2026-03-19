@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ChevronLeft, Lock, CheckCircle, Clock, ArrowDown } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { MODULES, MODULE_STYLES } from '../../lib/data/modules'
+import { PROJECTS, PROJECT_STYLES } from '../../lib/data/projects'
 import { useProgress } from '../../lib/hooks/useProgress'
 
 /* ── Track groupings ──────────────────────────────────────────────── */
@@ -58,6 +59,21 @@ export default function Roadmap() {
     })
   }
 
+  function getProjectStatus(project) {
+    const projectKey = `project-${project.id}`
+    if (completed[projectKey]) return 'completed'
+    const isLocked = project.prereqs.length > 0 && !project.prereqs.every(id => completed[id])
+    if (isLocked) return 'locked'
+    return 'unlocked'
+  }
+
+  function getProjectPrereqNames(project) {
+    return project.prereqs.map(id => {
+      const found = MODULES.find(mod => mod.id === id)
+      return found ? found.title : id
+    })
+  }
+
   return (
     <div className="min-h-screen">
       {/* ── Hero ────────────────────────────────────────────────────── */}
@@ -103,6 +119,7 @@ export default function Roadmap() {
         <div className="space-y-12">
           {TRACKS.map((track, trackIdx) => {
             const trackModules = MODULES.filter(m => m.group === track.key)
+            const trackProject = PROJECTS.find(project => project.track === track.key)
 
             return (
               <motion.div
@@ -191,6 +208,63 @@ export default function Roadmap() {
                       </motion.div>
                     )
                   })}
+
+                  {trackProject && (() => {
+                    const status = getProjectStatus(trackProject)
+                    const styles = PROJECT_STYLES[trackProject.id]
+                    const Icon = trackProject.icon
+                    const prereqNames = getProjectPrereqNames(trackProject)
+                    const projectStepsDone = getLessonPassed(`project-${trackProject.id}`, trackProject.steps).filter(Boolean).length
+
+                    return (
+                      <motion.div key={trackProject.id} variants={fadeUp}>
+                        <div className="flex justify-center py-1">
+                          <ArrowDown className="w-4 h-4 text-slate-700" />
+                        </div>
+
+                        <div className="absolute -left-[5px]" style={{ marginTop: '1.25rem' }}>
+                          {status === 'completed' ? (
+                            <div className="w-3 h-3 rounded-full bg-green-500 ring-4 ring-slate-950" />
+                          ) : status === 'locked' ? (
+                            <div className="w-3 h-3 rounded-full bg-slate-700 ring-4 ring-slate-950" />
+                          ) : (
+                            <div className={`w-3 h-3 rounded-full ring-4 ring-slate-950 ${styles.progressBar}`} />
+                          )}
+                        </div>
+
+                        {status === 'locked' ? (
+                          <div className={`rounded-2xl border-2 border-dashed p-5 opacity-55 ${styles.border} ${styles.bg}`}>
+                            <ProjectCardContent
+                              project={trackProject}
+                              styles={styles}
+                              Icon={Icon}
+                              status={status}
+                              stepsDone={projectStepsDone}
+                              prereqNames={prereqNames}
+                            />
+                          </div>
+                        ) : (
+                          <Link
+                            to={trackProject.to}
+                            className={`block rounded-2xl border-2 border-dashed p-5 transition-all duration-200 ${
+                              status === 'completed'
+                                ? 'border-green-800/50 bg-green-950/10 hover:border-green-700/60'
+                                : `${styles.border} ${styles.bg} hover:border-slate-500/60 hover:shadow-lg hover:shadow-black/20`
+                            }`}
+                          >
+                            <ProjectCardContent
+                              project={trackProject}
+                              styles={styles}
+                              Icon={Icon}
+                              status={status}
+                              stepsDone={projectStepsDone}
+                              prereqNames={prereqNames}
+                            />
+                          </Link>
+                        )}
+                      </motion.div>
+                    )
+                  })()}
                 </div>
 
                 {/* Arrow between tracks */}
@@ -282,6 +356,86 @@ function CardContent({ m, styles, Icon, status, lessonsDone, prereqNames }) {
             <div
               className={`h-full rounded-full transition-all duration-500 ${styles.progressBar}`}
               style={{ width: `${(lessonsDone / m.lessons) * 100}%` }}
+            />
+          </div>
+        )}
+        {status === 'completed' && (
+          <div className="mt-2.5 h-1 bg-green-500/50 rounded-full" />
+        )}
+      </div>
+    </div>
+  )
+}
+
+function ProjectCardContent({ project, styles, Icon, status, stepsDone, prereqNames }) {
+  return (
+    <div className="flex items-start gap-4">
+      <div
+        className={`w-11 h-11 rounded-xl border flex items-center justify-center flex-shrink-0 ${
+          status === 'completed'
+            ? 'bg-green-900/40 border-green-700/50'
+            : status === 'locked'
+              ? 'bg-slate-800/60 border-slate-700/40'
+              : `${styles.bg} ${styles.border}`
+        }`}
+      >
+        {status === 'completed' ? (
+          <CheckCircle className="w-5 h-5 text-green-400" />
+        ) : status === 'locked' ? (
+          <Lock className="w-4 h-4 text-slate-500" />
+        ) : (
+          <Icon className={`w-5 h-5 ${styles.accent}`} />
+        )}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex flex-wrap items-center gap-2 mb-1">
+          <span className={`badge text-xs py-0.5 border ${status === 'completed' ? 'bg-green-900/40 text-green-400 border-green-800/40' : styles.badge}`}>
+            MP {project.number}
+          </span>
+          <span className="inline-flex items-center gap-1 text-xs text-slate-500">
+            <Clock className="w-3 h-3" />
+            ~{project.estMin} min
+          </span>
+          <span className="text-xs text-slate-500">{project.steps} steps</span>
+          {status === 'completed' && (
+            <span className="badge bg-green-900/40 text-green-400 border border-green-800/40 text-xs py-0.5">
+              Complete
+            </span>
+          )}
+          {status === 'unlocked' && stepsDone > 0 && (
+            <span className={`badge text-xs py-0.5 border ${styles.badge}`}>
+              {stepsDone}/{project.steps} steps
+            </span>
+          )}
+        </div>
+
+        <h3 className="font-semibold text-white text-[0.95rem] leading-snug mb-1">
+          {project.title}
+        </h3>
+        <p className="text-sm text-slate-400 leading-relaxed mb-2">
+          {project.tagline}
+        </p>
+
+        {prereqNames.length > 0 && status === 'locked' && (
+          <div className="flex flex-wrap gap-1.5">
+            {prereqNames.map(name => (
+              <span
+                key={name}
+                className="text-xs px-2 py-0.5 rounded-full border
+                           bg-slate-800/60 text-slate-500 border-slate-700/40"
+              >
+                Requires: {name}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {status === 'unlocked' && stepsDone > 0 && (
+          <div className="mt-2.5 h-1 bg-slate-800 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${styles.progressBar}`}
+              style={{ width: `${(stepsDone / project.steps) * 100}%` }}
             />
           </div>
         )}

@@ -1,5 +1,10 @@
 # REVIEW.md — Review Log
 
+## TASK-016: Machine Project infrastructure + MP1 (First Quantum Circuit)
+- Status: **APPROVED**
+- Reviewer: Claude (manager)
+- Findings: Project data file with 3 projects + style maps. ProjectLayout component with vertical step timeline, progress tracking, expand/collapse, aria-live. MP1 has 5 well-structured steps with code blocks, predict/reflect boxes, GlossaryTooltips. MP2/MP3 stubs with correct accent colors. Routes lazy-loaded. Navbar and Roadmap updated with project links and cards (locked/unlocked/completed). Build passes.
+
 ## TASK-015: Mobile polish audit — fix layout issues at 375px
 - Status: **APPROVED**
 - Reviewer: Claude (manager)

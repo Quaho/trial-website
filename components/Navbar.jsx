@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Atom, Menu, X, ChevronDown, Map, BookOpen, Zap } from 'lucide-react'
+import { Atom, Menu, X, ChevronDown, Map, BookOpen, Cpu } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useProgress } from '../lib/hooks/useProgress'
@@ -148,6 +148,7 @@ export default function Navbar() {
             {[
               { to: '/roadmap',  icon: Map,      label: 'Roadmap'  },
               { to: '/glossary', icon: BookOpen, label: 'Glossary' },
+              { to: '/projects/first-circuit', icon: Cpu, label: 'Projects' },
             ].map(({ to, icon: Icon, label }) => (
               <Link
                 key={to}
@@ -288,6 +289,7 @@ export default function Navbar() {
                   { to: '/roadmap',    label: 'Course Roadmap' },
                   { to: '/glossary',   label: 'Glossary' },
                   { to: '/challenges', label: 'Mini Challenges' },
+                  { to: '/projects/first-circuit', label: 'Machine Projects' },
                 ].map(({ to, label }) => (
                   <Link
                     key={to}
