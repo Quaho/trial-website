@@ -21,14 +21,25 @@ function NavDropdown({ group, label, modules, pathname, onNavigate }) {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
+  useEffect(() => {
+    if (!open) return
+
+    function handler(e) {
+      if (e.key === 'Escape') setOpen(false)
+    }
+
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [open])
+
   return (
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(o => !o)}
         className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
           isActive
-            ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-900/50'
-            : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
+            ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-900/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+            : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
         }`}
         aria-expanded={open}
         aria-haspopup="true"
@@ -56,8 +67,8 @@ function NavDropdown({ group, label, modules, pathname, onNavigate }) {
                   onClick={() => { setOpen(false); onNavigate?.() }}
                   className={`flex items-center gap-2.5 px-3.5 py-2.5 text-sm transition-colors ${
                     pathname === m.to
-                      ? 'bg-indigo-600/20 text-white'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                      ? 'bg-indigo-600/20 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
                   }`}
                 >
                   <Icon className="w-4 h-4 shrink-0 opacity-70" />
@@ -81,6 +92,17 @@ export default function Navbar() {
   const lessonsDone = getTotalLessonsDone()
   const pct = Math.round((lessonsDone / totalLessons) * 100)
 
+  useEffect(() => {
+    if (!open) return
+
+    function handler(e) {
+      if (e.key === 'Escape') setOpen(false)
+    }
+
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [open])
+
   return (
     <nav className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur border-b border-slate-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -89,7 +111,8 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-2 font-bold text-white hover:text-indigo-300 transition-colors shrink-0"
+            className="flex items-center gap-2 font-bold text-white hover:text-indigo-300 transition-colors shrink-0
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded"
           >
             <Atom className="w-5 h-5 text-indigo-400" />
             QuantumLeap
@@ -102,8 +125,8 @@ export default function Navbar() {
               to="/"
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                 pathname === '/'
-                  ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-900/50'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
+                  ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-900/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
               }`}
             >
               Home
@@ -131,8 +154,8 @@ export default function Navbar() {
                 to={to}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                   pathname === to
-                    ? 'bg-indigo-600 text-white'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
+                    ? 'bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -154,10 +177,16 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-slate-800/60"
+            className="md:hidden p-2 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-slate-800/60
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
             onClick={() => setOpen(o => !o)}
             aria-label="Toggle menu"
             aria-expanded={open}
+            aria-controls="mobile-menu"
+            type="button"
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setOpen(false)
+            }}
           >
             <AnimatePresence mode="wait" initial={false}>
               {open ? (
@@ -182,6 +211,7 @@ export default function Navbar() {
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
+            id="mobile-menu"
             key="mobile-menu"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
@@ -196,7 +226,7 @@ export default function Navbar() {
                 to="/"
                 onClick={() => setOpen(false)}
                 className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  pathname === '/' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
+                  pathname === '/' ? 'bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400' : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
                 }`}
               >
                 Home
@@ -210,7 +240,9 @@ export default function Navbar() {
                   <div key={group}>
                     <button
                       onClick={() => setExpandedGroup(isExpanded ? null : group)}
-                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-500 hover:text-slate-300 hover:bg-slate-800/40 transition-colors mt-1"
+                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-500 hover:text-slate-300 hover:bg-slate-800/40 transition-colors mt-1
+                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                      type="button"
                     >
                       {label}
                       <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${isExpanded ? 'rotate-180' : ''}`} />
@@ -233,8 +265,8 @@ export default function Navbar() {
                                 onClick={() => setOpen(false)}
                                 className={`flex items-center gap-2.5 pl-5 pr-3 py-2.5 rounded-lg text-sm transition-colors ${
                                   pathname === m.to
-                                    ? 'bg-indigo-600/20 text-white'
-                                    : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
+                                    ? 'bg-indigo-600/20 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+                                    : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
                                 }`}
                               >
                                 <Icon className="w-4 h-4 shrink-0 opacity-70" />
@@ -262,7 +294,7 @@ export default function Navbar() {
                     to={to}
                     onClick={() => setOpen(false)}
                     className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                      pathname === to ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
+                      pathname === to ? 'bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400' : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
                     }`}
                   >
                     {label}

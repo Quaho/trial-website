@@ -1,11 +1,8 @@
 # REVIEW.md — Review Log
 
-## TASK-007: Add focus-visible outlines to Circuits.jsx inline buttons
+## TASK-008: Add focus-visible outlines to all remaining module page buttons
 - Status: **APPROVED**
 - Reviewer: Claude (manager)
-- Findings: All 7 button locations covered with correct emerald/slate focus rings. Contextual toggle button handled well. Build passes.
+- Findings: All 9 pages covered. Correct per-module accent colors. Toggle buttons handled with contextual focus ring colors. Entanglement correctly skipped. Build passes.
 
-## TASK-006: Use module accent colors for LessonCard numbered bullets
-- Status: **APPROVED**
-
-## TASK-005–001: All APPROVED
+## TASK-007–001: All APPROVED
