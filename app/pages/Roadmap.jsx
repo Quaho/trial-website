@@ -64,9 +64,9 @@ export default function Roadmap() {
       <section className="relative overflow-hidden py-16 sm:py-24">
         {/* Background orbs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px]
+          <div className="absolute top-1/3 left-1/4 w-[260px] h-[260px] sm:w-[400px] sm:h-[400px]
                           bg-indigo-600/6 rounded-full blur-3xl orb-float" />
-          <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px]
+          <div className="absolute top-1/4 right-1/4 w-[200px] h-[200px] sm:w-[300px] sm:h-[300px]
                           bg-violet-600/5 rounded-full blur-3xl orb-float-slow" />
         </div>
 

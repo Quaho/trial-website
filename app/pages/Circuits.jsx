@@ -28,7 +28,7 @@ function CircuitAnatomyVisual() {
       </p>
 
       {/* SVG circuit diagram */}
-      <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 sm:p-6 mb-5">
+      <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 sm:p-6 mb-5 max-h-[140px] overflow-hidden sm:max-h-none">
         <svg viewBox="0 0 440 160" className="w-full" role="img"
              aria-label="A quantum circuit with two qubit wires, H and CNOT gates, and measurement symbols">
           {/* q0 wire */}
@@ -706,7 +706,9 @@ qc.measure(0, 0)
               <p className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-medium">
                 Circuit diagram
               </p>
-              {c.diagram}
+              <div className="max-h-[140px] overflow-hidden sm:max-h-none">
+                {c.diagram}
+              </div>
             </div>
 
             {/* Code */}

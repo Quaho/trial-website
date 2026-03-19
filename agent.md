@@ -1,80 +1,76 @@
 # agent.md — Current Codex Task
 
-## TASK-014: Integrate GlossaryTooltip into lesson content
+## TASK-015: Mobile polish audit — fix layout issues at 375px
 
 ### Why this task now
-The GlossaryTooltip component (`components/GlossaryTooltip.jsx`) exists and works, but isn't used anywhere yet. Wrapping key terms in lessons makes the glossary useful — learners can hover/focus any unfamiliar term to see its definition without leaving the page. This is the highest-value follow-up after TASK-013.
+All features are built. Before deploying, we need to ensure every page looks clean at 375px (iPhone SE / small Android). A code audit found several overflow, sizing, and touch-target issues.
 
-### Relevant project standards from CLAUDE.md
-- Progressive disclosure: show definition on demand, not by default
-- One focused task per lesson — tooltips should aid, not distract
-- Never a wall of text — tooltips reduce cognitive load
+### Fixes required
 
-### Strategy: selective wrapping
-Do NOT wrap every occurrence of every term. Follow these rules:
+**1. Home page orbs — prevent horizontal scroll** (`app/pages/Home.jsx`)
+The decorative orbs (`w-[480px]`, `w-[320px]`, `w-[260px]`) are larger than 375px. The parent has `overflow-hidden` which clips them, so they don't cause horizontal scroll — but verify this. If the parent container ever loses `overflow-hidden`, they would overflow. Add responsive sizes for safety:
+- `w-[260px] sm:w-[480px]` (first orb)
+- `w-[200px] sm:w-[320px]` (second orb)
+- `w-[160px] sm:w-[260px]` (third orb)
+Apply same height changes.
 
-1. **First meaningful occurrence per lesson** — wrap the term the first time it appears in that lesson's content (not in the headline/hook — only in bullet points, running text, worked examples, and deep dives)
-2. **Maximum 3 tooltips per lesson** — more than that creates visual noise
-3. **Only wrap when the term is used as a concept** — e.g., wrap "qubit" in "A qubit can hold 0 and 1" but NOT in "two-qubit gate" (compound term)
-4. **Never wrap inside headings (h1–h3)** or quiz questions/answers
-5. **Never wrap inside MathBlock or KaTeX expressions**
+**2. Roadmap page orbs — same fix** (`app/pages/Roadmap.jsx`)
+Apply the same responsive orb sizing pattern. Find the decorative orbs and add `sm:` responsive sizes.
 
-### Files to modify
+**3. Grover amplitude bars — tighter on mobile** (`app/pages/Algorithms.jsx`)
+The 8-bar amplitude visualization uses `max-w-[40px]` per bar. At 375px with padding, this is tight. Change to:
+- `max-w-[28px] sm:max-w-[40px]` on each bar
 
-Update these 13 module pages to import and use GlossaryTooltip:
+**4. StepNav tooltip overflow** (`components/StepNav.jsx`)
+The locked-lesson tooltip uses `whitespace-nowrap` which can overflow on 375px. Change to:
+- `whitespace-nowrap` → `whitespace-normal max-w-[200px] text-center` for the tooltip
+- This lets long text like "Finish lesson 4 first" wrap on narrow screens
 
-1. `app/pages/Intuition.jsx` — wrap: qubit, superposition, interference, measurement, amplitude
-2. `app/pages/BraKet.jsx` — wrap: basis, amplitude, interference
-3. `app/pages/PhaseAngle.jsx` — wrap: phase, superposition, interference
-4. `app/pages/Qiskit.jsx` — wrap: circuit, gate, qubit, superposition
-5. `app/pages/Gates.jsx` — wrap: gate, qubit, unitary, phase, Hadamard
-6. `app/pages/MultiQubit.jsx` — wrap: qubit, tensor product, basis, entanglement
-7. `app/pages/Entanglement.jsx` — wrap: entanglement, Bell state, measurement, qubit
-8. `app/pages/Circuits.jsx` — wrap: circuit, gate, measurement, qubit
-9. `app/pages/Measurement.jsx` — wrap: measurement, basis, amplitude, phase
-10. `app/pages/Algorithms.jsx` — wrap: oracle, interference, amplitude, superposition
-11. `app/pages/Labs.jsx` — wrap: circuit, gate, qubit, Bell state
-12. `app/pages/Noise.jsx` — wrap: decoherence, error correction, qubit
-13. `app/pages/UseCases.jsx` — wrap: entanglement, superposition, qubit
+**5. CodeBlock copy button — bigger touch target on mobile** (`components/CodeBlock.jsx`)
+The copy button uses `px-2 py-1` making it ~24px tall, below the 44px touch minimum. Change to:
+- `px-2.5 py-2 sm:px-2 sm:py-1` — larger on mobile, compact on desktop
+- Keep the `-my-0.5` for desktop alignment but use `sm:-my-0.5 -my-0` for mobile
 
-### How to wrap
+**6. Phase gate visual — stack on mobile** (`app/pages/Gates.jsx`)
+The Z-gate visual at ~line 300 uses a flex row with `w-44 h-44 flex-shrink-0` SVG next to description text. On 375px this is too cramped. Change the container to:
+- `flex flex-col sm:flex-row items-center gap-4 sm:gap-6`
+- Change SVG from `w-44 h-44 flex-shrink-0` to `w-32 h-32 sm:w-44 sm:h-44 flex-shrink-0`
 
-Import:
-```jsx
-import GlossaryTooltip from '../../components/GlossaryTooltip'
-```
+**7. Navbar dropdown width** (`components/Navbar.jsx`)
+The desktop dropdown is `w-56` (224px). On mobile, the hamburger menu is used instead, so this only affects tablets. However, ensure the mobile hamburger menu items have adequate touch targets:
+- Verify all mobile menu links have at least `py-2.5` or `min-h-[44px]`
 
-Usage — wrap the visible text, pass the canonical term name:
-```jsx
-// Before:
-<li>A qubit can hold 0 and 1 simultaneously.</li>
-
-// After:
-<li>A <GlossaryTooltip term="qubit">qubit</GlossaryTooltip> can hold 0 and 1 simultaneously.</li>
-```
-
-The `term` prop must match a term in `lib/data/glossary.js` (case-insensitive). Available terms:
-Amplitude, Basis, Bell State, Circuit, Decoherence, Entanglement, Error Correction, Gate, Hadamard, Interference, Measurement, Oracle, Phase, Qubit, Superposition, Tensor Product, Unitary
+**8. Circuit diagram SVGs — add max-height** (`app/pages/Circuits.jsx`)
+Circuit diagrams with wide aspect ratios compress vertically on mobile. For any SVG with a very wide viewBox (e.g., `viewBox="0 0 440 160"`), wrap in a container with:
+- `max-h-[140px] sm:max-h-none` to prevent them from becoming too flat
 
 ### Non-goals
-- Do NOT modify the GlossaryTooltip component itself
-- Do NOT modify `lib/data/glossary.js`
-- Do NOT add tooltips to Glossary.jsx, Roadmap.jsx, Challenges.jsx, or Home.jsx
-- Do NOT wrap terms inside Quiz components, headings, or MathBlock/KaTeX
-- Do NOT wrap more than 3 terms per lesson card
+- Do NOT change any lesson text, quiz content, or glossary data
+- Do NOT restructure page layouts — only adjust sizing/spacing/responsiveness
+- Do NOT add new components or files
+- Do NOT change desktop appearance — all fixes should use `sm:` or mobile-first responsive classes
 
 ### Acceptance criteria
-- [ ] All 13 module pages import and use GlossaryTooltip
-- [ ] Each page wraps 2–3 terms per lesson (first meaningful occurrence only)
-- [ ] No tooltips in headings, quizzes, or math blocks
-- [ ] No more than 3 tooltips per LessonCard
+- [ ] Decorative orbs use responsive widths on Home and Roadmap pages
+- [ ] Grover amplitude bars fit within 375px without overflow
+- [ ] StepNav tooltip wraps instead of overflowing
+- [ ] CodeBlock copy button meets 44px touch target on mobile
+- [ ] Phase gate visual stacks vertically on mobile
+- [ ] Mobile nav links have adequate touch targets
+- [ ] Circuit SVGs don't compress too flat on mobile
 - [ ] Build passes (`npm run build`)
+- [ ] No visible horizontal scrollbar at 375px on any page
 
 ### Verification steps
 1. `npm run build` — must pass
-2. Spot-check a few modules in the browser: hover terms, see tooltip appear
-3. Keyboard test: Tab to a wrapped term, tooltip appears on focus
+2. Open browser DevTools, set viewport to 375×667 (iPhone SE)
+3. Check `/` — no horizontal scroll, orbs don't overflow, continue button fits
+4. Check `/gates` — Z-gate visual stacks on mobile
+5. Check `/algorithms` — Grover bars fit
+6. Check `/circuits` — diagram not too compressed
+7. Check any module with StepNav — locked tooltip wraps properly
 
 ### Constraints
-- Modify only the 13 module page files listed above
-- Follow the wrapping rules strictly — quality over quantity
+- Mobile-first responsive approach: fix mobile, keep desktop unchanged
+- Only modify existing files — no new files
+- Keep changes minimal and targeted

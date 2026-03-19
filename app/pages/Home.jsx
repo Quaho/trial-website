@@ -43,11 +43,11 @@ export default function Home() {
       <section className="relative overflow-hidden py-20 sm:py-28">
         {/* Layered orbs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-[480px] h-[480px]
+          <div className="absolute top-1/4 left-1/4 w-[260px] h-[260px] sm:w-[480px] sm:h-[480px]
                           bg-indigo-600/8 rounded-full blur-3xl orb-float" />
-          <div className="absolute top-1/3 right-1/6 w-[320px] h-[320px]
+          <div className="absolute top-1/3 right-1/6 w-[200px] h-[200px] sm:w-[320px] sm:h-[320px]
                           bg-violet-600/6 rounded-full blur-3xl orb-float-slow" />
-          <div className="absolute bottom-1/4 left-1/3 w-[260px] h-[260px]
+          <div className="absolute bottom-1/4 left-1/3 w-[160px] h-[160px] sm:w-[260px] sm:h-[260px]
                           bg-fuchsia-600/5 rounded-full blur-3xl orb-float-alt" />
         </div>
 

@@ -58,7 +58,7 @@ export default function StepNav({ steps, current, passed = [], onNext, onPrev, o
                   <div
                     className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2
                                px-2.5 py-1 bg-slate-800 border border-slate-700 rounded-lg
-                               text-xs text-slate-300 whitespace-nowrap z-10
+                               text-xs text-slate-300 whitespace-normal max-w-[200px] text-center z-10
                                opacity-0 group-hover:opacity-100 transition-opacity duration-150
                                pointer-events-none"
                   >
@@ -112,7 +112,7 @@ export default function StepNav({ steps, current, passed = [], onNext, onPrev, o
               <div
                 className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2
                            px-2.5 py-1 bg-slate-800 border border-slate-700 rounded-lg
-                           text-xs text-slate-300 whitespace-nowrap z-10
+                           text-xs text-slate-300 whitespace-normal max-w-[200px] text-center z-10
                            opacity-0 group-hover:opacity-100 transition-opacity duration-150
                            pointer-events-none"
               >

@@ -296,8 +296,8 @@ function PhaseGatesVisual() {
       <p className="text-xs text-sky-400 uppercase tracking-wider mb-4 text-center">
         Phase gates on the unit circle
       </p>
-      <div className="flex flex-col sm:flex-row items-center gap-6">
-        <svg viewBox="0 0 160 160" className="w-44 h-44 flex-shrink-0" role="img"
+      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+        <svg viewBox="0 0 160 160" className="w-32 h-32 sm:w-44 sm:h-44 flex-shrink-0" role="img"
              aria-label="Unit circle showing T at 45 degrees, S at 90 degrees, and Z at 180 degrees">
           {/* Circle */}
           <circle cx={cx} cy={cy} r={r} fill="none" stroke="#334155" strokeWidth="1.5" />

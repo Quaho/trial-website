@@ -1,5 +1,10 @@
 # REVIEW.md — Review Log
 
+## TASK-015: Mobile polish audit — fix layout issues at 375px
+- Status: **APPROVED**
+- Reviewer: Claude (manager)
+- Findings: 8 targeted fixes. Home/Roadmap orbs responsive sized. Grover bars narrower on mobile. StepNav tooltips wrap. CodeBlock copy button 44px touch target. Phase gate SVG stacks vertically. Navbar mobile links min-h-[44px]. Circuit diagrams max-height clipped on mobile. Build passes.
+
 ## TASK-014: Integrate GlossaryTooltip into lesson content
 - Status: **APPROVED**
 - Reviewer: Claude (manager)

@@ -225,7 +225,7 @@ export default function Navbar() {
               <Link
                 to="/"
                 onClick={() => setOpen(false)}
-                className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex min-h-[44px] items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   pathname === '/' ? 'bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400' : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
                 }`}
               >
@@ -240,7 +240,7 @@ export default function Navbar() {
                   <div key={group}>
                     <button
                       onClick={() => setExpandedGroup(isExpanded ? null : group)}
-                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-500 hover:text-slate-300 hover:bg-slate-800/40 transition-colors mt-1
+                      className="w-full min-h-[44px] flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-500 hover:text-slate-300 hover:bg-slate-800/40 transition-colors mt-1
                         focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
                       type="button"
                     >
@@ -263,7 +263,7 @@ export default function Navbar() {
                                 key={m.id}
                                 to={m.to}
                                 onClick={() => setOpen(false)}
-                                className={`flex items-center gap-2.5 pl-5 pr-3 py-2.5 rounded-lg text-sm transition-colors ${
+                                className={`flex min-h-[44px] items-center gap-2.5 pl-5 pr-3 py-2.5 rounded-lg text-sm transition-colors ${
                                   pathname === m.to
                                     ? 'bg-indigo-600/20 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
                                     : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
@@ -293,7 +293,7 @@ export default function Navbar() {
                     key={to}
                     to={to}
                     onClick={() => setOpen(false)}
-                    className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    className={`flex min-h-[44px] items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                       pathname === to ? 'bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400' : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
                     }`}
                   >

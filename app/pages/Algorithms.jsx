@@ -173,7 +173,7 @@ function GroverVisual() {
                 const height = Math.abs(a) / (maxAmp || 1) * 100
                 const isTarget = i === target
                 return (
-                  <div key={i} className="flex flex-col items-center gap-1 flex-1 max-w-[40px]">
+                  <div key={i} className="flex flex-col items-center gap-1 flex-1 max-w-[28px] sm:max-w-[40px]">
                     <div
                       className={`w-full rounded-t-md transition-all duration-300 ${
                         isTarget ? 'bg-orange-500' : 'bg-slate-600'
