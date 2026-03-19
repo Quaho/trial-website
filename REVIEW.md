@@ -1,18 +1,14 @@
 # REVIEW.md — Review Log
 
-## TASK-005: Add focus-visible outlines to Intuition.jsx inline buttons
+## TASK-006: Use module accent colors for LessonCard numbered bullets
 - Status: **APPROVED**
 - Reviewer: Claude (manager)
-- Findings: All four buttons addressed. Toggle buttons and Reset have focus rings. Measure uses btn-primary (already covered). Build passes.
+- Findings: bullet field added to all 13 MODULE_LAYOUT_STYLES entries. LessonCard accepts bulletStyle with indigo fallback. All 13 module pages pass correct prop. Full static Tailwind strings. Build passes.
+
+## TASK-005: Add focus-visible outlines to Intuition.jsx inline buttons
+- Status: **APPROVED**
 
 ## TASK-004: Fix StepNav dot button focus offset and tap target size
 - Status: **APPROVED**
 
-## TASK-003: Add focus-visible outline to CodeBlock copy button
-- Status: **APPROVED**
-
-## TASK-002: Add focus-visible outline to DeepDive toggle button
-- Status: **APPROVED**
-
-## TASK-001: Add focus-visible outlines to Quiz choice buttons
-- Status: **APPROVED**
+## TASK-003–001: All APPROVED

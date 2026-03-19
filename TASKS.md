@@ -6,13 +6,14 @@
 - **[TASK-003] Add focus-visible outline to CodeBlock copy button** — APPROVED
 - **[TASK-004] Fix StepNav dot button focus offset and tap target size** — APPROVED
 - **[TASK-005] Add focus-visible outlines to Intuition.jsx inline buttons** — APPROVED
+- **[TASK-006] Use module accent colors for LessonCard numbered bullets** — APPROVED
 
 ## Active
-- **[TASK-006] Use module accent colors for LessonCard numbered bullets**
+- **[TASK-007] Add focus-visible outlines to Circuits.jsx inline buttons**
   Status: ASSIGNED TO CODEX
-  Priority: design consistency
-  Files: lib/data/modules.js, components/LessonCard.jsx, all module pages in app/pages/
+  Priority: accessibility
+  Files: app/pages/Circuits.jsx
 
 ## Backlog (unordered, to be triaged)
+- Add focus-visible to inline buttons in remaining module pages (Gates, Measurement, Labs, Noise, Algorithms, MultiQubit, Entanglement, UseCases, Challenges)
 - Mobile nav: test keyboard trap behavior when menu is open
-- Audit other module pages for inline buttons missing focus-visible

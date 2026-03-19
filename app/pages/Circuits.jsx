@@ -102,6 +102,7 @@ function CircuitAnatomyVisual() {
             key={p.id}
             onClick={() => setHighlight(h => h === p.id ? null : p.id)}
             className={`px-3 py-2 rounded-xl text-xs font-medium transition-all border
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400
               ${highlight === p.id
                 ? 'bg-emerald-900/40 border-emerald-500/60 text-emerald-300'
                 : 'bg-slate-900/60 border-slate-700/50 text-slate-400 hover:text-slate-200'}`}
@@ -195,6 +196,7 @@ function CircuitElementsVisual() {
             key={tab.name}
             onClick={() => setActive(i)}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors border
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400
               ${i === active
                 ? 'bg-emerald-900/40 border-emerald-500/60 text-emerald-300'
                 : 'bg-slate-800 border-slate-700/50 text-slate-400 hover:text-white'}`}
@@ -364,6 +366,7 @@ function CircuitStepperVisual() {
           disabled={currentStep === 0}
           className="px-4 py-2 rounded-xl text-sm font-medium transition-colors
                      bg-slate-800 text-slate-300 hover:bg-slate-700
+                     focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400
                      disabled:opacity-40 disabled:cursor-not-allowed"
           aria-label="Previous step"
         >
@@ -374,6 +377,7 @@ function CircuitStepperVisual() {
           disabled={currentStep === steps.length - 1}
           className="px-4 py-2 rounded-xl text-sm font-medium transition-colors
                      bg-emerald-800/60 text-emerald-300 hover:bg-emerald-700/60
+                     focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400
                      disabled:opacity-40 disabled:cursor-not-allowed"
           aria-label="Next step"
         >
@@ -541,6 +545,7 @@ function BellStepperVisual() {
           disabled={currentStep === 0}
           className="px-4 py-2 rounded-xl text-sm font-medium transition-colors
                      bg-slate-800 text-slate-300 hover:bg-slate-700
+                     focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400
                      disabled:opacity-40 disabled:cursor-not-allowed"
           aria-label="Previous step"
         >
@@ -551,6 +556,7 @@ function BellStepperVisual() {
           disabled={currentStep === steps.length - 1}
           className="px-4 py-2 rounded-xl text-sm font-medium transition-colors
                      bg-emerald-800/60 text-emerald-300 hover:bg-emerald-700/60
+                     focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400
                      disabled:opacity-40 disabled:cursor-not-allowed"
           aria-label="Next step"
         >
@@ -675,9 +681,10 @@ qc.measure(0, 0)
             key={cir.name}
             onClick={() => setSelected(i)}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${i === selected
-                ? 'bg-emerald-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                ? 'bg-emerald-600 text-white focus-visible:outline-emerald-400'
+                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`Show ${cir.name} circuit`}
           >
             {cir.name}
