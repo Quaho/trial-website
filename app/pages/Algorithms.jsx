@@ -47,9 +47,10 @@ function DeutschJozsaVisual() {
             key={key}
             onClick={() => setOracleType(key)}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors border
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${oracleType === key
-                ? 'bg-orange-900/40 border-orange-500/60 text-orange-300'
-                : 'bg-slate-800 border-slate-700/50 text-slate-400 hover:text-white'}`}
+                ? 'bg-orange-900/40 border-orange-500/60 text-orange-300 focus-visible:outline-orange-400'
+                : 'bg-slate-800 border-slate-700/50 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`Select ${val.label} oracle`}
           >
             {val.label}
@@ -147,9 +148,10 @@ function GroverVisual() {
             key={i}
             onClick={() => setIteration(i)}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${iteration === i
-                ? 'bg-orange-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                ? 'bg-orange-600 text-white focus-visible:outline-orange-400'
+                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`${i} iteration${i !== 1 ? 's' : ''}`}
           >
             {i === 0 ? 'Start' : `Iter ${i}`}

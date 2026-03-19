@@ -65,7 +65,8 @@ function ComputationalBasisVisual() {
           </div>
           <button
             onClick={() => { setMeasured(false); setResult(null) }}
-            className="block mx-auto mt-3 text-xs text-slate-500 hover:text-slate-300 underline underline-offset-2"
+            className="block mx-auto mt-3 text-xs text-slate-500 hover:text-slate-300 underline underline-offset-2
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 rounded"
           >
             Reset
           </button>
@@ -112,9 +113,10 @@ function BasisComparisonVisual() {
             key={b}
             onClick={() => setBasis(b)}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors border
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${basis === b
-                ? 'bg-amber-900/40 border-amber-500/60 text-amber-300'
-                : 'bg-slate-800 border-slate-700/50 text-slate-400 hover:text-white'}`}
+                ? 'bg-amber-900/40 border-amber-500/60 text-amber-300 focus-visible:outline-amber-400'
+                : 'bg-slate-800 border-slate-700/50 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`Measure in ${b} basis`}
           >
             {b} basis
@@ -350,6 +352,7 @@ function BasisChangeVisual() {
           disabled={step === 0}
           className="px-4 py-2 rounded-xl text-sm font-medium transition-colors
                      bg-slate-800 text-slate-300 hover:bg-slate-700
+                     focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400
                      disabled:opacity-40 disabled:cursor-not-allowed"
           aria-label="Previous step"
         >
@@ -360,6 +363,7 @@ function BasisChangeVisual() {
           disabled={step === steps.length - 1}
           className="px-4 py-2 rounded-xl text-sm font-medium transition-colors
                      bg-amber-800/60 text-amber-300 hover:bg-amber-700/60
+                     focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400
                      disabled:opacity-40 disabled:cursor-not-allowed"
           aria-label="Next step"
         >

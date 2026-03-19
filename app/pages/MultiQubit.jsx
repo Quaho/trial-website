@@ -110,9 +110,10 @@ function TensorProductVisual() {
                 onClick={() => setLeftIdx(i)}
                 aria-label={`Select left qubit ${s.label}`}
                 className={`px-3 py-1.5 rounded-full text-sm font-mono font-medium transition-colors
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
                   ${leftIdx === i
-                    ? 'bg-cyan-600 text-white'
-                    : 'bg-slate-800 text-slate-400 hover:text-white'
+                    ? 'bg-cyan-600 text-white focus-visible:outline-cyan-400'
+                    : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'
                   }`}
               >
                 {s.label}
@@ -133,9 +134,10 @@ function TensorProductVisual() {
                 onClick={() => setRightIdx(i)}
                 aria-label={`Select right qubit ${s.label}`}
                 className={`px-3 py-1.5 rounded-full text-sm font-mono font-medium transition-colors
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
                   ${rightIdx === i
-                    ? 'bg-cyan-600 text-white'
-                    : 'bg-slate-800 text-slate-400 hover:text-white'
+                    ? 'bg-cyan-600 text-white focus-visible:outline-cyan-400'
+                    : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'
                   }`}
               >
                 {s.label}
@@ -264,9 +266,10 @@ function AmplitudeReaderVisual() {
             onClick={() => setStateIdx(i)}
             aria-label={`Select preset state ${p.label}`}
             className={`px-3 py-1.5 rounded-full text-sm font-mono font-medium transition-colors
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${stateIdx === i
-                ? 'bg-cyan-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white'
+                ? 'bg-cyan-600 text-white focus-visible:outline-cyan-400'
+                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'
               }`}
           >
             {p.label}

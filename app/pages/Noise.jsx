@@ -321,6 +321,7 @@ function RepetitionCodeVisual() {
             onClick={() => handleFlip(i)}
             className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 font-mono text-xl sm:text-2xl
                         font-bold transition-all duration-200 flex items-center justify-center
+                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400
                         ${i === flipped
                           ? 'bg-red-950/30 border-red-500/60 text-red-300 scale-105'
                           : 'bg-slate-800/60 border-slate-600/50 text-slate-300 hover:border-slate-500'

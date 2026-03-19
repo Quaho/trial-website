@@ -152,7 +152,9 @@ function ChallengeCard({ challenge, index }) {
               disabled={submitted}
               onClick={() => !submitted && setSelected(i)}
               className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all duration-150
-                ${style} ${submitted ? 'cursor-default' : 'cursor-pointer'}`}
+                ${style} ${submitted ? 'cursor-default' : 'cursor-pointer'}
+                focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+                ${isSelected && !submitted ? 'focus-visible:outline-indigo-400' : 'focus-visible:outline-slate-400'}`}
               aria-label={`Choice: ${choice}`}
             >
               <div className="flex items-center gap-3">
@@ -191,7 +193,8 @@ function ChallengeCard({ challenge, index }) {
           {!isCorrect && (
             <button
               onClick={handleRetry}
-              className="text-xs text-indigo-400 hover:text-indigo-300 underline underline-offset-2 transition-colors"
+              className="text-xs text-indigo-400 hover:text-indigo-300 underline underline-offset-2 transition-colors rounded
+                focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
             >
               Try again
             </button>
@@ -241,9 +244,10 @@ export default function Challenges() {
                 key={cat.id}
                 onClick={() => setActiveTab(cat.id)}
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors border
+                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
                   ${activeTab === cat.id
-                    ? 'bg-indigo-900/40 border-indigo-500/60 text-indigo-300'
-                    : 'bg-slate-900 border-slate-700/50 text-slate-400 hover:text-white hover:border-slate-600'}`}
+                    ? 'bg-indigo-900/40 border-indigo-500/60 text-indigo-300 focus-visible:outline-indigo-400'
+                    : 'bg-slate-900 border-slate-700/50 text-slate-400 hover:text-white hover:border-slate-600 focus-visible:outline-slate-400'}`}
                 aria-label={`${cat.label} challenges`}
               >
                 <Icon className="w-4 h-4" />

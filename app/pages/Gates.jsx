@@ -83,9 +83,10 @@ function XGateVisual() {
             key={i}
             onClick={() => setSelected(i)}
             className={`px-3 py-1.5 rounded-full text-sm font-mono font-medium transition-colors
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${i === selected
-                ? 'bg-sky-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                ? 'bg-sky-600 text-white focus-visible:outline-sky-400'
+                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`Select input state ${st.input}`}
           >
             {st.input}
@@ -223,9 +224,10 @@ function HadamardVisual() {
             key={i}
             onClick={() => setSelected(i)}
             className={`px-3 py-1.5 rounded-full text-sm font-mono font-medium transition-colors
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${i === selected
-                ? 'bg-sky-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                ? 'bg-sky-600 text-white focus-visible:outline-sky-400'
+                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`Select input state ${st.input}`}
           >
             {st.input}

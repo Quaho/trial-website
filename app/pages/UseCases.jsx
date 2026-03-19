@@ -56,9 +56,10 @@ function ChemistryVisual() {
             key={mol.name}
             onClick={() => setSelected(selected === i ? null : i)}
             className={`w-full text-left rounded-xl p-4 transition-colors border
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${selected === i
-                ? 'bg-lime-900/30 border-lime-600/50'
-                : 'bg-slate-900/60 border-slate-700/40 hover:border-slate-600/60'}`}
+                ? 'bg-lime-900/30 border-lime-600/50 focus-visible:outline-lime-400'
+                : 'bg-slate-900/60 border-slate-700/40 hover:border-slate-600/60 focus-visible:outline-slate-400'}`}
             aria-label={`View details for ${mol.name}`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -138,9 +139,10 @@ function OptimizationVisual() {
             key={key}
             onClick={() => setApproach(key)}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors border
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${approach === key
-                ? 'bg-lime-900/40 border-lime-500/60 text-lime-300'
-                : 'bg-slate-800 border-slate-700/50 text-slate-400 hover:text-white'}`}
+                ? 'bg-lime-900/40 border-lime-500/60 text-lime-300 focus-visible:outline-lime-400'
+                : 'bg-slate-800 border-slate-700/50 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`Show ${label} approach`}
           >
             {label}
@@ -225,11 +227,12 @@ function CryptographyVisual() {
             key={key}
             onClick={() => setPanel(key)}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors border
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${panel === key
                 ? key === 'threat'
-                  ? 'bg-red-900/30 border-red-500/50 text-red-300'
-                  : 'bg-green-900/30 border-green-500/50 text-green-300'
-                : 'bg-slate-800 border-slate-700/50 text-slate-400 hover:text-white'}`}
+                  ? 'bg-red-900/30 border-red-500/50 text-red-300 focus-visible:outline-red-400'
+                  : 'bg-green-900/30 border-green-500/50 text-green-300 focus-visible:outline-green-400'
+                : 'bg-slate-800 border-slate-700/50 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`View ${label} panel`}
           >
             <span className="mr-1">{icon}</span> {label}
@@ -386,7 +389,8 @@ function MLRealityVisual() {
           <button
             key={cat.name}
             onClick={() => setExpanded(expanded === i ? null : i)}
-            className="w-full text-left bg-slate-900/60 rounded-xl p-4 border border-slate-700/40 hover:border-slate-600/60 transition-colors"
+            className="w-full text-left bg-slate-900/60 rounded-xl p-4 border border-slate-700/40 hover:border-slate-600/60 transition-colors
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400"
             aria-label={`View details for ${cat.name}`}
           >
             <div className="flex items-center justify-between mb-2">

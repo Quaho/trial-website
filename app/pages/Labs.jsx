@@ -44,9 +44,10 @@ function CircuitSetupVisual() {
             key={i}
             onClick={() => setCurrentStep(i)}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${currentStep === i
-                ? 'bg-rose-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                ? 'bg-rose-600 text-white focus-visible:outline-rose-400'
+                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`Show step ${i + 1}`}
           >
             {i + 1}
@@ -134,9 +135,10 @@ function GatesAndMeasureVisual() {
             key={i}
             onClick={() => setCurrentStep(i)}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${currentStep === i
-                ? 'bg-rose-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                ? 'bg-rose-600 text-white focus-visible:outline-rose-400'
+                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`Show step ${i + 1}: ${steps[i].label}`}
           >
             Step {i + 1}
@@ -428,9 +430,10 @@ qc.cz(0, 2)`,
             key={i}
             onClick={() => setSelected(i)}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
               ${selected === i
-                ? 'bg-rose-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                ? 'bg-rose-600 text-white focus-visible:outline-rose-400'
+                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`Select experiment: ${e.title}`}
           >
             {e.icon} {e.title}
