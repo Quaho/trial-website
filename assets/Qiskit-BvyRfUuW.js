@@ -1,4 +1,4 @@
-import{r as x,j as e}from"./react-vendor-kHxl1iEF.js";import{M as g,L as b,S as f}from"./StepNav-CA1fL-ZP.js";import{C as n}from"./CodeBlock-ROcJ01dI.js";import{G as c}from"./GlossaryTooltip-DrEwlqAL.js";import{a as q,M as j}from"./MathBlock-u1iMK9Ks.js";import{u as y,b as v}from"./index-DXV3dsV0.js";import{A as N,m as k}from"./motion-DWLaQ9Oe.js";import"./icons-Ce9MdwkB.js";import"./code-CRsAAlz3.js";import"./glossary-wOOCM0Kt.js";import"./math-BqFklwWU.js";const w=`# Install Qiskit (in your terminal)
+import{r as x,j as e}from"./react-vendor-kHxl1iEF.js";import{M as g,L as b,S as f}from"./StepNav-BFTK7s3V.js";import{C as n}from"./CodeBlock-ROcJ01dI.js";import{G as c}from"./GlossaryTooltip-CSNI3uQ3.js";import{a as q,M as j}from"./MathBlock-u1iMK9Ks.js";import{u as y,b as v}from"./index-D-F6j5nI.js";import{A as N,m as k}from"./motion-DWLaQ9Oe.js";import"./icons-Ce9MdwkB.js";import"./code-CRsAAlz3.js";import"./glossary-wOOCM0Kt.js";import"./math-BqFklwWU.js";const w=`# Install Qiskit (in your terminal)
 pip install qiskit qiskit-aer
 
 # Verify installation
