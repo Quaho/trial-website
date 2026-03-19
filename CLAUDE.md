@@ -486,6 +486,44 @@ Each entry: one-sentence definition + plain-English analogy + links to relevant 
 
 ---
 
+## Machine Projects (Planned)
+
+Inspired by LearnCpp.online's project-based learning model. After completing a group of modules,
+learners tackle a guided hands-on project that synthesizes what they've learned.
+
+### Concept
+- **Not exercises** — these are multi-step projects with scaffolded guidance
+- **Apply, don't repeat** — projects require combining concepts from multiple lessons
+- **Predict → Build → Verify** — each project follows a structured flow
+- **Practical output** — the learner builds something real (a circuit, a simulation, an analysis)
+
+### Placement (3 machine projects, one per track)
+| Project | After | Track | Theme |
+|---------|-------|-------|-------|
+| MP1 — First Quantum Circuit | Modules 1–4 (Foundations) | Foundations | Build and simulate a simple circuit using concepts from Intuition → Qiskit |
+| MP2 — Bell State Explorer | Modules 5–8 (Circuits) | Circuits | Construct, visualize, and measure a Bell pair end-to-end |
+| MP3 — Algorithm Showdown | Modules 9–13 (Advanced) | Advanced | Compare classical vs quantum approaches to a search/optimization problem |
+
+### Structure per machine project
+1. **Brief** — what you'll build, what concepts you'll use, estimated time (~20–30 min)
+2. **Starter scaffold** — provided code/circuit skeleton
+3. **Step-by-step guided tasks** — 4–6 steps, each with a clear deliverable
+4. **Predict checkpoints** — "What do you expect to happen?" before each reveal
+5. **Final result** — learner sees their completed project output
+6. **Reflection** — 2–3 questions connecting the project back to the concepts
+
+### Routes
+```
+/projects/first-circuit    (MP1 — after Foundations)
+/projects/bell-explorer    (MP2 — after Circuits)
+/projects/algorithm-showdown (MP3 — after Advanced)
+```
+
+### Status
+Not yet implemented. Build after current polish/a11y work is complete.
+
+---
+
 ## Codex Workflow
 
 ### Authority Model

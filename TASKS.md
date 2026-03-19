@@ -1,15 +1,12 @@
 # TASKS.md — Current Backlog
 
 ## Completed
-- **[TASK-001–011]** All APPROVED (a11y sweep, accent bullets, aria-live, mobile polish)
+- **[TASK-001–013]** All APPROVED (a11y sweep, accent bullets, aria-live, mobile polish, celebration animation, GlossaryTooltip)
 
 ## Active
-- **[TASK-012] Module completion celebration animation**
-  Status: ASSIGNED TO CODEX
-  Priority: micro-interaction / feedback
-  Files: components/ModuleLayout.jsx
+(none)
 
 ## Backlog (unordered, to be triaged)
-- Mobile polish: audit module page visuals at 375px
-- GlossaryTooltip component
+- Integrate GlossaryTooltip into lesson content across modules
+- Mobile polish: full audit at 375px across module pages
 - Machine Projects (planned, deferred)

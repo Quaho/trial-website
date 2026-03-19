@@ -1,130 +1,96 @@
 # agent.md — Current Codex Task
 
-## TASK-012: Module completion celebration animation
+## TASK-013: Build GlossaryTooltip component
 
 ### Why this task now
-CLAUDE.md specifies a "confetti-style scale + opacity burst, 600ms" celebration animation when a module is completed for the first time. Currently, clicking "Mark as Complete" instantly swaps to a static "Module complete." message with no visual reward. This is a key feedback moment in the Khan Academy-inspired learning model — the learner deserves a satisfying confirmation.
+CLAUDE.md lists GlossaryTooltip as a "new component to build" — a hover/focus tooltip that shows a term's definition and links to the glossary. This connects the glossary to lessons, reducing cognitive load (learners don't need to leave the page to remember what a term means). This task builds the component and its data file; integration into lessons will be a follow-up task.
 
 ### Relevant project standards from CLAUDE.md
-- Motion table: "Module celebration — confetti-style scale + opacity burst — 600ms"
-- Respect `prefers-reduced-motion` (already handled by `MotionConfig reducedMotion="user"` wrapping the app)
-- Never animate > 1 element simultaneously unless they are part of the same semantic unit
-- Feedback immediacy: every tap gets visual feedback < 150ms
-- Confirmatory feedback: success state obvious (green, icon, message)
-- Copy: "Module complete."
+- Component: `GlossaryTooltip` — "Hover tooltip linking to glossary terms"
+- Progressive disclosure (Apple HIG): show definition on demand, not by default
+- Accessibility: keyboard navigable, focus-visible states
+- Design: `rounded-xl`, `bg-slate-900`, `border-slate-700/60`, `text-sm`
+- Motion: tooltip enter/exit ~150ms, opacity + slight y shift
 
-### Files involved
-- `components/ModuleLayout.jsx` — the only file that needs changes
+### Files to create
+1. `lib/data/glossary.js` — shared glossary term data (extracted from Glossary.jsx's TERMS)
+2. `components/GlossaryTooltip.jsx` — the tooltip component
 
 ### Requirements
 
-**1. Import Framer Motion**
+**1. Create `lib/data/glossary.js`**
 
-Add `import { motion, AnimatePresence } from 'framer-motion'` to the imports.
+Extract the term data from `app/pages/Glossary.jsx` (the TERMS array) into a shared data file so both the Glossary page and GlossaryTooltip can use the same definitions. Export it as `GLOSSARY_TERMS`.
 
-**2. Track "just completed" state**
-
-Add a `useState` to track whether the user just clicked "Mark as Complete" in this session (as opposed to returning to an already-completed module):
-
-```jsx
-const [justCompleted, setJustCompleted] = useState(false)
+The shape should remain the same:
+```js
+export const GLOSSARY_TERMS = [
+  {
+    term: 'Amplitude',
+    definition: 'The complex number multiplying a basis state in a quantum superposition.',
+    analogy: 'Think of it as "how much" of that outcome is in the mix.',
+    modules: [
+      { label: 'Intuition', to: '/intuition' },
+      { label: 'BraKet', to: '/braket' },
+    ],
+  },
+  // ... all other terms
+]
 ```
 
-Update the button handler to set this state:
+Then update `app/pages/Glossary.jsx` to import from this shared file instead of defining TERMS inline.
+
+**2. Create `components/GlossaryTooltip.jsx`**
+
+Build a tooltip component that wraps a term in the lesson text. Usage will be:
 ```jsx
-onClick={() => { markDone(moduleId); setJustCompleted(true) }}
+<GlossaryTooltip term="superposition">superposition</GlossaryTooltip>
 ```
 
-**3. Animate the completion message**
+The component should:
 
-Replace the current static "Module complete." div (~line 160-164) with an animated version that plays only when `justCompleted` is true. When revisiting an already-completed module, show the static version (no animation).
+- Render `children` as an inline `<button>` with a dotted underline (indicating it's a glossary term)
+- Style: `text-inherit font-inherit border-b border-dashed border-slate-500 cursor-help`
+- On **hover** or **focus**, show a tooltip above the term containing:
+  - Term name (bold, small)
+  - One-line definition
+  - "See glossary →" link to `/glossary`
+- Tooltip styling: `bg-slate-900 border border-slate-700/60 rounded-xl shadow-xl shadow-black/40 p-3 max-w-xs`
+- Tooltip position: centered above the term, with a small offset (`bottom-full mb-2`)
+- Use Framer Motion for enter/exit: `opacity 0→1, y 4→0`, duration 150ms
+- Close on mouse leave / blur
+- Accessible: `role="tooltip"`, connected via `aria-describedby`
+- Focus-visible: `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400`
+- The tooltip trigger must be keyboard accessible (button element, focusable)
 
-Use `AnimatePresence` with `mode="wait"` to animate the transition from button → completion message:
+**Term lookup:** The component looks up the term (case-insensitive) in `GLOSSARY_TERMS` to find the definition. If the term isn't found, just render the children with no tooltip behavior.
 
-```jsx
-<AnimatePresence mode="wait">
-  {!done ? (
-    <motion.button
-      key="mark-complete"
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.15 }}
-      onClick={() => { markDone(moduleId); setJustCompleted(true) }}
-      className="btn-primary focus-visible:outline focus-visible:outline-2
-                 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-    >
-      <CheckCircle className="w-4 h-4" />
-      Mark as Complete
-    </motion.button>
-  ) : (
-    <motion.div
-      key="completed"
-      initial={justCompleted ? { opacity: 0, scale: 0.8 } : false}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={justCompleted ? { duration: 0.6, ease: [0.34, 1.56, 0.64, 1] } : { duration: 0 }}
-      className="flex items-center gap-2 text-green-400 font-medium"
-    >
-      <CheckCircle className="w-5 h-5" />
-      Module complete.
-    </motion.div>
-  )}
-</AnimatePresence>
-```
+**3. Update Glossary.jsx imports**
 
-The ease curve `[0.34, 1.56, 0.64, 1]` creates an overshoot/bounce effect (scale goes slightly past 1 then settles), giving the "burst" feel specified in CLAUDE.md.
-
-**4. Add celebratory particles (optional but encouraged)**
-
-For the "confetti-style" aspect, add 4-6 small decorative dots that burst outward from the completion message and fade out. These should be absolutely positioned, animate outward with opacity 1→0 and scale, and use green/emerald colors.
-
-A simple approach using Framer Motion:
-```jsx
-{justCompleted && done && (
-  <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-    {[...Array(6)].map((_, i) => (
-      <motion.div
-        key={i}
-        initial={{ opacity: 1, scale: 0 }}
-        animate={{
-          opacity: 0,
-          scale: 1,
-          x: Math.cos((i / 6) * Math.PI * 2) * 40,
-          y: Math.sin((i / 6) * Math.PI * 2) * 40,
-        }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="absolute top-1/2 left-4 w-2 h-2 rounded-full bg-green-400"
-      />
-    ))}
-  </div>
-)}
-```
-
-Position the particle container `relative` on the parent wrapper so particles burst from the completion message area.
+Change `app/pages/Glossary.jsx` to import `GLOSSARY_TERMS` from `../../lib/data/glossary.js` instead of defining the TERMS array inline. Rename uses of `TERMS` to `GLOSSARY_TERMS` (or alias it: `import { GLOSSARY_TERMS as TERMS }`).
 
 ### Non-goals
-- Do not change the "Mark as Complete" logic or useProgress hook.
-- Do not add sound effects.
-- Do not change the "Next module" link behavior.
-- Do not touch any other component.
-- Do not animate on page load for already-completed modules (only on first completion in-session).
+- Do NOT integrate GlossaryTooltip into any lesson pages yet (that's a follow-up task).
+- Do not change the Glossary page layout or styling.
+- Do not add complex positioning logic (simple centered-above is fine; edge cases can be handled later).
 
 ### Acceptance criteria
-- [ ] Clicking "Mark as Complete" triggers a scale+opacity animation on the success message
-- [ ] The animation has a satisfying bounce/burst feel (~600ms)
-- [ ] Decorative particles burst outward and fade (confetti-style)
-- [ ] Revisiting an already-completed module shows static "Module complete." with no animation
-- [ ] Particles are `aria-hidden` and `pointer-events-none`
-- [ ] Animation respects `prefers-reduced-motion` via the existing MotionConfig wrapper
-- [ ] No layout shift during animation
+- [ ] `lib/data/glossary.js` exports `GLOSSARY_TERMS` with all terms from Glossary.jsx
+- [ ] `app/pages/Glossary.jsx` imports from the shared data file (no duplicate data)
+- [ ] `components/GlossaryTooltip.jsx` renders an inline button with dotted underline
+- [ ] Hovering/focusing shows a tooltip with term definition
+- [ ] Tooltip has enter/exit animation (150ms)
+- [ ] Tooltip is accessible: `role="tooltip"`, keyboard navigable, focus-visible
+- [ ] Unknown terms render children without tooltip
+- [ ] "See glossary →" link in tooltip navigates to `/glossary`
 - [ ] Build passes
 
 ### Verification steps
 1. `npm run build` — must pass
-2. Open any incomplete module, complete all quizzes, click "Mark as Complete"
-3. Verify the button animates out, the success message scales in with bounce, and particles burst
-4. Navigate away and back — verify static "Module complete." with no animation
-5. In browser devtools, set `prefers-reduced-motion: reduce` — verify no animation plays
+2. Verify Glossary page still works correctly with imported data
+3. The component can be tested by temporarily adding `<GlossaryTooltip term="qubit">qubit</GlossaryTooltip>` in any lesson (but don't commit this — just verify it works)
 
 ### Constraints
-- Touch only `components/ModuleLayout.jsx`
-- Keep the animation tasteful and brief (not distracting)
-- All particle elements must be decorative (aria-hidden)
+- Create only the 2 new files + update Glossary.jsx imports
+- Keep the tooltip simple — no complex repositioning or collision detection
+- Follow existing component patterns (functional component, Framer Motion, Tailwind)
