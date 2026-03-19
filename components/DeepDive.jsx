@@ -16,7 +16,8 @@ export default function DeepDive({ title = 'Deep Dive', children }) {
       <button
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between gap-3 px-5 py-3 bg-violet-950/20
-                   hover:bg-violet-950/30 transition-colors text-left"
+                   hover:bg-violet-950/30 transition-colors text-left rounded-xl
+                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-400"
         aria-expanded={open}
       >
         <div className="flex items-center gap-2">
