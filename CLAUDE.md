@@ -486,6 +486,22 @@ Each entry: one-sentence definition + plain-English analogy + links to relevant 
 
 ---
 
+## Codex Workflow
+
+### Authority Model
+- **CLAUDE.md** is the canonical source of truth for the project.
+- **agent.md** is the active task handoff file for Codex.
+- Codex must be given exactly one scoped task through `agent.md`.
+- When planning or reviewing, always align with CLAUDE.md first.
+- If `agent.md` conflicts with CLAUDE.md, Claude must rewrite `agent.md` to match CLAUDE.md unless the task is an intentional narrow exception.
+- Claude owns creating and updating `agent.md` each loop.
+- `agent.md` is temporary and task-specific — not a long-term standards file.
+
+### Process
+When generating a task prompt/brief for Codex, always save the full prompt to `agent.md` in the project root. This serves as the active handoff record and allows Codex to read its instructions directly from the file.
+
+---
+
 ## Git Workflow
 - Branch: main
 - Commit format: `feat: milestone <X> — <description>` or `feat: module N — <title>`
@@ -533,14 +549,14 @@ Each entry: one-sentence definition + plain-English analogy + links to relevant 
 - [x] Module 13: Use Cases (`/usecases`, lime) — 5 lessons + realism meter visual
 
 ### Milestone 6 — Extra Pages
-- [ ] `/roadmap` — visual course map with dependency graph
-- [ ] `/glossary` — full term list with definitions + lesson links
-- [ ] `/challenges` — mini challenge cards (circuit drills, state predictions)
+- [x] `/roadmap` — visual course map with dependency graph
+- [x] `/glossary` — full term list with definitions + lesson links
+- [x] `/challenges` — mini challenge cards (circuit drills, state predictions)
 
 ### Milestone 7 — Mobile, Accessibility, Deploy
-- [ ] Test all pages at 375px, 390px, 430px
-- [ ] Fix overflow, cramped tap targets, truncation
-- [ ] `prefers-reduced-motion` guards on all animations
-- [ ] WCAG AA contrast audit
-- [ ] Keyboard navigation end-to-end
-- [ ] `npm run deploy` to GitHub Pages
+- [x] Test all pages at 375px, 390px, 430px
+- [x] Fix overflow, cramped tap targets, truncation
+- [x] `prefers-reduced-motion` guards on all animations (MotionConfig reducedMotion="user")
+- [x] WCAG AA contrast audit
+- [x] Keyboard navigation end-to-end
+- [x] `npm run deploy` to GitHub Pages

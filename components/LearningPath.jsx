@@ -1,4 +1,4 @@
-import { useProgress } from '../hooks/useProgress'
+import { useProgress } from '../lib/hooks/useProgress'
 import { Link } from 'react-router-dom'
 import { CheckCircle, Circle } from 'lucide-react'
 

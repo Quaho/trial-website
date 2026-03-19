@@ -112,6 +112,14 @@ export default function Quiz({ question, choices, correct, onPass, isPassed }) {
                 className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all duration-150
                   ${borderBg}
                   ${submitted ? 'cursor-default' : 'cursor-pointer'}
+                  ${!submitted
+                    ? 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+                    : isCorrect
+                      ? 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500'
+                      : isWrong
+                        ? 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500'
+                        : 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-600'
+                  }
                 `}
               >
                 <div className="flex items-center gap-3">
@@ -171,7 +179,9 @@ export default function Quiz({ question, choices, correct, onPass, isPassed }) {
                 <button
                   onClick={handleRetry}
                   className="text-xs text-indigo-400 hover:text-indigo-300
-                             underline underline-offset-2 transition-colors"
+                             underline underline-offset-2 transition-colors rounded
+                             focus-visible:outline focus-visible:outline-2
+                             focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
                 >
                   Retry
                 </button>

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ChevronLeft, Clock, Sparkles } from 'lucide-react'
-import { MODULES, MODULE_STYLES } from '../data/modules'
+import { MODULES, MODULE_STYLES } from '../../lib/data/modules'
 
 export default function ComingSoon({ moduleId }) {
   const mod = MODULES.find(m => m.id === moduleId)

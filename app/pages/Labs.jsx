@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import ModuleLayout from '../components/ModuleLayout'
-import LessonCard from '../components/LessonCard'
-import StepNav from '../components/StepNav'
-import CodeBlock from '../components/CodeBlock'
-import { useProgress } from '../hooks/useProgress'
+import ModuleLayout from '../../components/ModuleLayout'
+import LessonCard from '../../components/LessonCard'
+import StepNav from '../../components/StepNav'
+import CodeBlock from '../../components/CodeBlock'
+import { useProgress } from '../../lib/hooks/useProgress'
 
 /* ── Visuals ──────────────────────────────────────────────────────────────── */
 

@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { ChevronLeft, Lock, CheckCircle, Clock, ArrowDown } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { MODULES, MODULE_STYLES } from '../data/modules'
-import { useProgress } from '../hooks/useProgress'
+import { MODULES, MODULE_STYLES } from '../../lib/data/modules'
+import { useProgress } from '../../lib/hooks/useProgress'
 
 /* ── Track groupings ──────────────────────────────────────────────── */
 const TRACKS = [

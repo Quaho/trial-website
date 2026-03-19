@@ -2,8 +2,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { Atom, Menu, X, ChevronDown, Map, BookOpen, Zap } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useProgress } from '../hooks/useProgress'
-import { MODULES, NAV_GROUPS } from '../data/modules'
+import { useProgress } from '../lib/hooks/useProgress'
+import { MODULES, NAV_GROUPS } from '../lib/data/modules'
 
 const GROUP_LABEL = { foundations: 'Foundations', circuits: 'Circuits', advanced: 'Advanced' }
 

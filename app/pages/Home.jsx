@@ -5,8 +5,8 @@ import {
   Atom, ArrowRight, CheckCircle, Lock, ChevronRight,
   Lightbulb, Eye, AlignLeft, FlaskConical, Brain, Target,
 } from 'lucide-react'
-import { useProgress } from '../hooks/useProgress'
-import { MODULES, MODULE_STYLES, TOTAL_LESSONS } from '../data/modules'
+import { useProgress } from '../../lib/hooks/useProgress'
+import { MODULES, MODULE_STYLES, TOTAL_LESSONS } from '../../lib/data/modules'
 
 /* ── Framer Motion variants ─────────────────────────────────────────── */
 const heroContainer = {

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react'
-import { useProgress } from '../hooks/useProgress'
-import { MODULE_LAYOUT_STYLES } from '../data/modules'
+import { useProgress } from '../lib/hooks/useProgress'
+import { MODULE_LAYOUT_STYLES } from '../lib/data/modules'
 
 const DEFAULT_STYLE = {
   num: '00',
