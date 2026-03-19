@@ -105,9 +105,9 @@ export default function Home() {
               </Link>
             ) : nextModule ? (
               <>
-                <Link to={nextModule.to} className="btn-primary text-base px-7 py-3 group">
-                  Continue — {nextModule.title}
-                  <ArrowRight className="w-4 h-4 transition-transform duration-150 group-hover:translate-x-0.5" />
+                <Link to={nextModule.to} className="btn-primary text-base px-7 py-3 group min-w-0 max-w-full sm:max-w-none">
+                  <span className="truncate">Continue — {nextModule.title}</span>
+                  <ArrowRight className="w-4 h-4 flex-shrink-0 transition-transform duration-150 group-hover:translate-x-0.5" />
                 </Link>
                 <Link to="/intuition" className="btn-secondary text-base px-7 py-3">
                   Start over
@@ -164,6 +164,8 @@ export default function Home() {
             const isLocked = m.prereqs.length > 0 && !m.prereqs.every(id => completed[id])
             const Icon = m.icon
             const styles = MODULE_STYLES[m.id]
+            const CardWrapper = isLocked ? 'div' : Link
+            const cardProps = isLocked ? {} : { to: m.to }
 
             const leftBorderClass = isDone
               ? 'border-l-green-500/70'
@@ -172,15 +174,18 @@ export default function Home() {
                 : styles.leftBorder
 
             return (
-              <div
+              <CardWrapper
                 key={m.id}
+                {...cardProps}
                 className={`rounded-2xl border border-l-4 overflow-hidden transition-all duration-200 relative
+                  block
                   ${leftBorderClass}
                   ${isDone
                     ? 'border-green-800/40 bg-green-950/10'
                     : isLocked
                       ? 'border-slate-800 bg-slate-900/20 opacity-50'
-                      : `border-slate-700/60 bg-slate-900/40 ${styles.hover} hover:shadow-lg hover:shadow-black/20`
+                      : `border-slate-700/60 bg-slate-900/40 cursor-pointer ${styles.hover} hover:shadow-lg hover:shadow-black/20
+                         focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400`
                   }`}
               >
                 {/* Watermark module number */}
@@ -263,19 +268,18 @@ export default function Home() {
 
                     {/* CTA */}
                     {!isLocked && (
-                      <Link
-                        to={m.to}
+                      <span
                         className={`flex-shrink-0 flex items-center gap-1 text-sm font-medium
                                     transition-colors self-start mt-0.5
                                     ${isDone ? 'text-slate-500 hover:text-slate-300' : styles.link}`}
                       >
                         {isDone ? 'Review' : lessonCount > 0 ? 'Continue' : 'Start'}
                         <ChevronRight className="w-4 h-4" />
-                      </Link>
+                      </span>
                     )}
                   </div>
                 </div>
-              </div>
+              </CardWrapper>
             )
           })}
         </div>

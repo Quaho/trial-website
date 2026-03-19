@@ -1,8 +1,8 @@
 # REVIEW.md — Review Log
 
-## TASK-009: Navbar accessibility — focus-visible + Escape key handling
+## TASK-010: Add aria-live region for lesson progress announcements
 - Status: **APPROVED**
 - Reviewer: Claude (manager)
-- Findings: All nav elements covered. Escape closes mobile menu and desktop dropdowns. Added aria-controls and type="button". Thorough implementation. Build passes.
+- Findings: aria-live="polite" region with aria-atomic in ModuleLayout sticky header. sr-only class. Covers all 13 modules. Build passes.
 
-## TASK-008–001: All APPROVED
+## TASK-009–001: All APPROVED

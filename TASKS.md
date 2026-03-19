@@ -1,23 +1,16 @@
 # TASKS.md — Current Backlog
 
 ## Completed
-- **[TASK-001] Add focus-visible outlines to Quiz choice buttons** — APPROVED
-- **[TASK-002] Add focus-visible outline to DeepDive toggle button** — APPROVED
-- **[TASK-003] Add focus-visible outline to CodeBlock copy button** — APPROVED
-- **[TASK-004] Fix StepNav dot button focus offset and tap target size** — APPROVED
-- **[TASK-005] Add focus-visible outlines to Intuition.jsx inline buttons** — APPROVED
-- **[TASK-006] Use module accent colors for LessonCard numbered bullets** — APPROVED
-- **[TASK-007] Add focus-visible outlines to Circuits.jsx inline buttons** — APPROVED
-- **[TASK-008] Add focus-visible outlines to all remaining module page buttons** — APPROVED
-- **[TASK-009] Navbar accessibility: focus-visible + Escape key handling** — APPROVED
+- **[TASK-001–010]** All APPROVED (focus-visible sweep, accent bullets, aria-live)
 
 ## Active
-- **[TASK-010] Add aria-live region for lesson progress announcements**
+- **[TASK-011] Mobile polish: Home page hero CTA and module card tap targets**
   Status: ASSIGNED TO CODEX
-  Priority: accessibility (screen reader)
-  Files: components/ModuleLayout.jsx
+  Priority: mobile polish
+  Files: app/pages/Home.jsx
 
 ## Backlog (unordered, to be triaged)
-- Mobile polish audit at 375px/390px/430px
+- Mobile polish: audit module pages at 375px for visual overflow
 - Module completion celebration animation
 - GlossaryTooltip component
+- Machine Projects (planned, deferred)
