@@ -1,87 +1,130 @@
 # agent.md — Current Codex Task
 
-## TASK-011: Mobile polish — Home page hero CTA and module card tap targets
+## TASK-012: Module completion celebration animation
 
 ### Why this task now
-The Home page is the first thing every user sees. On mobile (375px), two issues reduce polish:
-1. The hero "Continue — {module title}" CTA can overflow when the module name is long (e.g., "Phase & Measurement Angles"), causing horizontal scroll or text wrapping awkwardly.
-2. The module cards have a small text-only CTA ("Start →") that could be easier to tap by making the entire card a tap target.
+CLAUDE.md specifies a "confetti-style scale + opacity burst, 600ms" celebration animation when a module is completed for the first time. Currently, clicking "Mark as Complete" instantly swaps to a static "Module complete." message with no visual reward. This is a key feedback moment in the Khan Academy-inspired learning model — the learner deserves a satisfying confirmation.
 
 ### Relevant project standards from CLAUDE.md
-- Mobile: tap targets >= 44px
-- Buttons: `rounded-xl`
-- CTA copy: "Start →" / "Continue →" / "Review →"
-- Never cramped — generous padding
-- Spacing rhythm: card padding `p-5 sm:p-6`
+- Motion table: "Module celebration — confetti-style scale + opacity burst — 600ms"
+- Respect `prefers-reduced-motion` (already handled by `MotionConfig reducedMotion="user"` wrapping the app)
+- Never animate > 1 element simultaneously unless they are part of the same semantic unit
+- Feedback immediacy: every tap gets visual feedback < 150ms
+- Confirmatory feedback: success state obvious (green, icon, message)
+- Copy: "Module complete."
 
 ### Files involved
-- `app/pages/Home.jsx` — the only file that needs changes
+- `components/ModuleLayout.jsx` — the only file that needs changes
 
 ### Requirements
 
-**1. Truncate long module names in hero CTA on mobile**
+**1. Import Framer Motion**
 
-The hero "Continue" button (~line 108) shows `Continue — {nextModule.title}`. On mobile, long titles overflow.
+Add `import { motion, AnimatePresence } from 'framer-motion'` to the imports.
 
-Fix: On small screens, truncate the title. Change the Link to:
+**2. Track "just completed" state**
+
+Add a `useState` to track whether the user just clicked "Mark as Complete" in this session (as opposed to returning to an already-completed module):
+
 ```jsx
-<Link to={nextModule.to} className="btn-primary text-base px-7 py-3 group max-w-full">
-  <span className="truncate">Continue — {nextModule.title}</span>
-  <ArrowRight className="w-4 h-4 flex-shrink-0 transition-transform duration-150 group-hover:translate-x-0.5" />
-</Link>
+const [justCompleted, setJustCompleted] = useState(false)
 ```
-Key changes: add `max-w-full` to the Link, wrap text in `<span className="truncate">`, add `flex-shrink-0` to the arrow icon.
 
-**2. Make unlocked module cards tappable as a whole**
-
-Currently, only the small "Start →" / "Continue →" text is clickable. On mobile, users expect to tap the whole card.
-
-Wrap the entire module card content in a Link (for unlocked modules) or keep it as a div (for locked modules). The card container (~line 175) should become:
-
-For unlocked modules: wrap with `<Link to={m.to}>` and add `cursor-pointer` to the card classes.
-For locked modules: keep as `<div>`.
-
-Use this approach:
+Update the button handler to set this state:
 ```jsx
-const CardWrapper = isLocked ? 'div' : Link
-const cardProps = isLocked ? {} : { to: m.to }
+onClick={() => { markDone(moduleId); setJustCompleted(true) }}
 ```
-Then use `<CardWrapper {...cardProps} className={...}>`.
 
-**Important**: If wrapping with Link, the existing small CTA link inside can either be removed or changed to a `<span>` to avoid nested links (which is invalid HTML). Change the CTA from a `<Link>` to a `<span>` when the card is already a link.
+**3. Animate the completion message**
 
-**3. Add focus-visible to the card wrapper**
+Replace the current static "Module complete." div (~line 160-164) with an animated version that plays only when `justCompleted` is true. When revisiting an already-completed module, show the static version (no animation).
 
-When the card becomes a Link, add:
+Use `AnimatePresence` with `mode="wait"` to animate the transition from button → completion message:
+
+```jsx
+<AnimatePresence mode="wait">
+  {!done ? (
+    <motion.button
+      key="mark-complete"
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.15 }}
+      onClick={() => { markDone(moduleId); setJustCompleted(true) }}
+      className="btn-primary focus-visible:outline focus-visible:outline-2
+                 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+    >
+      <CheckCircle className="w-4 h-4" />
+      Mark as Complete
+    </motion.button>
+  ) : (
+    <motion.div
+      key="completed"
+      initial={justCompleted ? { opacity: 0, scale: 0.8 } : false}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={justCompleted ? { duration: 0.6, ease: [0.34, 1.56, 0.64, 1] } : { duration: 0 }}
+      className="flex items-center gap-2 text-green-400 font-medium"
+    >
+      <CheckCircle className="w-5 h-5" />
+      Module complete.
+    </motion.div>
+  )}
+</AnimatePresence>
 ```
-focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400
+
+The ease curve `[0.34, 1.56, 0.64, 1]` creates an overshoot/bounce effect (scale goes slightly past 1 then settles), giving the "burst" feel specified in CLAUDE.md.
+
+**4. Add celebratory particles (optional but encouraged)**
+
+For the "confetti-style" aspect, add 4-6 small decorative dots that burst outward from the completion message and fade out. These should be absolutely positioned, animate outward with opacity 1→0 and scale, and use green/emerald colors.
+
+A simple approach using Framer Motion:
+```jsx
+{justCompleted && done && (
+  <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+    {[...Array(6)].map((_, i) => (
+      <motion.div
+        key={i}
+        initial={{ opacity: 1, scale: 0 }}
+        animate={{
+          opacity: 0,
+          scale: 1,
+          x: Math.cos((i / 6) * Math.PI * 2) * 40,
+          y: Math.sin((i / 6) * Math.PI * 2) * 40,
+        }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="absolute top-1/2 left-4 w-2 h-2 rounded-full bg-green-400"
+      />
+    ))}
+  </div>
+)}
 ```
+
+Position the particle container `relative` on the parent wrapper so particles burst from the completion message area.
 
 ### Non-goals
-- Do not change the card visual design, layout, or content.
-- Do not change locked card behavior.
-- Do not change the "How each lesson works" section.
-- Do not touch any other page or component.
+- Do not change the "Mark as Complete" logic or useProgress hook.
+- Do not add sound effects.
+- Do not change the "Next module" link behavior.
+- Do not touch any other component.
+- Do not animate on page load for already-completed modules (only on first completion in-session).
 
 ### Acceptance criteria
-- [ ] Hero "Continue" CTA truncates gracefully on 375px without horizontal overflow
-- [ ] Unlocked module cards are fully tappable (the entire card navigates)
-- [ ] No nested `<a>` tags (invalid HTML)
-- [ ] Locked cards remain non-interactive
-- [ ] Card focus-visible outline appears on keyboard Tab
-- [ ] No layout changes on desktop
+- [ ] Clicking "Mark as Complete" triggers a scale+opacity animation on the success message
+- [ ] The animation has a satisfying bounce/burst feel (~600ms)
+- [ ] Decorative particles burst outward and fade (confetti-style)
+- [ ] Revisiting an already-completed module shows static "Module complete." with no animation
+- [ ] Particles are `aria-hidden` and `pointer-events-none`
+- [ ] Animation respects `prefers-reduced-motion` via the existing MotionConfig wrapper
+- [ ] No layout shift during animation
 - [ ] Build passes
 
 ### Verification steps
 1. `npm run build` — must pass
-2. View Home page at 375px width — verify hero CTA doesn't overflow
-3. Set a long module name in progress — verify truncation works
-4. Tap/click an unlocked module card — verify it navigates to the module
-5. Verify locked cards are not clickable
-6. Tab through module cards — verify focus ring
-7. Verify no nested anchor warnings in browser console
+2. Open any incomplete module, complete all quizzes, click "Mark as Complete"
+3. Verify the button animates out, the success message scales in with bounce, and particles burst
+4. Navigate away and back — verify static "Module complete." with no animation
+5. In browser devtools, set `prefers-reduced-motion: reduce` — verify no animation plays
 
 ### Constraints
-- Touch only `app/pages/Home.jsx`
-- Keep the diff focused on the CTA and card wrapper changes
-- Do not add new dependencies
+- Touch only `components/ModuleLayout.jsx`
+- Keep the animation tasteful and brief (not distracting)
+- All particle elements must be decorative (aria-hidden)

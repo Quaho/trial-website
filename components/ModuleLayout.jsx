@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useProgress } from '../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../lib/data/modules'
 
@@ -24,6 +26,7 @@ const DEFAULT_STYLE = {
  */
 export default function ModuleLayout({ moduleId, title, subtitle, prev, next, stepInfo, children }) {
   const { completed, markDone } = useProgress()
+  const [justCompleted, setJustCompleted] = useState(false)
   const done = completed[moduleId]
   const style = MODULE_LAYOUT_STYLES[moduleId] || DEFAULT_STYLE
 
@@ -31,6 +34,14 @@ export default function ModuleLayout({ moduleId, title, subtitle, prev, next, st
   const lessonsDone = stepInfo?.passed?.filter(Boolean).length ?? 0
   const totalLessons = stepInfo?.total ?? 0
   const progressPct = totalLessons > 0 ? Math.round((lessonsDone / totalLessons) * 100) : 0
+  const particles = [
+    { x: 40, y: -20, color: 'bg-green-400' },
+    { x: 18, y: -34, color: 'bg-emerald-400' },
+    { x: -16, y: -30, color: 'bg-green-300' },
+    { x: -34, y: -8, color: 'bg-emerald-300' },
+    { x: -10, y: 24, color: 'bg-green-400' },
+    { x: 28, y: 18, color: 'bg-emerald-500' },
+  ]
 
   return (
     <div className="min-h-screen">
@@ -148,21 +159,53 @@ export default function ModuleLayout({ moduleId, title, subtitle, prev, next, st
 
         {/* ── Module footer ──────────────────────────────────────── */}
         <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          {!done ? (
-            <button
-              onClick={() => markDone(moduleId)}
-              className="btn-primary focus-visible:outline focus-visible:outline-2
-                         focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-            >
-              <CheckCircle className="w-4 h-4" />
-              Mark as Complete
-            </button>
-          ) : (
-            <div className="flex items-center gap-2 text-green-400 font-medium">
-              <CheckCircle className="w-5 h-5" />
-              Module complete.
-            </div>
-          )}
+          <div className="relative min-h-[40px] flex items-center">
+            <AnimatePresence mode="wait">
+              {!done ? (
+                <motion.button
+                  key="mark-complete"
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  onClick={() => { markDone(moduleId); setJustCompleted(true) }}
+                  className="btn-primary focus-visible:outline focus-visible:outline-2
+                             focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  Mark as Complete
+                </motion.button>
+              ) : (
+                <motion.div
+                  key="completed"
+                  initial={justCompleted ? { opacity: 0, scale: 0.8 } : false}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={justCompleted ? { duration: 0.6, ease: [0.34, 1.56, 0.64, 1] } : { duration: 0 }}
+                  className="relative flex items-center gap-2 text-green-400 font-medium"
+                >
+                  <CheckCircle className="w-5 h-5" />
+                  Module complete.
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {justCompleted && done && (
+              <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+                {particles.map((particle, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 1, scale: 0 }}
+                    animate={{
+                      opacity: 0,
+                      scale: 1,
+                      x: particle.x,
+                      y: particle.y,
+                    }}
+                    transition={{ duration: 0.6, ease: 'easeOut' }}
+                    className={`absolute top-1/2 left-4 w-2 h-2 rounded-full ${particle.color}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
 
           {next && (
             <Link to={next.to} className="btn-secondary sm:ml-auto">

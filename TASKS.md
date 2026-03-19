@@ -1,16 +1,15 @@
 # TASKS.md — Current Backlog
 
 ## Completed
-- **[TASK-001–010]** All APPROVED (focus-visible sweep, accent bullets, aria-live)
+- **[TASK-001–011]** All APPROVED (a11y sweep, accent bullets, aria-live, mobile polish)
 
 ## Active
-- **[TASK-011] Mobile polish: Home page hero CTA and module card tap targets**
+- **[TASK-012] Module completion celebration animation**
   Status: ASSIGNED TO CODEX
-  Priority: mobile polish
-  Files: app/pages/Home.jsx
+  Priority: micro-interaction / feedback
+  Files: components/ModuleLayout.jsx
 
 ## Backlog (unordered, to be triaged)
-- Mobile polish: audit module pages at 375px for visual overflow
-- Module completion celebration animation
+- Mobile polish: audit module page visuals at 375px
 - GlossaryTooltip component
 - Machine Projects (planned, deferred)
