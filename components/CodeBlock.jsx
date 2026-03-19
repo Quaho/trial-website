@@ -25,7 +25,8 @@ export default function CodeBlock({ code, language = 'python', label }) {
         <span className="text-xs text-slate-500 font-mono">{label || language}</span>
         <button
           onClick={copy}
-          className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-200 transition-colors"
+          className="flex items-center gap-1.5 px-2 py-1 -my-0.5 rounded-lg text-xs text-slate-500 hover:text-slate-200 transition-colors
+                     focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400"
           aria-label="Copy code"
         >
           {copied
