@@ -1,0 +1,91 @@
+import { Link } from 'react-router-dom'
+import { ChevronLeft } from 'lucide-react'
+
+const sections = [
+  {
+    title: 'Textbooks and Course Notes',
+    items: [
+      { name: 'Nielsen & Chuang, Quantum Computation and Quantum Information', desc: 'The standard graduate reference for quantum computing and quantum information theory.' },
+      { name: 'Yanofsky & Mannucci, Quantum Computing for Computer Scientists', desc: 'An accessible introduction designed for readers with a computer science background.' },
+      { name: 'Mermin, Quantum Computer Science: An Introduction', desc: 'A concise and mathematically careful treatment of core quantum computing concepts.' },
+      { name: 'Kaye, Laflamme & Mosca, An Introduction to Quantum Computing', desc: 'A balanced presentation covering both theory and applications.' },
+    ],
+  },
+  {
+    title: 'Online Resources',
+    items: [
+      { name: 'IBM Qiskit Textbook', desc: 'Interactive, code-first introduction to quantum computing.', url: 'https://learning.quantum.ibm.com' },
+      { name: 'Qiskit Documentation', desc: 'API reference, tutorials, and guides for the Qiskit SDK.', url: 'https://docs.quantum.ibm.com' },
+      { name: 'Brilliant.org Quantum Computing Course', desc: 'Visual, interactive fundamentals for building intuition.' },
+      { name: 'MIT OpenCourseWare 8.370x', desc: 'A rigorous university-level quantum computation course.' },
+    ],
+  },
+  {
+    title: 'Mathematical Background',
+    items: [
+      { name: '3Blue1Brown, Essence of Linear Algebra', desc: 'A visual linear algebra refresher on YouTube — highly recommended before diving into state vectors.', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab' },
+      { name: 'Axler, Linear Algebra Done Right', desc: 'A clean theoretical treatment of linear algebra without determinants as a starting point.' },
+      { name: 'Khan Academy Linear Algebra', desc: 'Free, structured review of vectors, matrices, and transformations.', url: 'https://www.khanacademy.org/math/linear-algebra' },
+    ],
+  },
+  {
+    title: 'Tools',
+    items: [
+      { name: 'Qiskit', desc: 'Open-source quantum SDK for building and running quantum circuits.', url: 'https://qiskit.org' },
+      { name: 'Quirk', desc: 'Drag-and-drop quantum circuit simulator in the browser.', url: 'https://algassert.com/quirk' },
+      { name: 'IBM Quantum Composer', desc: 'Visual circuit builder with access to real quantum hardware.', url: 'https://quantum.ibm.com/composer' },
+    ],
+  },
+]
+
+export default function References() {
+  return (
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+      <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+        References &amp; Further Reading
+      </h1>
+      <p className="text-slate-400 text-base leading-relaxed mb-10">
+        A curated collection of textbooks, online resources, mathematical background material, and
+        tools to support your preparation. These references complement the handbook and provide
+        paths for deeper study.
+      </p>
+
+      {sections.map((section) => (
+        <section key={section.title} className="mb-10">
+          <h2 className="text-xl font-semibold text-white mb-4">{section.title}</h2>
+          <div className="space-y-3">
+            {section.items.map((item) => (
+              <div
+                key={item.name}
+                className="bg-slate-900 border border-slate-800 rounded-xl p-5"
+              >
+                {item.url ? (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-white hover:text-indigo-300 transition-colors"
+                  >
+                    {item.name}
+                  </a>
+                ) : (
+                  <span className="font-semibold text-white">{item.name}</span>
+                )}
+                <span className="text-slate-400"> — {item.desc}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
+
+      <Link
+        to="/"
+        className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors mt-4
+          focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded"
+      >
+        <ChevronLeft className="w-4 h-4" />
+        Back to Home
+      </Link>
+    </div>
+  )
+}

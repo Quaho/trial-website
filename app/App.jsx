@@ -21,6 +21,7 @@ const UseCases = lazy(() => import('./pages/UseCases'))
 const Roadmap = lazy(() => import('./pages/Roadmap'))
 const Glossary = lazy(() => import('./pages/Glossary'))
 const Challenges = lazy(() => import('./pages/Challenges'))
+const References = lazy(() => import('./pages/References'))
 const FirstCircuit = lazy(() => import('./pages/projects/FirstCircuit'))
 const BellExplorer = lazy(() => import('./pages/projects/BellExplorer'))
 const AlgorithmShowdown = lazy(() => import('./pages/projects/AlgorithmShowdown'))
@@ -64,6 +65,7 @@ export default function App() {
               {/* Extra pages */}
               <Route path="/roadmap"    element={<Roadmap />} />
               <Route path="/glossary"   element={<Glossary />} />
+              <Route path="/references" element={<References />} />
               <Route path="/challenges" element={<Challenges />} />
               <Route path="/projects/first-circuit" element={<FirstCircuit />} />
               <Route path="/projects/bell-explorer" element={<BellExplorer />} />

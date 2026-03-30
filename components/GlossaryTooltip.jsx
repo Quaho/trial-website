@@ -21,7 +21,7 @@ export default function GlossaryTooltip({ term, children }) {
 
   return (
     <span
-      className="relative inline-flex"
+      className={`relative inline-flex ${open ? 'z-50' : ''}`}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
       onFocus={() => setOpen(true)}
@@ -50,7 +50,7 @@ export default function GlossaryTooltip({ term, children }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-1/2 bottom-full z-20 mb-2 w-max max-w-xs -translate-x-1/2
+            className="absolute left-1/2 bottom-full mb-2 w-max max-w-xs -translate-x-1/2
                        rounded-xl border border-slate-700/60 bg-slate-900 p-3 text-sm text-slate-200
                        shadow-xl shadow-black/40"
           >

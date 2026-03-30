@@ -101,28 +101,6 @@
   }
 }
 
-/* ── Orb float animations ─────────────────────────────────────────────── */
-@keyframes float {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50%       { transform: translateY(-22px) scale(1.04); }
-}
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50%       { transform: translateY(18px) scale(0.97); }
-}
-@keyframes float-alt {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50%       { transform: translateY(-14px) scale(1.03); }
-}
-
-.orb-float      { animation: float      10s ease-in-out infinite; }
-.orb-float-slow { animation: float-slow 14s ease-in-out infinite; }
-.orb-float-alt  { animation: float-alt  12s ease-in-out infinite 3s; }
-
-@media (prefers-reduced-motion: reduce) {
-  .orb-float, .orb-float-slow, .orb-float-alt { animation: none; }
-}
-
 /* ── Skip-to-content link ─────────────────────────────────────────────── */
 .skip-link {
   position: absolute;

@@ -1,309 +1,223 @@
 # agent.md — Current Codex Task
 
-## TASK-016: Machine Project infrastructure + MP1 (First Quantum Circuit)
+## TASK-019: Phase 2 — Structure (Navigation, Page Template Components, References Page)
 
 ### Why this task now
-CLAUDE.md defines 3 Machine Projects — guided, multi-step projects placed after each track. This task builds the infrastructure (data, layout component, routes, nav links) and the first project: MP1 — First Quantum Circuit (after Foundations track, Modules 1–4).
+Phase 1 established the new SIGQuantum identity. Phase 2 creates the structural foundation: reorganized navigation that reflects the handbook's topic structure, reusable content block components for handbook pages, and a References page. These are prerequisites for Phase 3 (content rewriting).
 
 ### Relevant project standards from CLAUDE.md
-- Machine Projects section: structure, routes, placement
-- Design system: `rounded-2xl`, `bg-slate-900`, `border-slate-700/60`, module accent colors
-- Motion: page entrance `opacity 0→1, y 12→0, 200ms`
-- Accessibility: focus-visible, keyboard nav, aria labels
-- Copy voice: friendly, encouraging, analogies before equations
-
-### Files to create
-
-1. **`lib/data/projects.js`** — project metadata
-2. **`components/ProjectLayout.jsx`** — shared layout for all Machine Projects
-3. **`app/pages/projects/FirstCircuit.jsx`** — MP1 content
+- Navigation: calm, predictable, hierarchical. Must support linear reading order and direct topic access.
+- Section template: title, prerequisites, definitions, main explanation, worked example, common confusion, key takeaways, next section
+- Component architecture lists: DefinitionBox, NotationBox, ExampleBox, RemarkBox, PrereqList
+- References page: curated external readings, Qiskit docs, textbooks, refreshers
+- Suggested topic sequence: Part I Foundations, Part II Mathematical Language, Part III States and Operators, Part IV Circuits and Measurement, Part V Qiskit Preparation, Part VI Paths Forward
 
 ### Files to modify
+1. `lib/data/modules.js` — update NAV_GROUPS to reflect handbook structure
+2. `components/Navbar.jsx` — update desktop nav extras (Roadmap label, add References link)
+3. `app/App.jsx` — add route for References page
+4. `app/pages/References.jsx` — **new file**, curated references page
 
-4. **`app/App.jsx`** — add routes for `/projects/first-circuit`, `/projects/bell-explorer`, `/projects/algorithm-showdown`
-5. **`components/Navbar.jsx`** — add "Projects" link to mobile Explore section + desktop extras
-6. **`app/pages/Roadmap.jsx`** — add MP cards after each track section
-
----
+### Files to create (new components)
+5. `components/DefinitionBox.jsx` — formal definition callout
+6. `components/NotationBox.jsx` — notation/symbol explanation callout
+7. `components/ExampleBox.jsx` — worked example block
+8. `components/RemarkBox.jsx` — clarifying remark or caveat
+9. `components/PrereqList.jsx` — prerequisites list for a page
 
 ### Requirements
 
-**1. Create `lib/data/projects.js`**
+#### 1. lib/data/modules.js — Update NAV_GROUPS
 
+Replace the current 3 groups:
 ```js
-import { Cpu, GitMerge, Brain } from 'lucide-react'
-
-export const PROJECTS = [
-  {
-    id: 'first-circuit',
-    to: '/projects/first-circuit',
-    icon: Cpu,
-    number: 1,
-    title: 'First Quantum Circuit',
-    tagline: 'Build and simulate a simple circuit using concepts from Intuition → Qiskit',
-    track: 'foundations',
-    prereqs: ['intuition', 'braket', 'phase', 'qiskit'],
-    estMin: 25,
-    steps: 5,
-    accent: 'indigo',
-  },
-  {
-    id: 'bell-explorer',
-    to: '/projects/bell-explorer',
-    icon: GitMerge,
-    number: 2,
-    title: 'Bell State Explorer',
-    tagline: 'Construct, visualize, and measure a Bell pair end-to-end',
-    track: 'circuits',
-    prereqs: ['gates', 'multiqubit', 'entanglement', 'circuits'],
-    estMin: 30,
-    steps: 5,
-    accent: 'teal',
-  },
-  {
-    id: 'algorithm-showdown',
-    to: '/projects/algorithm-showdown',
-    icon: Brain,
-    number: 3,
-    title: 'Algorithm Showdown',
-    tagline: 'Compare classical vs quantum approaches to a search problem',
-    track: 'advanced',
-    prereqs: ['measurement', 'algorithms', 'labs', 'noise', 'usecases'],
-    estMin: 30,
-    steps: 6,
-    accent: 'orange',
-  },
+export const NAV_GROUPS = [
+  { label: 'Foundations', group: 'foundations' },
+  { label: 'Circuits',    group: 'circuits'    },
+  { label: 'Advanced',    group: 'advanced'    },
 ]
-
-// Style map for project cards and layouts
-export const PROJECT_STYLES = {
-  'first-circuit': {
-    gradient: 'from-indigo-950/70 via-indigo-950/20',
-    accent: 'text-indigo-400',
-    border: 'border-indigo-800/40',
-    bg: 'bg-indigo-900/20',
-    badge: 'bg-indigo-900/40 text-indigo-400 border-indigo-800/40',
-    progressBar: 'bg-gradient-to-r from-indigo-500 to-violet-500',
-  },
-  'bell-explorer': {
-    gradient: 'from-teal-950/70 via-teal-950/20',
-    accent: 'text-teal-400',
-    border: 'border-teal-800/40',
-    bg: 'bg-teal-900/20',
-    badge: 'bg-teal-900/40 text-teal-400 border-teal-800/40',
-    progressBar: 'bg-gradient-to-r from-teal-500 to-cyan-500',
-  },
-  'algorithm-showdown': {
-    gradient: 'from-orange-950/70 via-orange-950/20',
-    accent: 'text-orange-400',
-    border: 'border-orange-800/40',
-    bg: 'bg-orange-900/20',
-    badge: 'bg-orange-900/40 text-orange-400 border-orange-800/40',
-    progressBar: 'bg-gradient-to-r from-orange-500 to-amber-500',
-  },
-}
 ```
 
-**2. Create `components/ProjectLayout.jsx`**
+With 4 groups that better reflect the handbook's topic structure:
+```js
+export const NAV_GROUPS = [
+  { label: 'Foundations',   group: 'foundations' },
+  { label: 'Gates & Circuits', group: 'circuits' },
+  { label: 'Advanced',     group: 'advanced'    },
+]
+```
 
-A page wrapper for Machine Projects, similar to ModuleLayout but adapted for the project structure:
+Actually, keep the groups as-is but rename the second label from `'Circuits'` to `'Gates & Circuits'`. The module grouping by `group` field stays the same — modules are already well-grouped. Just the display label changes.
 
-- **Hero section**: gradient background (from project style), back link to `/roadmap`, project badge ("Machine Project 1"), title, tagline, estimated time, step count
-- **Progress bar**: shows steps completed out of total (track via `useProgress` with project id prefix, e.g., `project-first-circuit`)
-- **Step list**: numbered vertical step cards that the user works through
-- **Each step card** shows:
-  - Step number badge (accent colored)
-  - Step title (bold)
-  - Step content (children passed as array)
-  - A "Mark step complete" button (saves to useProgress)
-  - Completed state: green checkmark, collapsed content
-- **Footer**: "Back to Roadmap" link + next project link if available
-- **Accessibility**: focus-visible on all buttons, aria-live for step completion
+#### 2. components/Navbar.jsx — Update nav extras
 
-Props:
+In the desktop nav "extras" section (after the group dropdowns and the divider):
+- Change the Roadmap link label from `'Roadmap'` to `'Study Paths'` (the route `/roadmap` stays the same)
+- Add a References link: `{ to: '/references', icon: BookOpen, label: 'References' }` — place it after Glossary
+
+In the mobile nav "Explore" section:
+- Change `'Course Roadmap'` label to `'Study Paths'` (if not already changed in Phase 1 — verify first)
+- Add `{ to: '/references', label: 'References' }` after Glossary
+
+Note: Do NOT remove or change the `useProgress` import if it was already removed in Phase 1. Just check the current state of the file and make only the changes described above.
+
+#### 3. app/App.jsx — Add References route
+
+Add a lazy import for References:
+```js
+const References = lazy(() => import('./pages/References'))
+```
+
+Add a route alongside the glossary route:
 ```jsx
-ProjectLayout({
-  projectId,    // string — for useProgress key
-  title,        // string
-  tagline,      // string
-  steps,        // array of { title, content: ReactNode }
-  prevProject,  // { to, label } or null
-  nextProject,  // { to, label } or null
-})
+<Route path="/references" element={<References />} />
 ```
 
-The component should NOT use the LessonCard/StepNav pattern — this is a different experience. Steps are a vertical scrolling list (not a paginated stepper), each with its own completion checkbox.
+#### 4. app/pages/References.jsx — New file
 
-Design details:
-- Step cards: `rounded-2xl border border-slate-700/60 bg-slate-900/40 p-5 sm:p-6`
-- Step number: small accent-colored circle with number
-- Connecting line between steps: `w-px bg-slate-700/60` vertical line (like the Roadmap)
-- Completed step: border turns green, content collapses to title + checkmark
-- "Mark step complete" button: `btn-primary` style, inside each step card
-- Use Framer Motion for step completion animation (scale + opacity, 200ms)
+Create a curated references page following the handbook style. Structure:
 
-**3. Create `app/pages/projects/FirstCircuit.jsx`** — MP1 content
+- Page title: "References & Further Reading"
+- Short intro paragraph explaining the page's purpose
+- Organized into sections:
 
-This is the Foundations track capstone. The learner builds a simple quantum circuit step by step.
+**Section 1 — Textbooks and Course Notes**
+- Nielsen & Chuang, *Quantum Computation and Quantum Information* — the standard graduate reference
+- Yanofsky & Mannucci, *Quantum Computing for Computer Scientists* — accessible for CS students
+- Mermin, *Quantum Computer Science: An Introduction* — concise and mathematically careful
+- Kaye, Laflamme & Mosca, *An Introduction to Quantum Computing* — balanced theory and applications
 
-Structure (5 steps):
+**Section 2 — Online Resources**
+- IBM Qiskit Textbook (learning.quantum.ibm.com) — interactive, code-first introduction
+- Qiskit Documentation (docs.quantum.ibm.com) — API reference and tutorials
+- Brilliant.org Quantum Computing course — visual, interactive fundamentals
+- MIT OpenCourseWare 8.370x — rigorous university-level course
 
-**Step 1 — Understand the Goal**
-- Brief: "You'll build a circuit that creates superposition, applies a phase gate, and measures the result."
-- Concept recap: link back to relevant lessons (Intuition, BraKet)
-- "Predict: What do you think happens when you measure a qubit in superposition?"
-- Content: 2–3 short paragraphs explaining what we're building and why
+**Section 3 — Mathematical Background**
+- 3Blue1Brown, *Essence of Linear Algebra* (YouTube) — visual linear algebra refresher
+- Axler, *Linear Algebra Done Right* — clean theoretical treatment
+- Khan Academy Linear Algebra — free, structured review
 
-**Step 2 — Set Up the Circuit**
-- Show Qiskit code to create a 1-qubit, 1-classical-bit circuit
-- Use CodeBlock component for the code
-- Explain each line in plain English
-- Content: code block + 3 bullet explanations
+**Section 4 — Tools**
+- Qiskit (qiskit.org) — open-source quantum SDK
+- Quirk (algassert.com/quirk) — drag-and-drop circuit simulator
+- IBM Quantum Composer — visual circuit builder with real hardware access
 
-```python
-from qiskit import QuantumCircuit
+Style:
+- Use `max-w-3xl mx-auto px-4 sm:px-6` for content width
+- Each section: H2 heading, then a list of items
+- Each item: resource name (bold/semibold, text-white), dash, short description (text-slate-400)
+- Items in cards: `bg-slate-900 border border-slate-800 rounded-xl p-5` with a small vertical gap between items
+- Back-to-home link at the bottom
+- Do NOT use Framer Motion — keep static
+- Import only Link from react-router-dom and ChevronLeft from lucide-react
 
-qc = QuantumCircuit(1, 1)  # 1 qubit, 1 classical bit
-```
+#### 5–9. Reusable content block components
 
-**Step 3 — Apply Gates**
-- Add Hadamard gate to create superposition
-- Add S gate for a phase shift
-- Explain what each gate does (link to Gates module)
+Create these 5 components. They will be used in module pages during Phase 3. Each should be simple, semantic, and visually distinct.
 
-```python
-qc.h(0)   # Hadamard → creates |+⟩ superposition
-qc.s(0)   # S gate → adds 90° phase to |1⟩ component
-```
+**All components share these principles:**
+- Accept `children` as the main content
+- Use semantic HTML
+- Use the existing dark theme (slate-900 backgrounds, slate-800 borders)
+- Use clear visual differentiation (left border color, icon, label)
+- Accessible: proper heading levels or ARIA roles
+- No Framer Motion — keep static
+- Keep them small and focused (under 40 lines each)
 
-**Step 4 — Measure and Simulate**
-- Add measurement
-- Show simulation code
-- "Predict: Will you see 50/50 results? Why or why not?"
-
-```python
-qc.measure(0, 0)
-
-from qiskit_aer import AerSimulator
-simulator = AerSimulator()
-result = simulator.run(qc, shots=1024).result()
-counts = result.get_counts()
-print(counts)
-```
-
-**Step 5 — Analyze Results**
-- Explain the output: ~50% |0⟩, ~50% |1⟩ (phase doesn't affect Z-basis measurement probabilities)
-- "But wait — the S gate did something! How would you reveal its effect?"
-- Answer: measure in the X-basis (add H before measurement)
-- Reflection questions:
-  1. "Why doesn't the S gate change the measurement probabilities in the Z-basis?"
-  2. "What would happen if you replaced the S gate with a Z gate?"
-  3. "How could you verify the phase is there without changing the measurement basis?"
-
-Use these components:
-- `CodeBlock` for all code snippets (language="python")
-- `GlossaryTooltip` for key terms (superposition, gate, measurement, phase — max 2 per step)
-- Plain HTML for text, bullets, and reflection questions
-
-**4. Update `app/App.jsx`**
-
-Add lazy-loaded routes:
+**5. components/DefinitionBox.jsx**
 ```jsx
-const FirstCircuit = lazy(() => import('./pages/projects/FirstCircuit'))
-const BellExplorer = lazy(() => import('./pages/projects/BellExplorer'))
-const AlgorithmShowdown = lazy(() => import('./pages/projects/AlgorithmShowdown'))
-
-// Inside Routes:
-<Route path="/projects/first-circuit" element={<FirstCircuit />} />
-<Route path="/projects/bell-explorer" element={<BellExplorer />} />
-<Route path="/projects/algorithm-showdown" element={<AlgorithmShowdown />} />
+// Props: term (string), children (JSX)
+// Visual: indigo left border, "Definition" label, term in bold, then content
+// Style: rounded-xl border-l-4 border-l-indigo-500 border border-slate-800 bg-slate-900 p-5
 ```
 
-For MP2 and MP3, create simple placeholder pages (like ComingSoon but project-themed):
-
-Create `app/pages/projects/BellExplorer.jsx` and `app/pages/projects/AlgorithmShowdown.jsx` as stubs:
+Example usage:
 ```jsx
-import { Link } from 'react-router-dom'
-import { ChevronLeft, Lock } from 'lucide-react'
-
-export default function BellExplorer() {
-  return (
-    <div className="min-h-screen">
-      <div className="bg-gradient-to-b from-teal-950/70 to-slate-950 border-b border-slate-800 py-10 sm:py-14">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <Link to="/roadmap" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-white mb-6 transition-colors">
-            <ChevronLeft className="w-4 h-4" />
-            Course Roadmap
-          </Link>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border border-teal-800/40 bg-teal-900/40 text-teal-400">
-              Machine Project 2
-            </span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">Bell State Explorer</h1>
-          <p className="text-slate-400 mt-2">Coming soon — complete the Circuits track to unlock.</p>
-        </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
-        <div className="flex items-center gap-3 text-slate-500">
-          <Lock className="w-5 h-5" />
-          <p>This project is under construction. Check back soon!</p>
-        </div>
-      </div>
-    </div>
-  )
-}
+<DefinitionBox term="Qubit">
+  A qubit is the fundamental unit of quantum information...
+</DefinitionBox>
 ```
 
-(Same pattern for AlgorithmShowdown with orange styling.)
+Render:
+- Small "Definition" label (text-xs, uppercase, tracking-widest, text-indigo-400, mb-2)
+- Term as h4 or strong (font-semibold, text-white, mb-2)
+- Children as body text (text-slate-300, text-sm, leading-relaxed)
 
-**5. Update `components/Navbar.jsx`**
-
-Add "Projects" to the mobile Explore section:
+**6. components/NotationBox.jsx**
 ```jsx
-{ to: '/projects/first-circuit', label: 'Machine Projects' },
+// Props: symbol (string, optional), children (JSX)
+// Visual: violet left border, "Notation" label
+// Style: rounded-xl border-l-4 border-l-violet-500 border border-slate-800 bg-slate-900 p-5
 ```
 
-Add it between "Mini Challenges" and the end of the explore list. On desktop, add a "Projects" link next to Roadmap/Glossary/Challenges in the top nav (if those exist as desktop links) — or at minimum ensure the mobile nav has it.
+Render:
+- "Notation" label (text-xs, uppercase, tracking-widest, text-violet-400, mb-2)
+- If symbol provided, show it in monospace (font-mono, text-white, text-lg, mb-2)
+- Children as explanation (text-slate-300, text-sm, leading-relaxed)
 
-**6. Update `app/pages/Roadmap.jsx`**
+**7. components/ExampleBox.jsx**
+```jsx
+// Props: title (string, optional, default "Worked Example"), children (JSX)
+// Visual: emerald left border, title label
+// Style: rounded-xl border-l-4 border-l-emerald-500 border border-slate-800 bg-slate-900 p-5
+```
 
-After each track's module list, add a Machine Project card:
-- Import `PROJECTS` and `PROJECT_STYLES` from `../../lib/data/projects`
-- After each track section, render the matching project card (filter by `track`)
-- Card design: similar to module cards but with a distinct "MP" badge and different accent
-- Locked if prerequisites not met (same logic as modules — check `completed` from `useProgress`)
-- Style: `rounded-2xl border-2 border-dashed` to visually distinguish from module cards
+Render:
+- Title label (text-xs, uppercase, tracking-widest, text-emerald-400, mb-3)
+- Children as content (text-slate-300, text-sm, leading-relaxed)
 
----
+**8. components/RemarkBox.jsx**
+```jsx
+// Props: children (JSX)
+// Visual: amber left border, "Remark" label
+// Style: rounded-xl border-l-4 border-l-amber-500 border border-slate-800 bg-slate-900 p-5
+```
+
+Render:
+- "Remark" label (text-xs, uppercase, tracking-widest, text-amber-400, mb-2)
+- Children as content (text-slate-300, text-sm, leading-relaxed)
+
+**9. components/PrereqList.jsx**
+```jsx
+// Props: items (array of strings), children (optional JSX for extra context)
+// Visual: clean list with check icons
+// Style: rounded-xl border border-slate-800 bg-slate-900 p-5
+```
+
+Render:
+- "Prerequisites" label (text-xs, uppercase, tracking-widest, text-slate-500, mb-3)
+- Unordered list of items, each with a small circle bullet or dash
+- Items as text-slate-300, text-sm
+- Optional children rendered below the list
 
 ### Non-goals
-- Do NOT build full content for MP2 or MP3 (just stubs)
-- Do NOT modify useProgress — it already supports arbitrary string keys
-- Do NOT change any existing module pages
-- Do NOT add project progress to the Home page progress bar (projects are optional, extra credit)
+- Do NOT modify any module page content (Intuition.jsx, BraKet.jsx, etc.)
+- Do NOT modify Home.jsx, ModuleLayout.jsx, or ProjectLayout.jsx
+- Do NOT modify glossary.js, projects.js
+- Do NOT change existing module `group` assignments in modules.js
+- Do NOT add new dependencies
+- Do NOT change the Tailwind config
 
 ### Acceptance criteria
-- [ ] `lib/data/projects.js` exports PROJECTS and PROJECT_STYLES
-- [ ] `components/ProjectLayout.jsx` renders a project page with step cards
-- [ ] `app/pages/projects/FirstCircuit.jsx` has 5 complete steps with code, explanations, predictions, reflections
-- [ ] MP2 and MP3 stub pages exist and render
-- [ ] Routes registered in App.jsx (lazy loaded)
-- [ ] "Machine Projects" link appears in Navbar mobile menu
-- [ ] Roadmap page shows MP cards after each track
-- [ ] MP cards on Roadmap respect locked/unlocked state
-- [ ] Build passes (`npm run build`)
+- [ ] NAV_GROUPS second label reads "Gates & Circuits"
+- [ ] Desktop nav shows "Study Paths" and "References" links
+- [ ] Mobile nav shows "Study Paths" and "References" in Explore section
+- [ ] `/references` route works and shows curated references page
+- [ ] References page has 4 sections with curated resources
+- [ ] DefinitionBox, NotationBox, ExampleBox, RemarkBox, PrereqList components exist and export correctly
+- [ ] Each content block component uses the specified left-border color and label
+- [ ] `npm run build` passes with no errors
 
 ### Verification steps
 1. `npm run build` — must pass
-2. Navigate to `/projects/first-circuit` — see full project with 5 steps
-3. Complete steps, verify progress saves
-4. Check `/roadmap` — MP cards appear after each track
-5. Check mobile nav — "Machine Projects" link works
-6. Navigate to `/projects/bell-explorer` and `/projects/algorithm-showdown` — see stub pages
+2. Navigate to `/references` — see curated references page with 4 sections
+3. Check navbar desktop — "Gates & Circuits" dropdown label, "Study Paths" link, "References" link
+4. Check navbar mobile — "Study Paths" and "References" in Explore section
+5. Verify component files exist: `ls components/DefinitionBox.jsx components/NotationBox.jsx components/ExampleBox.jsx components/RemarkBox.jsx components/PrereqList.jsx`
 
 ### Constraints
-- Create only the listed new files
-- Follow existing component patterns (Framer Motion, Tailwind, functional components)
-- Keep step content concise — no step > 200 words
-- Use CodeBlock for all code, GlossaryTooltip for key terms (max 2 per step)
+- Only modify/create the files listed above
+- Follow existing code patterns (Tailwind classes, component structure)
+- Keep all accessibility features
+- Components should be simple — no state management, no Framer Motion

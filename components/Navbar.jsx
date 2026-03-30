@@ -2,7 +2,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { Atom, Menu, X, ChevronDown, Map, BookOpen, Cpu } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useProgress } from '../lib/hooks/useProgress'
 import { MODULES, NAV_GROUPS } from '../lib/data/modules'
 
 const GROUP_LABEL = { foundations: 'Foundations', circuits: 'Circuits', advanced: 'Advanced' }
@@ -85,12 +84,8 @@ function NavDropdown({ group, label, modules, pathname, onNavigate }) {
 
 export default function Navbar() {
   const { pathname } = useLocation()
-  const { getTotalLessonsDone, totalLessons } = useProgress()
   const [open, setOpen] = useState(false)
   const [expandedGroup, setExpandedGroup] = useState(null)
-
-  const lessonsDone = getTotalLessonsDone()
-  const pct = Math.round((lessonsDone / totalLessons) * 100)
 
   useEffect(() => {
     if (!open) return
@@ -115,7 +110,7 @@ export default function Navbar() {
               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded"
           >
             <Atom className="w-5 h-5 text-indigo-400" />
-            QuantumLeap
+            SIGQuantum
           </Link>
 
           {/* Desktop nav */}
@@ -146,8 +141,9 @@ export default function Navbar() {
             {/* Roadmap + Glossary */}
             <div className="w-px h-4 bg-slate-700/50 mx-1" />
             {[
-              { to: '/roadmap',  icon: Map,      label: 'Roadmap'  },
+              { to: '/roadmap',  icon: Map,      label: 'Study Paths'  },
               { to: '/glossary', icon: BookOpen, label: 'Glossary' },
+              { to: '/references', icon: BookOpen, label: 'References' },
               { to: '/projects/first-circuit', icon: Cpu, label: 'Projects' },
             ].map(({ to, icon: Icon, label }) => (
               <Link
@@ -163,17 +159,6 @@ export default function Navbar() {
                 {label}
               </Link>
             ))}
-          </div>
-
-          {/* Progress pill (desktop) */}
-          <div className="hidden md:flex items-center gap-2 text-xs text-slate-500 shrink-0">
-            <div className="w-20 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full transition-all duration-500"
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-            <span className="tabular-nums">{lessonsDone}/{totalLessons}</span>
           </div>
 
           {/* Mobile hamburger */}
@@ -286,8 +271,9 @@ export default function Navbar() {
               <div className="pt-1">
                 <p className="px-3 pb-1 text-xs font-semibold text-slate-600 uppercase tracking-widest">Explore</p>
                 {[
-                  { to: '/roadmap',    label: 'Course Roadmap' },
+                  { to: '/roadmap',    label: 'Study Paths' },
                   { to: '/glossary',   label: 'Glossary' },
+                  { to: '/references', label: 'References' },
                   { to: '/challenges', label: 'Mini Challenges' },
                   { to: '/projects/first-circuit', label: 'Machine Projects' },
                 ].map(({ to, label }) => (
@@ -304,16 +290,6 @@ export default function Navbar() {
                 ))}
               </div>
 
-              {/* Progress */}
-              <div className="pt-3 pb-1 px-3 flex items-center gap-2.5">
-                <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full transition-all duration-500"
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-                <span className="text-xs text-slate-500 tabular-nums">{lessonsDone}/{totalLessons} lessons</span>
-              </div>
             </div>
           </motion.div>
         )}
