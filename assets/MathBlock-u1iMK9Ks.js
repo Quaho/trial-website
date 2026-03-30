@@ -1,1 +1,0 @@
-import{j as a}from"./react-vendor-kHxl1iEF.js";import{r}from"./math-BqFklwWU.js";function n({children:t}){return a.jsx(r.InlineMath,{math:t})}function e({children:t}){return a.jsx("div",{className:"my-4 w-full overflow-x-auto",children:a.jsx(r.BlockMath,{math:t})})}export{e as M,n as a};
