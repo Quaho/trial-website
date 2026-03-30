@@ -67,7 +67,7 @@ export default function ProjectLayout({
                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded"
           >
             <ChevronLeft className="w-4 h-4" />
-            Course Roadmap
+            Study Paths
           </Link>
 
           <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -209,7 +209,7 @@ export default function ProjectLayout({
         <div className="mt-10 pt-8 border-t border-slate-800 flex flex-col sm:flex-row gap-4">
           <Link to="/roadmap" className="btn-secondary">
             <ChevronLeft className="w-4 h-4" />
-            Back to Roadmap
+            Back to Study Paths
           </Link>
 
           {prevProject && (

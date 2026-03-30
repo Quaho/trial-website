@@ -18,7 +18,7 @@ export default function BellExplorer() {
                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded"
           >
             <ChevronLeft className="w-4 h-4" />
-            Course Roadmap
+            Study Paths
           </Link>
           <div className="flex items-center gap-2 mb-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border border-teal-800/40 bg-teal-900/40 text-teal-400">
@@ -26,13 +26,13 @@ export default function BellExplorer() {
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">Bell State Explorer</h1>
-          <p className="text-slate-400 mt-2">Coming soon — complete the Circuits track to unlock.</p>
+          <p className="text-slate-400 mt-2">This project is being prepared as the next applied checkpoint for the circuits track.</p>
         </div>
       </div>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 text-slate-500">
           <Lock className="w-5 h-5" />
-          <p>This project is under construction. Check back soon!</p>
+          <p>This project is under construction. Use the circuits study path in the meantime.</p>
         </div>
       </div>
     </motion.div>

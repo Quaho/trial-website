@@ -1,445 +1,478 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import ModuleLayout from '../../components/ModuleLayout'
-import LessonCard from '../../components/LessonCard'
-import StepNav from '../../components/StepNav'
-import GlossaryTooltip from '../../components/GlossaryTooltip'
-import { useProgress } from '../../lib/hooks/useProgress'
-import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
+import DefinitionBox from '../../components/DefinitionBox'
+import NotationBox from '../../components/NotationBox'
+import ExampleBox from '../../components/ExampleBox'
+import RemarkBox from '../../components/RemarkBox'
+import PrereqList from '../../components/PrereqList'
+import DiagramFrame from '../../components/DiagramFrame'
+import SummaryBox from '../../components/SummaryBox'
+import MistakesBox from '../../components/MistakesBox'
+import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
-/* ── Visuals ──────────────────────────────────────────────────────────────── */
-
-function BitVsQubitVisual() {
-  const [showQubit, setShowQubit] = useState(false)
+function ClassicalVsQuantumFigure() {
   return (
-    <div className="my-6">
-      <div className="flex gap-3 justify-center mb-4">
-        <button onClick={() => setShowQubit(false)}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors
-            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400
-            ${!showQubit ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'}`}>
-          Classical Bit
-        </button>
-        <button onClick={() => setShowQubit(true)}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors
-            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400
-            ${showQubit ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'}`}>
-          Qubit
-        </button>
-      </div>
-
-      <AnimatePresence mode="wait">
-        {!showQubit ? (
-          <motion.div key="bit"
-            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-            className="card text-center py-8">
-            <p className="text-xs text-slate-500 mb-4 uppercase tracking-wider">Classical Bit — always one or the other</p>
-            <div className="flex justify-center gap-6">
-              <div className="w-20 h-20 rounded-2xl bg-blue-900/50 border-2 border-blue-600 flex items-center justify-center">
-                <span className="text-4xl font-bold text-blue-400">0</span>
-              </div>
-              <div className="flex items-center text-slate-600 font-bold text-xl">or</div>
-              <div className="w-20 h-20 rounded-2xl bg-blue-900/50 border-2 border-blue-600 flex items-center justify-center">
-                <span className="text-4xl font-bold text-blue-400">1</span>
-              </div>
+    <DiagramFrame
+      label="Classical and Quantum State Descriptions"
+      description="A classical bit is described by one definite value at a time, while a qubit is described by amplitudes relative to a basis."
+      aspect="auto"
+    >
+      <div className="grid w-full gap-4 sm:grid-cols-2">
+        <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-5">
+          <p className="text-xs uppercase tracking-widest text-slate-500">Classical Bit</p>
+          <div className="mt-4 flex items-center justify-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-2xl font-semibold text-slate-200">
+              0
             </div>
-            <p className="text-xs text-blue-400 mt-4">Like a light switch — definitely on or off</p>
-          </motion.div>
-        ) : (
-          <motion.div key="qubit"
-            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-            className="card text-center py-8 border-indigo-800/50">
-            <p className="text-xs text-indigo-400 mb-4 uppercase tracking-wider">Qubit — both until measured</p>
-            <div className="flex justify-center gap-3 items-center mb-2">
-              <div className="w-20 h-20 rounded-2xl bg-indigo-900/40 border-2 border-dashed border-indigo-500 flex items-center justify-center">
-                <span className="text-4xl font-bold text-indigo-400">0</span>
-              </div>
-              <div className="text-indigo-400 font-bold text-xl">+</div>
-              <div className="w-20 h-20 rounded-2xl bg-violet-900/40 border-2 border-dashed border-violet-500 flex items-center justify-center">
-                <span className="text-4xl font-bold text-violet-400">1</span>
-              </div>
+            <span className="text-slate-600">or</span>
+            <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-2xl font-semibold text-slate-200">
+              1
             </div>
-            <p className="text-xs text-indigo-400 mt-2">Like a spinning coin — both while spinning</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
-
-function SuperpositionScaleVisual() {
-  const data = [
-    { n: 1, states: 2, label: '2' },
-    { n: 2, states: 4, label: '4' },
-    { n: 3, states: 8, label: '8' },
-    { n: 10, states: 1024, label: '1,024' },
-    { n: 50, states: null, label: '10¹⁵+' },
-  ]
-  return (
-    <div className="card my-6 bg-indigo-950/20 border-indigo-800/30">
-      <p className="text-center text-sm text-indigo-300 font-mono mb-4">n qubits → 2ⁿ simultaneous states</p>
-      <div className="grid grid-cols-5 gap-2 text-center">
-        {data.map(({ n, label }) => (
-          <div key={n} className="bg-slate-900 rounded-xl p-3">
-            <div className="text-indigo-400 font-bold text-xl">{n}</div>
-            <div className="text-slate-600 text-xs mb-1">qubits</div>
-            <div className="text-white font-mono text-xs">{label}</div>
-            <div className="text-slate-600 text-xs">states</div>
           </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function MeasurementVisual() {
-  const [measured, setMeasured] = useState(false)
-  const [result, setResult] = useState(null)
-
-  function measure() {
-    setResult(Math.random() < 0.5 ? 0 : 1)
-    setMeasured(true)
-  }
-
-  function reset() {
-    setMeasured(false)
-    setResult(null)
-  }
-
-  return (
-    <div className="card my-6 text-center py-6">
-      <p className="text-xs text-slate-500 uppercase tracking-wider mb-4">Click to simulate a measurement</p>
-      <div className="flex gap-4 justify-center items-center mb-4 flex-wrap">
-        <div className={`w-24 h-24 rounded-2xl border-2 flex items-center justify-center transition-all duration-300
-          ${!measured
-            ? 'border-dashed border-indigo-500 bg-indigo-900/30'
-            : result === 0
-              ? 'border-green-500 bg-green-900/30'
-              : 'border-violet-500 bg-violet-900/30'
-          }`}>
-          {!measured
-            ? <span className="text-4xl">🌀</span>
-            : <span className="text-4xl font-bold" style={{ color: result === 0 ? '#86efac' : '#c4b5fd' }}>{result}</span>
-          }
+          <p className="mt-4 text-sm text-slate-400 leading-relaxed">
+            At any given moment, the state description is one definite logical value.
+          </p>
         </div>
-        <div className="text-slate-600 text-2xl">→</div>
-        <div>
-          {!measured ? (
-            <button onClick={measure} className="btn-primary">
-              Measure qubit
-            </button>
-          ) : (
-            <div className="space-y-2">
-              <div className={`text-sm font-medium ${result === 0 ? 'text-green-400' : 'text-violet-400'}`}>
-                Collapsed to |{result}⟩
-              </div>
-              <button onClick={reset} className="text-xs text-slate-500 hover:text-slate-300 underline underline-offset-2 rounded
-                focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400">
-                Reset
-              </button>
-            </div>
-          )}
+
+        <div className="rounded-xl border border-indigo-800/40 bg-indigo-950/20 p-5">
+          <p className="text-xs uppercase tracking-widest text-indigo-400">Qubit</p>
+          <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/70 px-4">
+            <MathDisplay>{'|\\psi\\rangle = \\alpha|0\\rangle + \\beta|1\\rangle'}</MathDisplay>
+          </div>
+          <p className="mt-4 text-sm text-slate-400 leading-relaxed">
+            The state is described by amplitudes relative to the basis states
+            <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>.
+          </p>
         </div>
       </div>
-      <p className="text-xs text-slate-600">
-        {measured ? 'Superposition is gone. The qubit stays in this state now.' : 'The qubit is in superposition — both 0 and 1 simultaneously.'}
-      </p>
-    </div>
+    </DiagramFrame>
   )
 }
 
-function WaveInterferenceVisual() {
-  return (
-    <div className="grid sm:grid-cols-2 gap-4 my-6">
-      <div className="card text-center">
-        <p className="text-sm font-semibold text-green-400 mb-3">Constructive</p>
-        <svg viewBox="0 0 200 80" className="w-full h-20">
-          <path d="M10,40 Q35,10 60,40 Q85,70 110,40 Q135,10 160,40 Q185,70 200,40"
-                fill="none" stroke="#4ade80" strokeWidth="2" opacity="0.45" />
-          <path d="M10,40 Q35,10 60,40 Q85,70 110,40 Q135,10 160,40 Q185,70 200,40"
-                fill="none" stroke="#4ade80" strokeWidth="2" opacity="0.45" />
-          <path d="M10,40 Q35,-10 60,40 Q85,90 110,40 Q135,-10 160,40 Q185,90 200,40"
-                fill="none" stroke="#4ade80" strokeWidth="3" />
-        </svg>
-        <p className="text-xs text-slate-500 mt-1">Same direction → bigger amplitude</p>
-      </div>
-      <div className="card text-center">
-        <p className="text-sm font-semibold text-red-400 mb-3">Destructive</p>
-        <svg viewBox="0 0 200 80" className="w-full h-20">
-          <path d="M10,40 Q35,10 60,40 Q85,70 110,40 Q135,10 160,40 Q185,70 200,40"
-                fill="none" stroke="#818cf8" strokeWidth="2" opacity="0.7" />
-          <path d="M10,40 Q35,70 60,40 Q85,10 110,40 Q135,70 160,40 Q185,10 200,40"
-                fill="none" stroke="#f87171" strokeWidth="2" opacity="0.7" />
-          <line x1="10" y1="40" x2="190" y2="40" stroke="#94a3b8" strokeWidth="2.5" strokeDasharray="5 3" />
-        </svg>
-        <p className="text-xs text-slate-500 mt-1">Opposite directions → cancel out</p>
-      </div>
-    </div>
-  )
-}
-
-function WhyQCMatters() {
-  const apps = [
-    { icon: '🔐', area: 'Cryptography', detail: "Shor's algorithm can factor huge numbers — breaking today's encryption." },
-    { icon: '💊', area: 'Drug Discovery', detail: 'Simulate molecules at quantum scale — impossible on classical computers.' },
-    { icon: '🗺️', area: 'Optimization', detail: 'Find the best route among trillions of options exponentially faster.' },
-    { icon: '🤖', area: 'Machine Learning', detail: 'Speed up certain ML tasks via quantum kernels and amplitude encoding.' },
+function StateCountFigure() {
+  const rows = [
+    { qubits: 1, states: '2' },
+    { qubits: 2, states: '4' },
+    { qubits: 3, states: '8' },
+    { qubits: 10, states: '1,024' },
+    { qubits: 20, states: '1,048,576' },
   ]
+
   return (
-    <div className="grid sm:grid-cols-2 gap-3 my-6">
-      {apps.map(({ icon, area, detail }) => (
-        <div key={area} className="card flex gap-3 items-start">
-          <span className="text-2xl flex-shrink-0">{icon}</span>
-          <div>
-            <h4 className="font-semibold text-indigo-300 text-sm">{area}</h4>
-            <p className="text-xs text-slate-400 mt-0.5">{detail}</p>
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Scaling</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">State Descriptions Grow as 2^n</h3>
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full border-collapse text-sm">
+          <thead className="border-b border-slate-800 bg-slate-950/70">
+            <tr>
+              <th className="px-4 py-3 text-left font-medium text-slate-500">Number of qubits</th>
+              <th className="px-4 py-3 text-left font-medium text-slate-500">Basis states in the description</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-800">
+            {rows.map((row) => (
+              <tr key={row.qubits}>
+                <td className="px-4 py-3 text-slate-200">{row.qubits}</td>
+                <td className="px-4 py-3 font-mono text-indigo-300">{row.states}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+function MeasurementFigure() {
+  return (
+    <DiagramFrame
+      label="Measurement in the Computational Basis"
+      description="Amplitudes determine probabilities, and measurement returns one classical outcome rather than the whole state."
+      aspect="auto"
+    >
+      <div className="grid w-full gap-4 lg:grid-cols-[1.2fr_auto_1fr]">
+        <div className="rounded-xl border border-indigo-800/40 bg-indigo-950/20 p-4">
+          <p className="text-sm font-semibold text-white">State before measurement</p>
+          <div className="mt-3 rounded-xl border border-slate-800 bg-slate-950/70 px-4">
+            <MathDisplay>{'|\\psi\\rangle = \\tfrac{1}{\\sqrt{2}}|0\\rangle + \\tfrac{1}{\\sqrt{2}}|1\\rangle'}</MathDisplay>
           </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-3">
+              <p className="text-xs uppercase tracking-widest text-slate-500">P(0)</p>
+              <p className="mt-2 text-xl font-semibold text-indigo-300">50%</p>
+            </div>
+            <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-3">
+              <p className="text-xs uppercase tracking-widest text-slate-500">P(1)</p>
+              <p className="mt-2 text-xl font-semibold text-violet-300">50%</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="hidden items-center justify-center text-slate-600 lg:flex">→</div>
+
+        <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+          <p className="text-sm font-semibold text-white">Possible outcomes</p>
+          <div className="mt-4 space-y-3">
+            <div className="rounded-xl border border-green-800/40 bg-green-950/20 p-3">
+              <p className="font-mono text-lg text-green-300">|0⟩</p>
+              <p className="mt-1 text-sm text-slate-400">Returned on one run with probability 1/2.</p>
+            </div>
+            <div className="rounded-xl border border-violet-800/40 bg-violet-950/20 p-3">
+              <p className="font-mono text-lg text-violet-300">|1⟩</p>
+              <p className="mt-1 text-sm text-slate-400">Returned on one run with probability 1/2.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </DiagramFrame>
+  )
+}
+
+function InterferenceFigure() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      <div className="rounded-xl border border-green-800/40 bg-green-950/20 p-4 text-center">
+        <p className="text-sm font-semibold text-green-300">Constructive interference</p>
+        <svg viewBox="0 0 220 90" className="mt-4 h-24 w-full">
+          <path
+            d="M10,45 Q35,15 60,45 Q85,75 110,45 Q135,15 160,45 Q185,75 210,45"
+            fill="none"
+            opacity="0.4"
+            stroke="#4ade80"
+            strokeWidth="2"
+          />
+          <path
+            d="M10,45 Q35,15 60,45 Q85,75 110,45 Q135,15 160,45 Q185,75 210,45"
+            fill="none"
+            opacity="0.4"
+            stroke="#86efac"
+            strokeWidth="2"
+          />
+          <path
+            d="M10,45 Q35,-5 60,45 Q85,95 110,45 Q135,-5 160,45 Q185,95 210,45"
+            fill="none"
+            stroke="#22c55e"
+            strokeWidth="3"
+          />
+        </svg>
+        <p className="mt-3 text-sm text-slate-400 leading-relaxed">
+          Amplitudes add in the same direction, increasing the weight of a desired outcome.
+        </p>
+      </div>
+
+      <div className="rounded-xl border border-red-800/40 bg-red-950/20 p-4 text-center">
+        <p className="text-sm font-semibold text-red-300">Destructive interference</p>
+        <svg viewBox="0 0 220 90" className="mt-4 h-24 w-full">
+          <path
+            d="M10,45 Q35,15 60,45 Q85,75 110,45 Q135,15 160,45 Q185,75 210,45"
+            fill="none"
+            opacity="0.65"
+            stroke="#818cf8"
+            strokeWidth="2"
+          />
+          <path
+            d="M10,45 Q35,75 60,45 Q85,15 110,45 Q135,75 160,45 Q185,15 210,45"
+            fill="none"
+            opacity="0.65"
+            stroke="#f87171"
+            strokeWidth="2"
+          />
+          <line x1="10" y1="45" x2="210" y2="45" stroke="#94a3b8" strokeDasharray="5 3" strokeWidth="2.5" />
+        </svg>
+        <p className="mt-3 text-sm text-slate-400 leading-relaxed">
+          Amplitudes cancel, reducing the probability of an unwanted outcome.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function ApplicationsGrid() {
+  const items = [
+    {
+      title: 'Physical simulation',
+      body: 'Quantum systems are difficult to simulate classically, so quantum computers are natural candidates for selected chemistry and materials problems.',
+    },
+    {
+      title: 'Structured search',
+      body: "Algorithms such as Grover's search use amplitude amplification to improve performance on specific search-style problems.",
+    },
+    {
+      title: 'Number-theoretic problems',
+      body: "Shor's algorithm is the canonical example showing that some factoring-related tasks can admit strong quantum speedups.",
+    },
+  ]
+
+  return (
+    <div className="grid gap-4 md:grid-cols-3">
+      {items.map((item) => (
+        <div key={item.title} className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
+          <h3 className="text-base font-semibold text-white">{item.title}</h3>
+          <p className="mt-2 text-sm text-slate-400 leading-relaxed">{item.body}</p>
         </div>
       ))}
     </div>
   )
 }
 
-/* ── Lessons ──────────────────────────────────────────────────────────────── */
-
-const LESSONS = [
-  {
-    title: 'Bits vs Qubits',
-    hook: 'A qubit can hold 0, 1, or both at the same time.',
-    bullets: [
-      'Classical bits are always exactly 0 or 1 — like a light switch.',
-      <>
-        <GlossaryTooltip term="Qubit">Qubits</GlossaryTooltip> can be 0, 1, or a{' '}
-        <GlossaryTooltip term="Superposition">superposition</GlossaryTooltip> of both — like a spinning coin.
-      </>,
-      <>
-        The difference is only visible while computing.{' '}
-        <GlossaryTooltip term="Measurement">Measurement</GlossaryTooltip> forces a definite 0 or 1.
-      </>,
-    ],
-    visual: <BitVsQubitVisual />,
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Analogy:</strong> A coin lying flat is a classical bit (heads = 1, tails = 0).
-        A coin spinning in the air is a qubit — neither until it lands.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'What is the key difference between a classical bit and a qubit?',
-      choices: [
-        'Qubits are faster than classical bits',
-        'Qubits can be in a superposition of 0 and 1 simultaneously',
-        'Classical bits can store more values',
-        'Qubits can only store 0',
-      ],
-      correct: 1,
-    },
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>Qubits are physically implemented using two-level quantum systems: the spin of an electron
-        (up = |0⟩, down = |1⟩), the polarization of a photon, or the energy levels of a superconducting
-        circuit.</p>
-        <p>The no-cloning theorem says you cannot copy an arbitrary qubit — unlike classical bits which
-        can be freely duplicated. This has deep consequences for quantum error correction.</p>
-      </div>
-    ),
-  },
-  {
-    title: 'Superposition',
-    hook: 'n qubits in superposition can represent 2ⁿ states at once.',
-    bullets: [
-      '2 qubits = 4 states simultaneously. 10 qubits = 1,024 states. 50 qubits = over a quadrillion.',
-      'The catch: you can only read one state when you measure.',
-      'Quantum algorithms are carefully designed so the right answer is most likely to appear.',
-    ],
-    visual: <SuperpositionScaleVisual />,
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Why it matters:</strong> A quantum computer with 300 qubits
-        could represent more states simultaneously than there are atoms in the observable universe.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'How many states can 3 qubits in superposition represent simultaneously?',
-      choices: ['3', '6', '8', '16'],
-      correct: 2,
-    },
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>This exponential scaling is why quantum computers are hard to simulate classically.
-        Simulating 50 qubits requires storing 2⁵⁰ ≈ 10¹⁵ complex numbers — about a petabyte of RAM.</p>
-        <p>But more qubits doesn't automatically mean exponential speedup on every problem.
-        Quantum advantage only appears for specific algorithms designed to exploit interference.</p>
-      </div>
-    ),
-  },
-  {
-    title: 'Measurement & Collapse',
-    hook: 'Looking at a qubit destroys the superposition — forever.',
-    bullets: [
-      'Measuring a qubit collapses it to either 0 or 1, probabilistically.',
-      <>
-        The probability depends on how the superposition was set up (the{' '}
-        <GlossaryTooltip term="Amplitude">amplitudes</GlossaryTooltip>).
-      </>,
-      "You can't undo this. Measurement is irreversible — a one-way door.",
-    ],
-    visual: <MeasurementVisual />,
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Example:</strong> A qubit in equal superposition
-        (|0⟩ + |1⟩)/√2 collapses to 0 with 50% probability and 1 with 50% probability.
-        Run it 1,000 times and you'll get roughly 500 zeros and 500 ones.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'What happens to a qubit in superposition when you measure it?',
-      choices: [
-        'It stays in superposition so you can read both values',
-        'It collapses to 0 or 1 based on its amplitudes',
-        'It becomes a classical bit permanently',
-        'The measurement has no effect',
-      ],
-      correct: 1,
-    },
-  },
-  {
-    title: 'Interference',
-    hook: 'Quantum algorithms use interference to amplify right answers and cancel wrong ones.',
-    bullets: [
-      'Quantum amplitudes (unlike probabilities) can be negative or complex.',
-      <>
-        Constructive <GlossaryTooltip term="Interference">interference</GlossaryTooltip>: two amplitudes
-        pointing the same way → bigger amplitude.
-      </>,
-      'Destructive interference: two amplitudes pointing opposite ways → cancel out.',
-    ],
-    visual: <WaveInterferenceVisual />,
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Like sound waves:</strong> Two speakers playing the same
-        frequency in sync get louder (constructive). Perfectly out of phase, they cancel each other —
-        you hear silence (destructive). Quantum amplitudes work the same way.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'What does destructive interference do in a quantum computation?',
-      choices: [
-        'Amplifies the probability of the correct answer',
-        'Destroys the qubit',
-        'Cancels out amplitudes for wrong answers, reducing their probability',
-        'Collapses superposition prematurely',
-      ],
-      correct: 2,
-    },
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>Interference is why Grover's algorithm works. It repeatedly amplifies the amplitude of
-        the target item and suppresses everything else, until a measurement almost certainly
-        yields the correct answer.</p>
-        <p>The key insight: amplitudes are complex numbers, not probabilities. Probabilities are
-        always ≥ 0; amplitudes can be negative or imaginary, which enables cancellation.</p>
-      </div>
-    ),
-  },
-  {
-    title: 'Why Quantum Computing Matters',
-    hook: "Quantum computers aren't magic — they're specialized tools for specific hard problems.",
-    bullets: [
-      "QC isn't faster at everything. Most everyday tasks run better on classical computers.",
-      'Quantum speedup appears for problems like factoring, search, and physical simulation.',
-      "The field is still early-stage — today's machines are noisy, but growing fast.",
-    ],
-    visual: <WhyQCMatters />,
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Shor's algorithm</strong> can factor a 2048-bit number
-        in hours on a large enough quantum computer. The same task would take classical computers
-        longer than the age of the universe.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'Which statement about quantum computers is TRUE?',
-      choices: [
-        'They are faster than classical computers at everything',
-        'They are only useful for breaking encryption',
-        'They excel at specific problem types like factoring and simulation',
-        'They use qubits that can store any number of values simultaneously',
-      ],
-      correct: 2,
-    },
-  },
-]
-
-/* ── Module Page ──────────────────────────────────────────────────────────── */
-
 export default function Intuition() {
-  const [step, setStep] = useState(0)
-  const { markDone, markLessonPassed, getLessonPassed, completed } = useProgress()
-  const passed = getLessonPassed('intuition', LESSONS.length)
-  const allPassed = passed.every(Boolean)
-  const lesson = LESSONS[step]
-
-  useEffect(() => {
-    if (allPassed && !completed['intuition']) markDone('intuition')
-  }, [allPassed])
-
-  function handleQuizPass() {
-    markLessonPassed('intuition', step)
-  }
-
-  function goNext() {
-    if (step < LESSONS.length - 1) setStep(s => s + 1)
-  }
-
-  function goPrev() {
-    if (step > 0) setStep(s => s - 1)
-  }
-
   return (
     <ModuleLayout
       moduleId="intuition"
       title="Big-Picture Intuition"
-      subtitle="Build the mental model before the math."
-      stepInfo={{ current: step, total: LESSONS.length, passed }}
+      subtitle="An introductory chapter on qubits, superposition, measurement, and why interference matters."
       next={{ to: '/braket', label: 'Module 2: Bra-Ket Notation' }}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.2 }}
+      <div className="prose-quantum max-w-none">
+        <p>
+          Quantum computing begins with a different way of describing information. The classical model
+          uses bits that are always in one definite logical state. The quantum model uses state
+          descriptions that support superposition, phase, and interference.
+        </p>
+        <p>
+          This page is an orientation chapter rather than a full mathematical treatment. Its purpose is
+          to establish the conceptual vocabulary you need before the notation becomes heavier in later
+          modules.
+        </p>
+      </div>
+
+      <div className="mt-8 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <PrereqList
+          items={[
+            'No prior quantum-computing background is required.',
+            'Comfort reading short technical explanations is enough for this module.',
+            'Some familiarity with algebraic symbols helps, but all essential notation is introduced explicitly.',
+          ]}
         >
-          <LessonCard
-            lesson={lesson}
-            lessonIndex={step}
-            totalLessons={LESSONS.length}
-            isPassed={passed[step]}
-            onPass={handleQuizPass}
-            bulletStyle={MODULE_LAYOUT_STYLES.intuition.bullet}
-          />
+          If you are already comfortable with the motivation but not the symbols, you can move quickly
+          into{' '}
+          <Link to="/braket" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+            Bra-Ket Notation
+          </Link>{' '}
+          after finishing this page.
+        </PrereqList>
 
-          {/* Module-complete banner */}
-          {step === LESSONS.length - 1 && allPassed && (
-            <div className="mt-6 p-5 rounded-2xl bg-green-950/30 border border-green-800/40 text-center">
-              <div className="text-2xl mb-2">🎉</div>
-              <p className="text-green-300 font-semibold">Module 1 complete.</p>
-              <p className="text-slate-400 text-sm mt-1">Head to Module 2 to learn Bra-Ket notation.</p>
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+          <p className="section-label">Learning Objectives</p>
+          <ul className="mt-3 space-y-2 text-sm text-slate-300 leading-relaxed">
+            <li>Understand how a qubit differs from a classical bit at the level of state description.</li>
+            <li>Recognize why superposition alone is not enough; measurement and interference are equally central.</li>
+            <li>Leave with a realistic sense of where quantum computing helps and where it does not.</li>
+          </ul>
+        </div>
+      </div>
 
-      <StepNav
-        steps={LESSONS.length}
-        current={step}
-        passed={passed}
-        onNext={goNext}
-        onPrev={goPrev}
-        onGoto={setStep}
-      />
+      <section className="mt-10">
+        <p className="section-label">Section 1</p>
+        <h2 className="section-heading">Classical bits and qubits</h2>
+        <p className="section-sub">
+          The first distinction is not "speed" but representation. A qubit is described relative to a
+          basis, which already makes it different from a single classical bit.
+        </p>
+
+        <DefinitionBox term="Qubit">
+          A qubit is the basic unit of quantum information. For an introductory one-qubit system, the
+          state is described as a normalized combination of the basis states
+          <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <NotationBox symbol="|ψ⟩ = α|0⟩ + β|1⟩">
+            The coefficients <InlineMath>{'\\alpha'}</InlineMath> and <InlineMath>{'\\beta'}</InlineMath> are
+            amplitudes. Their squared magnitudes determine measurement probabilities, and they satisfy
+            <InlineMath>{'|\\alpha|^2 + |\\beta|^2 = 1'}</InlineMath>.
+          </NotationBox>
+        </div>
+
+        <div className="mt-6">
+          <ClassicalVsQuantumFigure />
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            A qubit should not be understood as "two classical bits packed into one place." The state
+            description is richer, but a single measurement still returns one classical outcome.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <p className="section-label">Section 2</p>
+        <h2 className="section-heading">Superposition and state-space growth</h2>
+        <p className="section-sub">
+          Superposition means the state can be a linear combination of basis states. For many-qubit
+          systems, that description grows exponentially with the number of qubits.
+        </p>
+
+        <DefinitionBox term="Superposition">
+          A superposition is a valid quantum state formed by combining basis states with amplitudes.
+          The state is not merely an unknown classical choice between those basis states; it is a new
+          state description that can later participate in interference.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <StateCountFigure />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox>
+            <MathDisplay>{'|+\\rangle = \\tfrac{1}{\\sqrt{2}}|0\\rangle + \\tfrac{1}{\\sqrt{2}}|1\\rangle'}</MathDisplay>
+            <p>
+              This equal superposition is one of the most common introductory states. It does not mean
+              "half of a 0 and half of a 1" in a classical sense. It means the state has equal
+              amplitudes relative to the computational basis.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            Exponential growth in the state description does not imply that you can read out all
+            <InlineMath>{'2^n'}</InlineMath> amplitudes in one measurement. The value of superposition appears
+            only when an algorithm uses it together with interference and basis-sensitive measurement.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <p className="section-label">Section 3</p>
+        <h2 className="section-heading">Measurement and collapse</h2>
+        <p className="section-sub">
+          Measurement converts a quantum state into a classical outcome. The probabilities come from
+          amplitudes, and one run returns one outcome.
+        </p>
+
+        <DefinitionBox term="Measurement">
+          Measurement is the process of extracting a classical result from a quantum state. In the
+          computational basis, the outcome is 0 or 1 for a single qubit, with probabilities determined
+          by the state amplitudes.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <MeasurementFigure />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: Equal Superposition">
+            <p>
+              For <InlineMath>{'|\\psi\\rangle = (|0\\rangle + |1\\rangle)/\\sqrt{2}'}</InlineMath>, the
+              amplitudes are both <InlineMath>{'1/\\sqrt{2}'}</InlineMath>. Squaring their magnitudes gives
+              probability <InlineMath>{'1/2'}</InlineMath> for 0 and probability <InlineMath>{'1/2'}</InlineMath> for 1.
+            </p>
+            <p className="mt-3">
+              If you run the same circuit many times, the frequencies approach those probabilities. A
+              single shot, however, still returns only one of the two outcomes.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            Later modules refine this picture by showing that measurement depends on basis. For now, the
+            main point is that amplitudes control outcome probabilities rather than appearing directly as
+            observable numbers.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <p className="section-label">Section 4</p>
+        <h2 className="section-heading">Why interference matters</h2>
+        <p className="section-sub">
+          Superposition alone does not create a useful algorithm. The advantage comes from controlling
+          amplitudes so that some outcomes are amplified while others are suppressed.
+        </p>
+
+        <DefinitionBox term="Interference">
+          Interference is the way amplitudes combine. They can reinforce one another constructively or
+          cancel one another destructively, which changes the final measurement probabilities.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <InterferenceFigure />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: Algorithmic Use">
+            <p>
+              In introductory quantum algorithms, the design goal is often to route amplitude toward a
+              correct answer and away from incorrect answers. When that works, a final measurement is
+              more likely to return the desired result than a naive classical guess.
+            </p>
+          </ExampleBox>
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <p className="section-label">Section 5</p>
+        <h2 className="section-heading">Why quantum computing matters, and its limits</h2>
+        <p className="section-sub">
+          Quantum computing is important because some problem classes appear to admit meaningful
+          speedups. It is equally important to understand that the model is specialized rather than
+          universally superior.
+        </p>
+
+        <ApplicationsGrid />
+
+        <div className="mt-6">
+          <RemarkBox>
+            Quantum computing is not a replacement for classical computing. The practical question is
+            always narrower: does a specific problem have structure that an algorithm can exploit using
+            superposition, interference, and measurement?
+          </RemarkBox>
+        </div>
+      </section>
+
+      <div className="mt-12">
+        <MistakesBox
+          items={[
+            {
+              mistake: 'Thinking a qubit stores both classical answers in a directly readable way.',
+              clarification:
+                'A qubit is described by amplitudes over basis states, but one measurement still returns one classical outcome.',
+            },
+            {
+              mistake: 'Assuming more qubits automatically imply a faster computer for every task.',
+              clarification:
+                'State-space size grows quickly, but speedup depends on algorithm structure, not on qubit count alone.',
+            },
+            {
+              mistake: 'Treating measurement as passive observation with no effect on the state description.',
+              clarification:
+                'Measurement changes what information remains available and is central to how quantum algorithms are designed.',
+            },
+          ]}
+        />
+      </div>
+
+      <div className="mt-10">
+        <SummaryBox
+          points={[
+            'A qubit differs from a classical bit because it is described by amplitudes relative to a basis.',
+            'Superposition expands the state description, but useful computation depends on measurement and interference as well.',
+            'Measurement returns classical outcomes with probabilities derived from amplitudes.',
+            'Quantum computing matters for selected structured problems, not as a blanket replacement for classical systems.',
+          ]}
+        />
+      </div>
+
+      <section className="mt-10 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p className="section-label">Next Steps</p>
+        <h2 className="mt-3 text-2xl font-bold text-white tracking-tight">Move from intuition to notation</h2>
+        <p className="mt-3 text-sm text-slate-400 leading-relaxed">
+          The next chapter introduces bra-ket notation so the state descriptions on this page can be
+          written and manipulated more formally.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link to="/braket" className="btn-primary">
+            Continue to Bra-Ket Notation
+          </Link>
+          <Link to="/glossary" className="btn-secondary">
+            Review Key Terms
+          </Link>
+        </div>
+      </section>
     </ModuleLayout>
   )
 }
