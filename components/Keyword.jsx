@@ -1,5 +1,6 @@
 const KEYWORD_STYLES = {
   classical: 'text-slate-100',
+  correlation: 'text-teal-300',
   qubit: 'text-indigo-300',
   basis: 'text-fuchsia-300',
   phase: 'text-cyan-300',
@@ -16,6 +17,8 @@ const KEYWORD_STYLES = {
   qiskit: 'text-emerald-300',
   backend: 'text-amber-300',
   tensor: 'text-teal-300',
+  bell: 'text-teal-300',
+  decoherence: 'text-amber-300',
   entanglement: 'text-fuchsia-300',
 }
 
