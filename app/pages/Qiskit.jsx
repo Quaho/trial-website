@@ -1,39 +1,34 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import ModuleLayout from '../../components/ModuleLayout'
-import LessonCard from '../../components/LessonCard'
-import StepNav from '../../components/StepNav'
+import DefinitionBox from '../../components/DefinitionBox'
+import NotationBox from '../../components/NotationBox'
+import ExampleBox from '../../components/ExampleBox'
+import RemarkBox from '../../components/RemarkBox'
+import PrereqList from '../../components/PrereqList'
+import DiagramFrame from '../../components/DiagramFrame'
 import CodeBlock from '../../components/CodeBlock'
-import GlossaryTooltip from '../../components/GlossaryTooltip'
+import SummaryBox from '../../components/SummaryBox'
+import MistakesBox from '../../components/MistakesBox'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
-import { useProgress } from '../../lib/hooks/useProgress'
-import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
 
-/* ── Code snippets ────────────────────────────────────────────────────────── */
-
-const SETUP_CODE = `# Install Qiskit (in your terminal)
+const SETUP_CODE = `# Install Qiskit and the Aer simulator
 pip install qiskit qiskit-aer
 
-# Verify installation
-python -c "import qiskit; print(qiskit.__version__)"
-`
+# Confirm that Python can import the package
+python -c "import qiskit; print(qiskit.__version__)"`
 
 const FIRST_CIRCUIT = `from qiskit import QuantumCircuit
 
 # 1 qubit, 1 classical bit
 qc = QuantumCircuit(1, 1)
 
-# H gate: put |0⟩ into superposition
+# Put the qubit into equal superposition
 qc.h(0)
 
-# Measure qubit → classical bit
+# Measure into classical bit 0
 qc.measure(0, 0)
 
-print(qc.draw('text'))
-# Output:
-#      ┌───┐ ░ ┌─┐
-# q_0: ┤ H ├─░─┤M├
-#      └───┘ ░ └─┘`
+print(qc.draw('text'))`
 
 const RUN_CODE = `from qiskit import QuantumCircuit
 from qiskit_aer import AerSimulator
@@ -45,17 +40,17 @@ qc.measure(0, 0)
 simulator = AerSimulator()
 result = simulator.run(qc, shots=1000).result()
 print(result.get_counts())
-# {'0': 512, '1': 488}  ← roughly 50/50`
+# Example output: {'0': 512, '1': 488}`
 
 const GATES_CODE = `from qiskit import QuantumCircuit
 
 qc = QuantumCircuit(2)
 
-qc.x(0)    # X: flip |0⟩ → |1⟩  (quantum NOT)
-qc.h(1)    # H: superposition
-qc.cx(0,1) # CNOT: flip qubit 1 if qubit 0 is |1⟩
-qc.z(0)    # Z: phase flip — |1⟩ → -|1⟩
-qc.s(1)    # S: phase rotation by π/2
+qc.x(0)      # Flip qubit 0
+qc.h(1)      # Put qubit 1 into superposition
+qc.cx(0, 1)  # Controlled-NOT
+qc.z(0)      # Phase flip on qubit 0
+qc.s(1)      # Quarter-turn phase on qubit 1
 
 print(qc.draw('text'))`
 
@@ -63,418 +58,560 @@ const BELL_CODE = `from qiskit import QuantumCircuit
 from qiskit_aer import AerSimulator
 
 qc = QuantumCircuit(2, 2)
-
-# Step 1: superposition on qubit 0
 qc.h(0)
-
-# Step 2: entangle via CNOT
 qc.cx(0, 1)
-
-# Step 3: measure both
 qc.measure([0, 1], [0, 1])
 
 result = AerSimulator().run(qc, shots=1000).result()
 print(result.get_counts())
-# {'00': 503, '11': 497}
-# NEVER '01' or '10' — they're entangled!`
+# Typical output: {'00': 503, '11': 497}`
 
-/* ── Visuals ──────────────────────────────────────────────────────────────── */
+const GATE_CARDS = [
+  {
+    symbol: 'H',
+    name: 'Hadamard',
+    action: 'Creates superposition from a basis state.',
+    api: 'qc.h(0)',
+    matrix: 'H = \\tfrac{1}{\\sqrt{2}}\\begin{pmatrix}1 & 1 \\\\ 1 & -1\\end{pmatrix}',
+    frame: 'border-indigo-800/40 bg-indigo-950/20',
+    badge: 'bg-indigo-900/60 text-indigo-300 border-indigo-700/50',
+  },
+  {
+    symbol: 'X',
+    name: 'Pauli-X',
+    action: 'Swaps |0⟩ and |1⟩.',
+    api: 'qc.x(0)',
+    matrix: 'X = \\begin{pmatrix}0 & 1 \\\\ 1 & 0\\end{pmatrix}',
+    frame: 'border-sky-800/40 bg-sky-950/20',
+    badge: 'bg-sky-900/60 text-sky-300 border-sky-700/50',
+  },
+  {
+    symbol: 'Z',
+    name: 'Pauli-Z',
+    action: 'Flips the phase of the |1⟩ component.',
+    api: 'qc.z(0)',
+    matrix: 'Z = \\begin{pmatrix}1 & 0 \\\\ 0 & -1\\end{pmatrix}',
+    frame: 'border-violet-800/40 bg-violet-950/20',
+    badge: 'bg-violet-900/60 text-violet-300 border-violet-700/50',
+  },
+  {
+    symbol: 'CX',
+    name: 'Controlled-NOT',
+    action: 'Flips the target qubit when the control is |1⟩.',
+    api: 'qc.cx(0, 1)',
+    matrix: 'CX = \\begin{pmatrix}1&0&0&0\\\\0&1&0&0\\\\0&0&0&1\\\\0&0&1&0\\end{pmatrix}',
+    frame: 'border-fuchsia-800/40 bg-fuchsia-950/20',
+    badge: 'bg-fuchsia-900/60 text-fuchsia-300 border-fuchsia-700/50',
+  },
+]
 
-function QiskitWorkflowVisual() {
+function WorkflowFigure() {
   const steps = [
-    { icon: '✏️', step: '1. Design', desc: 'Build a circuit with gates in Python' },
-    { icon: '💻', step: '2. Simulate', desc: 'Run on AerSimulator locally' },
-    { icon: '🔬', step: '3. Execute', desc: 'Submit to real IBM quantum hardware' },
+    {
+      title: 'Author',
+      body: 'Create a circuit object, add gates, and declare measurements.',
+      accent: 'border-indigo-800/40 bg-indigo-950/20 text-indigo-300',
+    },
+    {
+      title: 'Transpile',
+      body: 'Rewrite the circuit into a form a specific backend can accept.',
+      accent: 'border-sky-800/40 bg-sky-950/20 text-sky-300',
+    },
+    {
+      title: 'Execute',
+      body: 'Run many shots on a simulator or on hardware and collect counts.',
+      accent: 'border-violet-800/40 bg-violet-950/20 text-violet-300',
+    },
+    {
+      title: 'Interpret',
+      body: 'Compare the measured distribution with the theoretical prediction.',
+      accent: 'border-emerald-800/40 bg-emerald-950/20 text-emerald-300',
+    },
   ]
+
   return (
-    <div className="my-6">
-      <div className="flex flex-col sm:flex-row gap-0">
-        {steps.map(({ icon, step, desc }, i) => (
-          <div key={step} className="flex sm:flex-col items-center sm:items-start flex-1">
-            <div className="flex sm:flex-col items-center gap-3 sm:gap-0 w-full">
-              <div className="card sm:rounded-none sm:rounded-t-xl text-center flex-1 sm:flex-none py-5">
-                <div className="text-2xl mb-2">{icon}</div>
-                <div className="text-sm font-semibold text-white">{step}</div>
-                <div className="text-xs text-slate-400 mt-1">{desc}</div>
-              </div>
-              {i < steps.length - 1 && (
-                <div className="text-slate-600 font-bold text-xl sm:hidden">→</div>
-              )}
+    <DiagramFrame
+      label="Qiskit workflow"
+      description="A minimal engineering workflow for Qiskit: author a circuit, transpile it, execute many shots, and interpret the resulting counts."
+      aspect="16/11"
+    >
+      <div className="grid w-full gap-3 sm:grid-cols-4">
+        {steps.map((step, index) => (
+          <div key={step.title} className={`rounded-xl border p-4 ${step.accent}`}>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs uppercase tracking-widest text-slate-500">Step {index + 1}</span>
+              <span className="font-mono text-xs text-slate-400">{String(index + 1).padStart(2, '0')}</span>
             </div>
+            <h3 className="mt-3 text-sm font-semibold text-white">{step.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-300">{step.body}</p>
           </div>
         ))}
       </div>
-      <div className="hidden sm:flex justify-center gap-0 mt-0">
-        <div className="flex-1 h-0.5 bg-slate-700 mt-0" />
-      </div>
-      <p className="text-xs text-center text-slate-500 mt-3">
-        Workflow: build → simulate → measure → analyze
-      </p>
-    </div>
+    </DiagramFrame>
   )
 }
 
-function CircuitDiagramVisual() {
+function FirstCircuitFigure() {
   return (
-    <div className="card my-6 font-mono text-sm bg-slate-950 border-slate-700">
-      <p className="text-xs text-slate-500 mb-3">Circuit diagram (from qc.draw('text'))</p>
-      <div className="overflow-x-auto">
-        <pre className="text-green-400 text-xs sm:text-sm leading-relaxed">{`     ┌───┐ ░ ┌─┐
+    <DiagramFrame
+      label="Text circuit and counts"
+      description="A one-qubit Hadamard-plus-measurement circuit shown together with representative shot counts."
+      aspect="16/10"
+    >
+      <div className="grid w-full gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+          <p className="text-xs uppercase tracking-widest text-slate-500">qc.draw('text')</p>
+          <pre className="mt-4 overflow-x-auto text-sm leading-relaxed text-emerald-300">{`     ┌───┐ ░ ┌─┐
 q_0: ┤ H ├─░─┤M├
      └───┘ ░ └─┘
 c: 1/═══════════╩═
                 0`}</pre>
+        </div>
+
+        <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+          <p className="text-xs uppercase tracking-widest text-slate-500">Representative counts</p>
+          <div className="mt-5 space-y-4">
+            {[
+              { label: '0', count: 512, width: '51.2%', accent: 'bg-indigo-500' },
+              { label: '1', count: 488, width: '48.8%', accent: 'bg-violet-500' },
+            ].map((row) => (
+              <div key={row.label}>
+                <div className="mb-1 flex items-center justify-between text-sm">
+                  <span className="font-mono text-white">{row.label}</span>
+                  <span className="font-mono text-slate-400">{row.count}</span>
+                </div>
+                <div className="h-3 rounded-full bg-slate-800">
+                  <div className={`h-3 rounded-full ${row.accent}`} style={{ width: row.width }} />
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-sm leading-relaxed text-slate-400">
+            The simulator does not return amplitudes directly. It returns a sampled distribution obtained
+            from repeated measurements.
+          </p>
+        </div>
       </div>
-      <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
-        <div className="bg-indigo-950/30 rounded-lg p-2 text-center">
-          <div className="text-indigo-300 font-bold">┤ H ├</div>
-          <div className="text-slate-500">Hadamard gate</div>
+    </DiagramFrame>
+  )
+}
+
+function GateReferenceFigure() {
+  return (
+    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+      {GATE_CARDS.map((gate) => (
+        <div key={gate.symbol} className={`rounded-xl border p-5 ${gate.frame}`}>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold text-white">{gate.name}</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-300">{gate.action}</p>
+            </div>
+            <div className={`rounded-lg border px-3 py-1.5 font-mono text-sm ${gate.badge}`}>
+              {gate.symbol}
+            </div>
+          </div>
+          <div className="mt-4 rounded-lg border border-slate-800 bg-slate-950/80 p-3 text-center">
+            <InlineMath>{gate.matrix}</InlineMath>
+          </div>
+          <p className="mt-3 font-mono text-xs text-slate-400">{gate.api}</p>
         </div>
-        <div className="bg-violet-950/30 rounded-lg p-2 text-center">
-          <div className="text-violet-300 font-bold">░</div>
-          <div className="text-slate-500">Barrier</div>
-        </div>
-        <div className="bg-green-950/30 rounded-lg p-2 text-center">
-          <div className="text-green-300 font-bold">┤M├</div>
-          <div className="text-slate-500">Measure</div>
-        </div>
-      </div>
+      ))}
     </div>
   )
 }
 
-function GateCardsVisual() {
-  const gates = [
+function BellOutcomeFigure() {
+  const rows = [
+    { bitstring: '00', status: 'Expected', note: 'Constructive support from the Bell state.', accent: 'text-emerald-300 bg-emerald-950/30 border-emerald-800/40' },
+    { bitstring: '11', status: 'Expected', note: 'Constructive support from the Bell state.', accent: 'text-emerald-300 bg-emerald-950/30 border-emerald-800/40' },
+    { bitstring: '01', status: 'Suppressed', note: 'Ideal circuit amplitude is zero.', accent: 'text-amber-300 bg-amber-950/30 border-amber-800/40' },
+    { bitstring: '10', status: 'Suppressed', note: 'Ideal circuit amplitude is zero.', accent: 'text-amber-300 bg-amber-950/30 border-amber-800/40' },
+  ]
+
+  return (
+    <DiagramFrame
+      label="Bell-state measurement structure"
+      description="For an ideal Bell pair, only the bitstrings 00 and 11 should appear after measurement."
+      aspect="16/10"
+    >
+      <div className="grid w-full gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+          <p className="text-xs uppercase tracking-widest text-slate-500">State preparation</p>
+          <div className="mt-4 space-y-3">
+            <div className="rounded-lg border border-indigo-800/40 bg-indigo-950/20 p-3">
+              <p className="text-xs uppercase tracking-widest text-indigo-300">Step 1</p>
+              <p className="mt-2 text-sm text-slate-300">Apply <InlineMath>{'H'}</InlineMath> to qubit 0.</p>
+              <p className="mt-2 font-mono text-sm text-white">{'|00⟩ → (|00⟩ + |10⟩)/√2'}</p>
+            </div>
+            <div className="rounded-lg border border-violet-800/40 bg-violet-950/20 p-3">
+              <p className="text-xs uppercase tracking-widest text-violet-300">Step 2</p>
+              <p className="mt-2 text-sm text-slate-300">Apply <InlineMath>{'CX_{0,1}'}</InlineMath>.</p>
+              <p className="mt-2 font-mono text-sm text-white">{'(|00⟩ + |10⟩)/√2 → (|00⟩ + |11⟩)/√2'}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          {rows.map((row) => (
+            <div key={row.bitstring} className={`rounded-xl border p-4 ${row.accent}`}>
+              <div className="flex items-center justify-between gap-3">
+                <span className="font-mono text-lg text-white">{row.bitstring}</span>
+                <span className="text-xs uppercase tracking-widest">{row.status}</span>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-slate-300">{row.note}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </DiagramFrame>
+  )
+}
+
+function HardwareRealityFigure() {
+  const rows = [
     {
-      symbol: 'H', name: 'Hadamard', color: 'indigo',
-      action: '|0⟩ → |+⟩ = (|0⟩+|1⟩)/√2',
-      matrix: 'H = \\tfrac{1}{\\sqrt{2}}\\begin{pmatrix} 1 & 1 \\\\ 1 & -1 \\end{pmatrix}',
+      title: 'Shots matter',
+      body: 'Finite sampling means counts wobble around the ideal probabilities.',
     },
     {
-      symbol: 'X', name: 'Pauli-X (NOT)', color: 'blue',
-      action: '|0⟩ ↔ |1⟩ (quantum flip)',
-      matrix: 'X = \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}',
+      title: 'Backends differ',
+      body: 'Available gate sets, coupling constraints, and noise properties depend on the backend.',
     },
     {
-      symbol: 'Z', name: 'Pauli-Z', color: 'violet',
-      action: '|0⟩→|0⟩, |1⟩→−|1⟩ (phase flip)',
-      matrix: 'Z = \\begin{pmatrix} 1 & 0 \\\\ 0 & -1 \\end{pmatrix}',
+      title: 'Transpilation is part of the job',
+      body: 'A circuit is a logical description first. Qiskit rewrites it to match the target machine.',
     },
     {
-      symbol: 'CX', name: 'CNOT', color: 'purple',
-      action: 'Flip target if control is |1⟩',
-      matrix: 'CX = \\begin{pmatrix} 1&0&0&0\\\\0&1&0&0\\\\0&0&0&1\\\\0&0&1&0 \\end{pmatrix}',
+      title: 'Noise changes expectations',
+      body: 'Simulator-perfect output is a baseline, not a guarantee of hardware behavior.',
     },
   ]
+
   return (
-    <div className="grid sm:grid-cols-2 gap-3 my-6">
-      {gates.map(({ symbol, name, color, action, matrix }) => (
-        <div key={symbol} className={`card border-${color}-800/30`}>
-          <div className="flex items-start gap-3 mb-3">
-            <div className={`w-12 h-12 rounded-xl bg-${color}-900/40 border border-${color}-700/50
-                             flex items-center justify-center font-mono text-${color}-300 text-lg font-bold flex-shrink-0`}>
-              {symbol}
-            </div>
-            <div>
-              <h4 className="font-semibold text-white text-sm">{name}</h4>
-              <p className={`text-xs text-${color}-300 mt-0.5 font-mono`}>{action}</p>
-            </div>
-          </div>
-          <div className="bg-slate-950 rounded-lg p-2 text-center">
-            <InlineMath>{matrix}</InlineMath>
-          </div>
+    <div className="grid gap-3 sm:grid-cols-2">
+      {rows.map((row) => (
+        <div key={row.title} className="rounded-xl border border-slate-800 bg-slate-900/70 p-5">
+          <h3 className="text-sm font-semibold text-white">{row.title}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-slate-400">{row.body}</p>
         </div>
       ))}
     </div>
   )
 }
-
-function BellCircuitVisual() {
-  return (
-    <div className="my-6 space-y-4">
-      {[
-        {
-          step: 1, title: 'Hadamard on qubit 0',
-          desc: '|00⟩ → (|00⟩ + |10⟩)/√2',
-          note: 'Qubit 0 is now in superposition. Qubit 1 is still |0⟩.',
-          color: 'indigo',
-        },
-        {
-          step: 2, title: 'CNOT (qubit 0 → qubit 1)',
-          desc: '→ (|00⟩ + |11⟩)/√2',
-          note: 'When qubit 0 is |1⟩, qubit 1 flips to |1⟩. They\'re entangled!',
-          color: 'violet',
-        },
-      ].map(({ step, title, desc, note, color }) => (
-        <div key={step} className={`card border-${color}-800/30`}>
-          <div className="flex gap-3 items-start">
-            <div className={`w-8 h-8 rounded-full bg-${color}-600 flex items-center justify-center text-sm font-bold text-white flex-shrink-0`}>
-              {step}
-            </div>
-            <div>
-              <h4 className={`font-semibold text-${color}-300 text-sm`}>{title}</h4>
-              <div className="font-mono text-white text-sm mt-1 mb-1">{desc}</div>
-              <p className="text-xs text-slate-400">{note}</p>
-            </div>
-          </div>
-        </div>
-      ))}
-      <div className="card bg-green-950/20 border-green-800/30 text-center">
-        <MathDisplay>{'|\\Phi^+\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle)'}</MathDisplay>
-        <p className="text-xs text-green-300 -mt-1">The Bell state — maximally entangled</p>
-      </div>
-    </div>
-  )
-}
-
-function NextStepsVisual() {
-  const resources = [
-    { title: 'IBM Quantum Learning', tag: 'Free', desc: 'Official IBM courses with Qiskit depth.' },
-    { title: 'Qiskit Textbook', tag: 'Free', desc: 'Interactive Jupyter notebooks at learn.qiskit.org.' },
-    { title: 'Quantum Katas', tag: 'Free', desc: "Microsoft's interactive Q# exercises." },
-    { title: 'Nielsen & Chuang', tag: 'Book', desc: 'The definitive graduate textbook on QC.' },
-  ]
-  return (
-    <div className="grid sm:grid-cols-2 gap-3 my-6">
-      {resources.map(({ title, tag, desc }) => (
-        <div key={title} className="card">
-          <div className="flex justify-between items-start mb-1">
-            <h4 className="font-semibold text-white text-sm">{title}</h4>
-            <span className="badge bg-green-900/40 text-green-400 text-xs">{tag}</span>
-          </div>
-          <p className="text-xs text-slate-400">{desc}</p>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-/* ── Lessons ──────────────────────────────────────────────────────────────── */
-
-const LESSONS = [
-  {
-    title: 'What Is Qiskit?',
-    hook: 'Qiskit is IBM\'s Python library for writing real quantum programs.',
-    bullets: [
-      'Design circuits in Python → simulate on your laptop → run on real IBM quantum hardware.',
-      'No physics degree required — if you know Python, you\'re ready.',
-      'AerSimulator lets you test circuits locally for free.',
-    ],
-    visual: <QiskitWorkflowVisual />,
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Install Qiskit:</strong></p>
-        <CodeBlock code={SETUP_CODE} language="bash" label="terminal" />
-      </div>
-    ),
-    quiz: {
-      question: 'What does AerSimulator let you do?',
-      choices: [
-        'Access IBM quantum hardware for free',
-        'Simulate quantum circuits on your laptop without real hardware',
-        'Automatically optimize your Qiskit code',
-        'Visualize the Bloch sphere in 3D',
-      ],
-      correct: 1,
-    },
-  },
-  {
-    title: 'Your First Circuit',
-    hook: 'Three gates: create a qubit, put it in superposition, measure it.',
-    bullets: [
-      <>
-        QuantumCircuit(1, 1) — 1 <GlossaryTooltip term="Qubit">qubit</GlossaryTooltip>, 1 classical bit
-        for the result.
-      </>,
-      <>
-        qc.h(0) — Hadamard <GlossaryTooltip term="Gate">gate</GlossaryTooltip> puts qubit 0 into equal{' '}
-        <GlossaryTooltip term="Superposition">superposition</GlossaryTooltip>.
-      </>,
-      'qc.measure(0, 0) — collapses qubit 0 into classical bit 0.',
-    ],
-    visual: <CircuitDiagramVisual />,
-    example: (
-      <div>
-        <CodeBlock code={FIRST_CIRCUIT} language="python" label="first_circuit.py" />
-        <CodeBlock code={RUN_CODE} language="python" label="run_circuit.py" />
-      </div>
-    ),
-    quiz: {
-      question: 'After running the H-gate circuit 1000 times, what do you expect to see?',
-      choices: [
-        'Always 0 — the qubit starts in |0⟩',
-        'Always 1 — the H gate flips the qubit',
-        'Roughly 500 zeros and 500 ones',
-        'The superposition values directly',
-      ],
-      correct: 2,
-    },
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>Important: Qiskit builds a <GlossaryTooltip term="Circuit">circuit</GlossaryTooltip>{' '}
-        <em>description</em> — nothing runs until you call
-        simulator.run(). Think of it like writing a recipe. Calling run() is when you actually cook.</p>
-        <p>Each "shot" is one run of the full circuit. The output is a count of how many times each
-        classical bit pattern appeared. You never see the raw quantum amplitudes — only the
-        statistical distribution from many measurements.</p>
-      </div>
-    ),
-  },
-  {
-    title: 'Essential Gates',
-    hook: 'H, X, Z, and CNOT are the building blocks of almost every quantum circuit.',
-    bullets: [
-      'H (Hadamard): creates superposition. The most-used gate.',
-      'X (NOT): flips |0⟩ ↔ |1⟩. The quantum equivalent of a classical NOT.',
-      'CNOT: the key entangling gate. Flips the target qubit if control is |1⟩.',
-    ],
-    visual: <GateCardsVisual />,
-    example: (
-      <CodeBlock code={GATES_CODE} language="python" label="gates.py" />
-    ),
-    quiz: {
-      question: 'What does the CNOT gate do?',
-      choices: [
-        'Creates superposition on the target qubit',
-        'Flips the target qubit if and only if the control qubit is |1⟩',
-        'Measures both qubits simultaneously',
-        'Applies a phase rotation to the target qubit',
-      ],
-      correct: 1,
-    },
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>Any quantum computation can be decomposed into single-qubit gates + CNOT. This is
-        quantum universality — these gates are the quantum analog of NAND gates in classical computing.</p>
-        <p>The Z gate doesn't change measurement probabilities (it's a phase flip), but combined with
-        H and CNOT it enables the full range of quantum operations.</p>
-      </div>
-    ),
-  },
-  {
-    title: 'Bell State: Hello, Entanglement',
-    hook: 'Two qubits, two gates, one of the most remarkable states in quantum physics.',
-    bullets: [
-      'H on qubit 0 → superposition. CNOT (0→1) → entanglement.',
-      'Result: (|00⟩ + |11⟩)/√2. Measuring always gives 00 or 11, never 01 or 10.',
-      'The qubits are perfectly correlated — even if physically separated.',
-    ],
-    visual: <BellCircuitVisual />,
-    example: (
-      <div>
-        <CodeBlock code={BELL_CODE} language="python" label="bell_state.py" />
-        <div className="card bg-green-950/20 border-green-800/30 text-sm text-slate-400 mt-3">
-          <p className="text-green-300 font-medium mb-1 text-xs">The output proves entanglement:</p>
-          <p>You always get <code className="text-green-300">00</code> or <code className="text-green-300">11</code>.
-          Never 01 or 10. Einstein called this "spooky action at a distance."
-          Quantum mechanics says: that's just how it works.</p>
-        </div>
-      </div>
-    ),
-    quiz: {
-      question: 'What is the Bell state output when you measure both qubits 1000 times?',
-      choices: [
-        'Always 00 — both qubits start in |0⟩',
-        '25% each: 00, 01, 10, 11',
-        'Roughly 50% "00" and 50% "11", never "01" or "10"',
-        '50% "01" and 50% "10"',
-      ],
-      correct: 2,
-    },
-  },
-  {
-    title: 'Where to Go Next',
-    hook: "You've learned the foundations. Now go build something real.",
-    bullets: [
-      'IBM Quantum Learning and the Qiskit Textbook are the best free next steps.',
-      'Explore Grover\'s algorithm — it uses everything you learned in this course.',
-      'Try running a circuit on real IBM hardware via the IBM Quantum cloud (free tier).',
-    ],
-    visual: <NextStepsVisual />,
-    example: (
-      <div className="card bg-indigo-950/40 border-indigo-800/50 text-center py-6">
-        <div className="text-3xl mb-3">🎉</div>
-        <h3 className="text-lg font-bold text-white mb-2">You've completed QuantumLeap!</h3>
-        <p className="text-slate-400 text-sm max-w-md mx-auto">
-          From bits vs qubits to entangled Bell states. You have the foundation to
-          explore the quantum computing universe.
-        </p>
-      </div>
-    ),
-    quiz: {
-      question: 'Which of these is a good next step after completing this course?',
-      choices: [
-        'Build a quantum circuit using only classical bits',
-        "Study Grover's algorithm, which uses superposition, interference, and measurement",
-        'Wait until quantum computers are commercially available',
-        'Learn assembly language first',
-      ],
-      correct: 1,
-    },
-  },
-]
-
-/* ── Module Page ──────────────────────────────────────────────────────────── */
 
 export default function Qiskit() {
-  const [step, setStep] = useState(0)
-  const { markDone, markLessonPassed, getLessonPassed, completed } = useProgress()
-  const passed = getLessonPassed('qiskit', LESSONS.length)
-  const allPassed = passed.every(Boolean)
-  const lesson = LESSONS[step]
-
-  useEffect(() => {
-    if (allPassed && !completed['qiskit']) markDone('qiskit')
-  }, [allPassed])
-
-  function handleQuizPass() {
-    markLessonPassed('qiskit', step)
-  }
-
   return (
     <ModuleLayout
       moduleId="qiskit"
       title="Qiskit"
-      subtitle="Write real quantum programs with IBM's Python framework."
-      stepInfo={{ current: step, total: LESSONS.length, passed }}
-      prev={{ to: '/phase', label: 'Module 3: Phase & Angles' }}
+      subtitle="Programming, simulating, and analyzing quantum circuits with IBM's Python SDK."
+      prev={{ to: '/phase', label: 'Module 3: Phase & Measurement Angles' }}
       next={{ to: '/gates', label: 'Module 5: Single-Qubit Gates' }}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.2 }}
+      <div className="space-y-5 text-sm leading-relaxed text-slate-300">
+        <p>
+          Up to this point, the handbook has focused on concepts: qubits, amplitudes, basis states,
+          phase, and measurement. Qiskit is where those ideas become executable objects. Instead of
+          talking abstractly about applying a Hadamard gate or measuring a Bell pair, you can specify a
+          circuit, run many shots, and inspect the resulting distribution.
+        </p>
+        <p>
+          This chapter is not intended as a complete software manual. Its purpose is narrower: to make
+          the programming model legible enough that later modules on gates, multi-qubit systems, and
+          machine projects can refer to real code without introducing an entirely new language at the
+          same time.
+        </p>
+      </div>
+
+      <div className="mt-8 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <PrereqList
+          items={[
+            'Comfort with single-qubit states, measurement, and phase from the previous modules.',
+            'Basic Python familiarity: imports, variables, function calls, and lists.',
+            'Willingness to read both code and circuit diagrams as two views of the same object.',
+          ]}
         >
-          <LessonCard
-            lesson={lesson}
-            lessonIndex={step}
-            totalLessons={LESSONS.length}
-            isPassed={passed[step]}
-            onPass={handleQuizPass}
-            bulletStyle={MODULE_LAYOUT_STYLES.qiskit.bullet}
-          />
+          If the phase notation still feels unstable, review{' '}
+          <Link to="/phase" className="text-indigo-400 transition-colors hover:text-indigo-300">
+            Phase &amp; Measurement Angles
+          </Link>{' '}
+          before treating the code examples here as more than syntax.
+        </PrereqList>
 
-          {step === LESSONS.length - 1 && allPassed && (
-            <div className="mt-6 p-5 rounded-2xl bg-green-950/30 border border-green-800/40 text-center">
-              <div className="text-2xl mb-2">🎉</div>
-              <p className="text-green-300 font-semibold">Module 4 complete.</p>
-              <p className="text-slate-400 text-sm mt-1">Head to Module 5 to explore single-qubit gates.</p>
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+          <p className="section-label">Learning Objectives</p>
+          <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-300">
+            <li>Understand how Qiskit separates circuit definition, execution, and result analysis.</li>
+            <li>Read the core API calls for single-qubit gates, controlled gates, and measurement.</li>
+            <li>Interpret counts from a simulator as sampled measurement data rather than exact state access.</li>
+          </ul>
+        </div>
+      </div>
+
+      <section className="mt-10">
+        <p className="section-label">Section 1</p>
+        <h2 className="section-heading">What Qiskit actually gives you</h2>
+        <p className="section-sub">
+          Qiskit is not a quantum computer. It is a software toolkit for describing circuits,
+          transforming them for a backend, executing them, and inspecting the measurement data that
+          comes back.
+        </p>
+
+        <DefinitionBox term="Qiskit">
+          Qiskit is a Python software development kit for quantum computing workflows. At the
+          introductory level, its main role is to let you define a circuit mathematically, simulate it
+          locally, and compare the measured statistics with theoretical expectations.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <ExampleBox title="Environment Setup">
+            <p>
+              The minimal local workflow is to install the base package and a simulator backend, then
+              verify that Python can import the package successfully.
+            </p>
+            <div className="mt-4">
+              <CodeBlock code={SETUP_CODE} language="bash" label="terminal" />
             </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+          </ExampleBox>
+        </div>
 
-      <StepNav
-        steps={LESSONS.length}
-        current={step}
-        passed={passed}
-        onNext={() => setStep(s => s + 1)}
-        onPrev={() => setStep(s => s - 1)}
-        onGoto={setStep}
-      />
+        <div className="mt-6">
+          <WorkflowFigure />
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            The important conceptual split is between the logical circuit and the target backend. A
+            circuit says what operation you want. A backend determines how that operation is actually
+            carried out, whether in an ideal simulator or on noisy hardware.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <p className="section-label">Section 2</p>
+        <h2 className="section-heading">A first circuit: description first, execution second</h2>
+        <p className="section-sub">
+          The core beginner mistake is to read each method call as if it executes immediately. In
+          Qiskit, you first build a circuit object. Only later do you submit it to a simulator or
+          backend for repeated measurement.
+        </p>
+
+        <DefinitionBox term="QuantumCircuit">
+          A <code className="text-slate-100">QuantumCircuit</code> object is a structured description of a quantum
+          program. It records which qubits exist, which gates are applied, and how measurement results
+          are written to classical bits.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <NotationBox symbol="QuantumCircuit(num_qubits, num_clbits)">
+            The first argument declares the quantum wires. The second declares classical storage for
+            measurement results. For a single measured qubit, <code className="text-slate-100">QuantumCircuit(1, 1)</code>{' '}
+            is enough.
+          </NotationBox>
+        </div>
+
+        <div className="mt-6 grid gap-4">
+          <CodeBlock code={FIRST_CIRCUIT} language="python" label="first_circuit.py" />
+          <CodeBlock code={RUN_CODE} language="python" label="run_circuit.py" />
+        </div>
+
+        <div className="mt-6">
+          <FirstCircuitFigure />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: Why The Counts Are Near 50/50">
+            <p>
+              Starting from <InlineMath>{'|0\\rangle'}</InlineMath>, the Hadamard gate prepares the state
+              <InlineMath>{'|+\\rangle = (|0\\rangle + |1\\rangle)/\\sqrt{2}'}</InlineMath>. Measuring in the
+              computational basis therefore yields probabilities
+              <InlineMath>{'P(0) = P(1) = 1/2'}</InlineMath>.
+            </p>
+            <p className="mt-3">
+              A run with 1000 shots will not usually produce exactly 500 zeros and 500 ones. Sampling
+              noise is expected. What matters is that the observed counts cluster around the predicted
+              distribution.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            Think of the circuit object as a blueprint rather than an imperative trace. The gate calls
+            modify the blueprint. The call to <code className="text-slate-100">run(...)</code> is what produces data.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <p className="section-label">Section 3</p>
+        <h2 className="section-heading">Reading the gate API without mysticism</h2>
+        <p className="section-sub">
+          For simple circuits, Qiskit method names track the mathematical gate names directly. That is
+          why it is worth understanding the notation before writing code: the API is thin, not magical.
+        </p>
+
+        <DefinitionBox term="Gate Application">
+          Applying a gate in Qiskit means appending a unitary operation to one or more qubit wires in
+          the circuit description. The integer arguments identify which qubits the operation acts on.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <NotationBox symbol="qc.h(0), qc.x(0), qc.z(0), qc.cx(0, 1)">
+            Single-qubit gates take one qubit index. Controlled gates take multiple indices, typically
+            listed in control-then-target order. The syntax is short because the mathematical operation
+            is the real object of interest.
+          </NotationBox>
+        </div>
+
+        <div className="mt-6">
+          <GateReferenceFigure />
+        </div>
+
+        <div className="mt-6">
+          <CodeBlock code={GATES_CODE} language="python" label="gates.py" />
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            You should not expect every backend to implement exactly the same primitive gate family.
+            One reason transpilation exists is that Qiskit may need to rewrite a logical circuit into a
+            backend-specific equivalent before execution.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <p className="section-label">Section 4</p>
+        <h2 className="section-heading">Bell states in code</h2>
+        <p className="section-sub">
+          The Bell-state example is useful because it ties together superposition, controlled operations,
+          and correlated measurement outcomes in one compact program.
+        </p>
+
+        <DefinitionBox term="Bell State">
+          A Bell state is a maximally entangled two-qubit state. The standard introductory example is
+          <InlineMath>{'|\\Phi^+\\rangle = (|00\\rangle + |11\\rangle)/\\sqrt{2}'}</InlineMath>, which produces
+          perfectly correlated computational-basis outcomes in the ideal case.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <CodeBlock code={BELL_CODE} language="python" label="bell_state.py" />
+        </div>
+
+        <div className="mt-6">
+          <BellOutcomeFigure />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: Reading The Result">
+            <MathDisplay>{'|\\Phi^+\\rangle = \\tfrac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle)'}</MathDisplay>
+            <p>
+              The ideal state has support only on <InlineMath>{'|00\\rangle'}</InlineMath> and
+              <InlineMath>{'|11\\rangle'}</InlineMath>. That is why the measured bitstrings should be
+              concentrated on <code className="text-slate-100">"00"</code> and
+              <code className="text-slate-100">"11"</code>, with no mass on
+              <code className="text-slate-100">"01"</code> or <code className="text-slate-100">"10"</code> in the
+              ideal simulation.
+            </p>
+            <p className="mt-3">
+              If you want a more guided experiment around this idea, the
+              {' '}
+              <Link to="/projects/bell-explorer" className="text-emerald-400 transition-colors hover:text-emerald-300">
+                Bell Explorer project
+              </Link>
+              {' '}turns the same circuit into a focused machine project.
+            </p>
+          </ExampleBox>
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <p className="section-label">Section 5</p>
+        <h2 className="section-heading">From simulator output to engineering judgment</h2>
+        <p className="section-sub">
+          Running a notebook cell is not yet experimental judgment. The next skill is learning what the
+          returned counts do and do not justify.
+        </p>
+
+        <DefinitionBox term="Shot">
+          A shot is one execution of the full circuit followed by measurement. Repeating many shots lets
+          you estimate the probability distribution associated with a chosen measurement basis.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <DefinitionBox term="Counts">
+            Counts are a histogram of observed classical bitstrings across repeated shots. They are
+            empirical data, not the full quantum state itself.
+          </DefinitionBox>
+        </div>
+
+        <div className="mt-6">
+          <HardwareRealityFigure />
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            Treat the simulator as a controlled baseline. If theory and ideal simulation disagree, the
+            bug is probably in the circuit logic. If ideal simulation and hardware disagree, the next
+            suspects are transpilation details, noise, calibration, or insufficient sampling.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <div className="mt-12">
+        <MistakesBox
+          items={[
+            {
+              mistake: 'Reading gate method calls as if they execute the experiment immediately.',
+              clarification:
+                'The circuit is constructed first. Execution happens only when you submit the circuit to a simulator or backend.',
+            },
+            {
+              mistake: 'Expecting counts to reveal the exact amplitudes of a state.',
+              clarification:
+                'Counts are sampled measurement outcomes. They estimate probabilities after measurement, not the full amplitude vector.',
+            },
+            {
+              mistake: 'Assuming simulator-perfect results should automatically appear on real hardware.',
+              clarification:
+                'Real devices introduce backend constraints and noise, so simulator output is a reference point, not a guarantee.',
+            },
+          ]}
+        />
+      </div>
+
+      <div className="mt-10">
+        <SummaryBox
+          points={[
+            'Qiskit separates circuit description, backend preparation, execution, and result analysis.',
+            'A QuantumCircuit object is a program specification, not an already-running experiment.',
+            'Core API calls such as h, x, z, cx, and measure map closely to the mathematical operations they name.',
+            'Shot counts are statistical measurement data, which is why interpretation matters as much as syntax.',
+          ]}
+        />
+      </div>
+
+      <section className="mt-10 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p className="section-label">Next Steps</p>
+        <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">Continue from syntax into circuit reasoning</h2>
+        <p className="mt-3 text-sm leading-relaxed text-slate-400">
+          The next module returns to the mathematics of single-qubit gates. If the code examples here
+          made the abstractions more concrete, keep that mapping active as you move back into theory.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link to="/gates" className="btn-primary">
+            Continue to Single-Qubit Gates
+          </Link>
+          <Link to="/projects/first-circuit" className="btn-secondary">
+            Try the First Circuit Project
+          </Link>
+          <Link to="/references" className="btn-secondary">
+            Open References
+          </Link>
+        </div>
+      </section>
     </ModuleLayout>
   )
 }
