@@ -6,9 +6,47 @@ import ExampleBox from '../../components/ExampleBox'
 import RemarkBox from '../../components/RemarkBox'
 import PrereqList from '../../components/PrereqList'
 import DiagramFrame from '../../components/DiagramFrame'
+import Keyword from '../../components/Keyword'
+import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
+
+const INTUITION_OUTLINE = [
+  { id: 'intuition-bits', label: 'Classical bits and qubits' },
+  { id: 'intuition-superposition', label: 'Superposition and state-space growth' },
+  { id: 'intuition-measurement', label: 'Measurement and collapse' },
+  { id: 'intuition-interference', label: 'Why interference matters' },
+  { id: 'intuition-limits', label: 'Why quantum computing matters, and its limits' },
+  { id: 'intuition-next', label: 'Next steps' },
+]
+
+function IntuitionSupport() {
+  return (
+    <>
+      <RailCard label="Core Terms" title="Foundation Vocabulary">
+        <ul className="space-y-2">
+          <li><span className="text-indigo-300">Qubit</span>: a state described relative to a basis, not a fixed classical bit value.</li>
+          <li><span className="text-emerald-300">Superposition</span>: a valid combination of basis states with amplitudes.</li>
+          <li><span className="text-amber-300">Measurement</span>: the step that turns the state description into one classical outcome.</li>
+          <li><span className="text-violet-300">Interference</span>: amplitude reinforcement or cancellation that changes probabilities.</li>
+        </ul>
+      </RailCard>
+
+      <RailCard label="Reading Lens" title="What To Watch">
+        <ul className="space-y-2">
+          <li>One measurement returns one outcome, even if the state description is richer.</li>
+          <li>Phase matters because later basis changes can expose it.</li>
+          <li>Quantum advantage is selective, not universal.</li>
+        </ul>
+        <div className="mt-4 flex flex-col gap-2">
+          <Link to="/braket" className="btn-secondary justify-center">Go To Bra-Ket</Link>
+          <Link to="/glossary" className="btn-ghost justify-center">Open Glossary</Link>
+        </div>
+      </RailCard>
+    </>
+  )
+}
 
 function ClassicalVsQuantumFigure() {
   return (
@@ -222,13 +260,17 @@ export default function Intuition() {
       moduleId="intuition"
       title="Big-Picture Intuition"
       subtitle="An introductory chapter on qubits, superposition, measurement, and why interference matters."
+      outline={INTUITION_OUTLINE}
+      aside={<IntuitionSupport />}
       next={{ to: '/braket', label: 'Module 2: Bra-Ket Notation' }}
     >
       <div className="prose-quantum max-w-none">
         <p>
-          Quantum computing begins with a different way of describing information. The classical model
-          uses bits that are always in one definite logical state. The quantum model uses state
-          descriptions that support superposition, phase, and interference.
+          Quantum computing begins with a different way of describing information. The{' '}
+          <Keyword tone="classical">classical model</Keyword> uses bits that are always in one definite
+          logical state. The quantum model uses state descriptions that support{' '}
+          <Keyword tone="superposition">superposition</Keyword>, <Keyword tone="phase">phase</Keyword>,
+          and <Keyword tone="interference">interference</Keyword>.
         </p>
         <p>
           This page is an orientation chapter rather than a full mathematical treatment. Its purpose is
@@ -255,32 +297,35 @@ export default function Intuition() {
 
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
           <p className="section-label">Learning Objectives</p>
-          <ul className="mt-3 space-y-2 text-sm text-slate-300 leading-relaxed">
-            <li>Understand how a qubit differs from a classical bit at the level of state description.</li>
-            <li>Recognize why superposition alone is not enough; measurement and interference are equally central.</li>
+          <ul className="chapter-list mt-3 space-y-2">
+            <li>Understand how a <Keyword tone="qubit">qubit</Keyword> differs from a <Keyword tone="classical">classical bit</Keyword> at the level of state description.</li>
+            <li>Recognize why <Keyword tone="superposition">superposition</Keyword> alone is not enough; <Keyword tone="measurement">measurement</Keyword> and <Keyword tone="interference">interference</Keyword> are equally central.</li>
             <li>Leave with a realistic sense of where quantum computing helps and where it does not.</li>
           </ul>
         </div>
       </div>
 
-      <section className="mt-10">
+      <section id="intuition-bits" className="mt-10 scroll-mt-28">
         <p className="section-label">Section 1</p>
         <h2 className="section-heading">Classical bits and qubits</h2>
         <p className="section-sub">
-          The first distinction is not "speed" but representation. A qubit is described relative to a
-          basis, which already makes it different from a single classical bit.
+          The first distinction is not "speed" but representation. A <Keyword tone="qubit">qubit</Keyword>{' '}
+          is described relative to a <Keyword tone="basis">basis</Keyword>, which already makes it
+          different from a single <Keyword tone="classical">classical bit</Keyword>.
         </p>
 
         <DefinitionBox term="Qubit">
-          A qubit is the basic unit of quantum information. For an introductory one-qubit system, the
-          state is described as a normalized combination of the basis states
+          A <Keyword tone="qubit">qubit</Keyword> is the basic unit of quantum information. For an
+          introductory one-qubit system, the state is described as a normalized combination of the
+          {' '}<Keyword tone="basis">basis states</Keyword>{' '}
           <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>.
         </DefinitionBox>
 
         <div className="mt-4">
           <NotationBox symbol="|ψ⟩ = α|0⟩ + β|1⟩">
             The coefficients <InlineMath>{'\\alpha'}</InlineMath> and <InlineMath>{'\\beta'}</InlineMath> are
-            amplitudes. Their squared magnitudes determine measurement probabilities, and they satisfy
+            {' '}<Keyword tone="amplitude">amplitudes</Keyword>. Their squared magnitudes determine{' '}
+            <Keyword tone="measurement">measurement probabilities</Keyword>, and they satisfy
             <InlineMath>{'|\\alpha|^2 + |\\beta|^2 = 1'}</InlineMath>.
           </NotationBox>
         </div>
@@ -291,24 +336,27 @@ export default function Intuition() {
 
         <div className="mt-6">
           <RemarkBox>
-            A qubit should not be understood as "two classical bits packed into one place." The state
-            description is richer, but a single measurement still returns one classical outcome.
+            A <Keyword tone="qubit">qubit</Keyword> should not be understood as "two classical bits packed
+            into one place." The state description is richer, but a single{' '}
+            <Keyword tone="measurement">measurement</Keyword> still returns one classical outcome.
           </RemarkBox>
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="intuition-superposition" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 2</p>
         <h2 className="section-heading">Superposition and state-space growth</h2>
         <p className="section-sub">
-          Superposition means the state can be a linear combination of basis states. For many-qubit
-          systems, that description grows exponentially with the number of qubits.
+          <Keyword tone="superposition">Superposition</Keyword> means the state can be a linear
+          combination of <Keyword tone="basis">basis states</Keyword>. For many-qubit systems, that
+          description grows exponentially with the number of qubits.
         </p>
 
         <DefinitionBox term="Superposition">
-          A superposition is a valid quantum state formed by combining basis states with amplitudes.
+          A <Keyword tone="superposition">superposition</Keyword> is a valid quantum state formed by
+          combining <Keyword tone="basis">basis states</Keyword> with <Keyword tone="amplitude">amplitudes</Keyword>.
           The state is not merely an unknown classical choice between those basis states; it is a new
-          state description that can later participate in interference.
+          state description that can later participate in <Keyword tone="interference">interference</Keyword>.
         </DefinitionBox>
 
         <div className="mt-6">
@@ -329,24 +377,27 @@ export default function Intuition() {
         <div className="mt-6">
           <RemarkBox>
             Exponential growth in the state description does not imply that you can read out all
-            <InlineMath>{'2^n'}</InlineMath> amplitudes in one measurement. The value of superposition appears
-            only when an algorithm uses it together with interference and basis-sensitive measurement.
+            {' '}<InlineMath>{'2^n'}</InlineMath>{' '}<Keyword tone="amplitude">amplitudes</Keyword> in one{' '}
+            <Keyword tone="measurement">measurement</Keyword>. The value of{' '}
+            <Keyword tone="superposition">superposition</Keyword> appears only when an algorithm uses it
+            together with <Keyword tone="interference">interference</Keyword> and basis-sensitive measurement.
           </RemarkBox>
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="intuition-measurement" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 3</p>
         <h2 className="section-heading">Measurement and collapse</h2>
         <p className="section-sub">
-          Measurement converts a quantum state into a classical outcome. The probabilities come from
-          amplitudes, and one run returns one outcome.
+          <Keyword tone="measurement">Measurement</Keyword> converts a quantum state into a classical
+          outcome. The probabilities come from <Keyword tone="amplitude">amplitudes</Keyword>, and one run
+          returns one outcome.
         </p>
 
         <DefinitionBox term="Measurement">
-          Measurement is the process of extracting a classical result from a quantum state. In the
-          computational basis, the outcome is 0 or 1 for a single qubit, with probabilities determined
-          by the state amplitudes.
+          <Keyword tone="measurement">Measurement</Keyword> is the process of extracting a classical
+          result from a quantum state. In the computational basis, the outcome is 0 or 1 for a single
+          qubit, with probabilities determined by the state <Keyword tone="amplitude">amplitudes</Keyword>.
         </DefinitionBox>
 
         <div className="mt-6">
@@ -370,23 +421,25 @@ export default function Intuition() {
         <div className="mt-6">
           <RemarkBox>
             Later modules refine this picture by showing that measurement depends on basis. For now, the
-            main point is that amplitudes control outcome probabilities rather than appearing directly as
-            observable numbers.
+            main point is that <Keyword tone="amplitude">amplitudes</Keyword> control outcome
+            probabilities rather than appearing directly as observable numbers.
           </RemarkBox>
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="intuition-interference" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 4</p>
         <h2 className="section-heading">Why interference matters</h2>
         <p className="section-sub">
-          Superposition alone does not create a useful algorithm. The advantage comes from controlling
-          amplitudes so that some outcomes are amplified while others are suppressed.
+          <Keyword tone="superposition">Superposition</Keyword> alone does not create a useful algorithm.
+          The advantage comes from controlling <Keyword tone="amplitude">amplitudes</Keyword> so that some
+          outcomes are amplified while others are suppressed.
         </p>
 
         <DefinitionBox term="Interference">
-          Interference is the way amplitudes combine. They can reinforce one another constructively or
-          cancel one another destructively, which changes the final measurement probabilities.
+          <Keyword tone="interference">Interference</Keyword> is the way amplitudes combine. They can
+          reinforce one another constructively or cancel one another destructively, which changes the
+          final <Keyword tone="measurement">measurement</Keyword> probabilities.
         </DefinitionBox>
 
         <div className="mt-6">
@@ -396,15 +449,17 @@ export default function Intuition() {
         <div className="mt-6">
           <ExampleBox title="Worked Example: Algorithmic Use">
             <p>
-              In introductory quantum algorithms, the design goal is often to route amplitude toward a
-              correct answer and away from incorrect answers. When that works, a final measurement is
-              more likely to return the desired result than a naive classical guess.
+              In introductory quantum algorithms, the design goal is often to route
+              {' '}<Keyword tone="amplitude">amplitude</Keyword> toward a correct answer and away from
+              incorrect answers. When that works, a final{' '}
+              <Keyword tone="measurement">measurement</Keyword> is more likely to return the desired result
+              than a naive classical guess.
             </p>
           </ExampleBox>
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="intuition-limits" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 5</p>
         <h2 className="section-heading">Why quantum computing matters, and its limits</h2>
         <p className="section-sub">
@@ -419,7 +474,9 @@ export default function Intuition() {
           <RemarkBox>
             Quantum computing is not a replacement for classical computing. The practical question is
             always narrower: does a specific problem have structure that an algorithm can exploit using
-            superposition, interference, and measurement?
+            <Keyword tone="superposition">superposition</Keyword>,{' '}
+            <Keyword tone="interference">interference</Keyword>, and{' '}
+            <Keyword tone="measurement">measurement</Keyword>?
           </RemarkBox>
         </div>
       </section>
@@ -457,7 +514,7 @@ export default function Intuition() {
         />
       </div>
 
-      <section className="mt-10 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+      <section id="intuition-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
         <p className="section-label">Next Steps</p>
         <h2 className="mt-3 text-2xl font-bold text-white tracking-tight">Move from intuition to notation</h2>
         <p className="mt-3 text-sm text-slate-400 leading-relaxed">

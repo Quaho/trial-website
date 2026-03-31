@@ -7,9 +7,46 @@ import ExampleBox from '../../components/ExampleBox'
 import RemarkBox from '../../components/RemarkBox'
 import PrereqList from '../../components/PrereqList'
 import DiagramFrame from '../../components/DiagramFrame'
+import Keyword from '../../components/Keyword'
+import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
+
+const PHASE_OUTLINE = [
+  { id: 'phase-probability', label: 'Phase versus probability' },
+  { id: 'phase-unit-circle', label: 'Phase on the unit circle' },
+  { id: 'phase-bloch', label: 'The full one-qubit state and the Bloch sphere' },
+  { id: 'phase-bases', label: 'Measurement bases and relative phase' },
+  { id: 'phase-algorithms', label: 'Where phase appears in algorithms' },
+  { id: 'phase-next', label: 'Next steps' },
+]
+
+function PhaseAngleSupport() {
+  return (
+    <>
+      <RailCard label="Key Symbols" title="Phase Language">
+        <ul className="space-y-2">
+          <li><span className="font-mono text-violet-300">e^(iφ)</span>: unit-magnitude complex phase factor.</li>
+          <li><span className="font-mono text-indigo-300">θ</span>: angle controlling the balance between <span className="font-mono text-indigo-300">|0⟩</span> and <span className="font-mono text-indigo-300">|1⟩</span>.</li>
+          <li><span className="font-mono text-cyan-300">φ</span>: relative phase angle between state components.</li>
+        </ul>
+      </RailCard>
+
+      <RailCard label="Reading Lens" title="What To Keep Straight">
+        <ul className="space-y-2">
+          <li>Equal probabilities do not imply identical quantum states.</li>
+          <li>Relative phase matters; global phase does not.</li>
+          <li>Basis choice determines what becomes observable.</li>
+        </ul>
+        <div className="mt-4 flex flex-col gap-2">
+          <Link to="/qiskit" className="btn-secondary justify-center">Go To Qiskit</Link>
+          <Link to="/glossary" className="btn-ghost justify-center">Open Glossary</Link>
+        </div>
+      </RailCard>
+    </>
+  )
+}
 
 function PhaseVsProbabilityFigure() {
   return (
@@ -363,19 +400,23 @@ export default function PhaseAngle() {
       moduleId="phase"
       title="Phase & Measurement Angles"
       subtitle="An introductory chapter on phase, unit-circle intuition, basis choice, and why phase drives interference."
+      outline={PHASE_OUTLINE}
+      aside={<PhaseAngleSupport />}
       prev={{ to: '/braket', label: 'Module 2: Bra-Ket Notation' }}
       next={{ to: '/qiskit', label: 'Module 4: Qiskit' }}
     >
       <div className="prose-quantum max-w-none">
         <p>
-          Once state notation is in place, the next conceptual step is phase. Phase is what makes
-          quantum amplitudes more expressive than ordinary probabilities, and it is the reason
-          interference can be used algorithmically rather than treated as a metaphor.
+          Once state notation is in place, the next conceptual step is <Keyword tone="phase">phase</Keyword>.
+          Phase is what makes quantum <Keyword tone="amplitude">amplitudes</Keyword> more expressive than
+          ordinary probabilities, and it is the reason <Keyword tone="interference">interference</Keyword>{' '}
+          can be used algorithmically rather than treated as a metaphor.
         </p>
         <p>
           This chapter introduces phase geometrically and operationally. The goal is to understand
-          what phase changes, what it does not change, and why basis choice determines whether a
-          phase difference becomes visible in measurement.
+          what <Keyword tone="phase">phase</Keyword> changes, what it does not change, and why
+          {' '}<Keyword tone="basis">basis choice</Keyword> determines whether a phase difference becomes
+          visible in <Keyword tone="measurement">measurement</Keyword>.
         </p>
       </div>
 
@@ -397,25 +438,27 @@ export default function PhaseAngle() {
 
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
           <p className="section-label">Learning Objectives</p>
-          <ul className="mt-3 space-y-2 text-sm text-slate-300 leading-relaxed">
-            <li>Understand phase as part of an amplitude, not as an extra decorative label.</li>
-            <li>See why relative phase can matter even when computational-basis probabilities do not change.</li>
-            <li>Connect unit-circle intuition, Bloch-sphere coordinates, and basis choice in one picture.</li>
+          <ul className="chapter-list mt-3 space-y-2">
+            <li>Understand <Keyword tone="phase">phase</Keyword> as part of an <Keyword tone="amplitude">amplitude</Keyword>, not as an extra decorative label.</li>
+            <li>See why relative <Keyword tone="phase">phase</Keyword> can matter even when <Keyword tone="basis">computational-basis</Keyword> probabilities do not change.</li>
+            <li>Connect unit-circle intuition, Bloch-sphere coordinates, and <Keyword tone="basis">basis choice</Keyword> in one picture.</li>
           </ul>
         </div>
       </div>
 
-      <section className="mt-10">
+      <section id="phase-probability" className="mt-10 scroll-mt-28">
         <p className="section-label">Section 1</p>
         <h2 className="section-heading">Phase versus probability</h2>
         <p className="section-sub">
-          Classical probabilities tell you how likely an outcome is. Quantum amplitudes do more than
-          that: they also carry phase, which is what allows constructive and destructive interference.
+          Classical probabilities tell you how likely an outcome is. Quantum <Keyword tone="amplitude">amplitudes</Keyword>{' '}
+          do more than that: they also carry <Keyword tone="phase">phase</Keyword>, which is what allows
+          constructive and destructive <Keyword tone="interference">interference</Keyword>.
         </p>
 
         <DefinitionBox term="Phase">
-          Phase is the directional part of a complex amplitude. It does not by itself represent
-          probability, but it changes how amplitudes combine when states or computational paths interfere.
+          <Keyword tone="phase">Phase</Keyword> is the directional part of a complex <Keyword tone="amplitude">amplitude</Keyword>.
+          It does not by itself represent probability, but it changes how amplitudes combine when states
+          or computational paths interfere.
         </DefinitionBox>
 
         <div className="mt-4">
@@ -431,7 +474,7 @@ export default function PhaseAngle() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="phase-unit-circle" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 2</p>
         <h2 className="section-heading">Phase on the unit circle</h2>
         <p className="section-sub">
@@ -459,7 +502,7 @@ export default function PhaseAngle() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="phase-bloch" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 3</p>
         <h2 className="section-heading">The full one-qubit state and the Bloch sphere</h2>
         <p className="section-sub">
@@ -485,7 +528,7 @@ export default function PhaseAngle() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="phase-bases" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 4</p>
         <h2 className="section-heading">Measurement bases and relative phase</h2>
         <p className="section-sub">
@@ -525,7 +568,7 @@ export default function PhaseAngle() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="phase-algorithms" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 5</p>
         <h2 className="section-heading">Where phase appears in algorithms</h2>
         <p className="section-sub">
@@ -589,7 +632,7 @@ export default function PhaseAngle() {
         />
       </div>
 
-      <section className="mt-10 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+      <section id="phase-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
         <p className="section-label">Next Steps</p>
         <h2 className="mt-3 text-2xl font-bold text-white tracking-tight">Move into implementation</h2>
         <p className="mt-3 text-sm text-slate-400 leading-relaxed">

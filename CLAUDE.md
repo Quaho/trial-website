@@ -244,6 +244,7 @@ This site should teach with discipline and structure.
 5. Preserve correctness while simplifying
 6. Show how concepts connect
 7. Signal what is foundational versus optional
+8. Keep strong interactive examples when they clarify the concept; if multiple interactives compete for attention, keep the primary one visible and move supplementary ones into foldable sections
 
 ### Teaching order
 - concept
@@ -284,6 +285,7 @@ Each technical section should follow a consistent structure.
 - implementation note
 - glossary links
 - reference links
+- foldable interactive aside for secondary calculators, state readers, or exploratory widgets
 
 This structure should make the site feel systematic and dependable.
 
@@ -310,6 +312,7 @@ Each page should be readable like a handbook chapter, not a slide deck.
 - **Common Mistake**
 - **Notation**
 - **Implementation Note**
+- **Foldable Interactive Aside** for useful but non-essential exploratory widgets
 
 These blocks should be visually distinct and reused consistently.
 
@@ -634,6 +637,13 @@ The references page should help learners continue independently.
 | `GlossaryTooltip` | Hover or inline term explanation |
 | `ExpandableAside` | Optional mathematical or implementation detail |
 
+When rewriting Phase 3 pages:
+- Keep the best interactive example in the main reading flow if it materially improves understanding
+- If a section accumulates too many interactives, keep only the most important one expanded
+- Move supplementary interactives into `ExpandableAside` so the chapter remains readable without removing the tool entirely
+- Apply the shared handbook body-text sizing rather than page-local body text classes
+- Color-code a few core terms per page, especially in intros, objectives, and high-value definitions; this should aid scanning without becoming decorative noise
+
 ---
 
 ## Visual System
@@ -642,6 +652,7 @@ The references page should help learners continue independently.
 Use typography that supports dense but readable technical content.
 - strong H1/H2 hierarchy
 - readable body size
+- keep handbook body text on a shared scale across rewritten pages; avoid ad hoc mixes of `text-sm` and `text-base` for equivalent body copy
 - good line spacing
 - monospaced font for code
 - clear math rendering
@@ -651,6 +662,7 @@ Use a restrained palette.
 - neutral base
 - one primary accent
 - limited secondary accents for semantic callouts
+- color-code a small, recurring set of key terms on each rewritten chapter page to improve scanning; use it sparingly and consistently
 - avoid rainbow-like module identity styling unless it serves actual structure
 
 ### Surfaces
@@ -805,4 +817,3 @@ Every review should ask:
 - [ ] Mobile readability audit
 - [ ] Math and code rendering polish
 - [ ] Final consistency review for tone and hierarchy
-

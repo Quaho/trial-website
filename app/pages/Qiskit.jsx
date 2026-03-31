@@ -7,6 +7,8 @@ import RemarkBox from '../../components/RemarkBox'
 import PrereqList from '../../components/PrereqList'
 import DiagramFrame from '../../components/DiagramFrame'
 import CodeBlock from '../../components/CodeBlock'
+import Keyword from '../../components/Keyword'
+import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
@@ -104,6 +106,42 @@ const GATE_CARDS = [
     badge: 'bg-fuchsia-900/60 text-fuchsia-300 border-fuchsia-700/50',
   },
 ]
+
+const QISKIT_OUTLINE = [
+  { id: 'qiskit-workflow', label: 'What Qiskit actually gives you' },
+  { id: 'qiskit-first-circuit', label: 'A first circuit' },
+  { id: 'qiskit-gate-api', label: 'Reading the gate API' },
+  { id: 'qiskit-bell', label: 'Bell states in code' },
+  { id: 'qiskit-judgment', label: 'From output to judgment' },
+  { id: 'qiskit-next', label: 'Next steps' },
+]
+
+function QiskitSupport() {
+  return (
+    <>
+      <RailCard label="Workflow" title="Four Things To Separate">
+        <ul className="space-y-2">
+          <li><span className="text-indigo-300">Author</span>: define qubits, gates, and measurements.</li>
+          <li><span className="text-sky-300">Transpile</span>: rewrite the logical circuit for a target backend.</li>
+          <li><span className="text-violet-300">Execute</span>: run shots on a simulator or hardware.</li>
+          <li><span className="text-emerald-300">Interpret</span>: compare counts against the theoretical distribution.</li>
+        </ul>
+      </RailCard>
+
+      <RailCard label="Reading Lens" title="What To Look For">
+        <ul className="space-y-2">
+          <li>Method calls usually build a circuit object first rather than execute immediately.</li>
+          <li>Counts are sampled measurement data, not direct amplitude access.</li>
+          <li>Bell-state output is a fast sanity check for superposition plus control logic.</li>
+        </ul>
+        <div className="mt-4 flex flex-col gap-2">
+          <Link to="/projects/bell-explorer" className="btn-secondary justify-center">Open Bell Explorer</Link>
+          <Link to="/references" className="btn-ghost justify-center">Open References</Link>
+        </div>
+      </RailCard>
+    </>
+  )
+}
 
 function WorkflowFigure() {
   const steps = [
@@ -307,19 +345,23 @@ export default function Qiskit() {
       subtitle="Programming, simulating, and analyzing quantum circuits with IBM's Python SDK."
       prev={{ to: '/phase', label: 'Module 3: Phase & Measurement Angles' }}
       next={{ to: '/gates', label: 'Module 5: Single-Qubit Gates' }}
+      outline={QISKIT_OUTLINE}
+      aside={<QiskitSupport />}
     >
-      <div className="space-y-5 text-sm leading-relaxed text-slate-300">
+      <div className="prose-quantum max-w-none">
         <p>
-          Up to this point, the handbook has focused on concepts: qubits, amplitudes, basis states,
-          phase, and measurement. Qiskit is where those ideas become executable objects. Instead of
-          talking abstractly about applying a Hadamard gate or measuring a Bell pair, you can specify a
-          circuit, run many shots, and inspect the resulting distribution.
+          Up to this point, the handbook has focused on concepts: <Keyword tone="qubit">qubits</Keyword>,{' '}
+          <Keyword tone="amplitude">amplitudes</Keyword>, <Keyword tone="basis">basis states</Keyword>,{' '}
+          <Keyword tone="phase">phase</Keyword>, and <Keyword tone="measurement">measurement</Keyword>.{' '}
+          <Keyword tone="qiskit">Qiskit</Keyword> is where those ideas become executable objects. Instead
+          of talking abstractly about applying a Hadamard gate or measuring a Bell pair, you can specify
+          a <Keyword tone="circuit">circuit</Keyword>, run many shots, and inspect the resulting distribution.
         </p>
         <p>
           This chapter is not intended as a complete software manual. Its purpose is narrower: to make
-          the programming model legible enough that later modules on gates, multi-qubit systems, and
-          machine projects can refer to real code without introducing an entirely new language at the
-          same time.
+          the programming model legible enough that later modules on <Keyword tone="gate">gates</Keyword>,
+          multi-qubit systems, and machine projects can refer to real code without introducing an entirely
+          new language at the same time.
         </p>
       </div>
 
@@ -340,27 +382,29 @@ export default function Qiskit() {
 
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
           <p className="section-label">Learning Objectives</p>
-          <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-300">
-            <li>Understand how Qiskit separates circuit definition, execution, and result analysis.</li>
-            <li>Read the core API calls for single-qubit gates, controlled gates, and measurement.</li>
-            <li>Interpret counts from a simulator as sampled measurement data rather than exact state access.</li>
+          <ul className="chapter-list mt-3 space-y-2">
+            <li>Understand how <Keyword tone="qiskit">Qiskit</Keyword> separates <Keyword tone="circuit">circuit</Keyword> definition, execution, and result analysis.</li>
+            <li>Read the core API calls for single-qubit <Keyword tone="gate">gates</Keyword>, controlled gates, and <Keyword tone="measurement">measurement</Keyword>.</li>
+            <li>Interpret counts from a simulator as sampled <Keyword tone="measurement">measurement data</Keyword> rather than exact state access.</li>
           </ul>
         </div>
       </div>
 
-      <section className="mt-10">
+      <section id="qiskit-workflow" className="mt-10 scroll-mt-28">
         <p className="section-label">Section 1</p>
         <h2 className="section-heading">What Qiskit actually gives you</h2>
         <p className="section-sub">
-          Qiskit is not a quantum computer. It is a software toolkit for describing circuits,
-          transforming them for a backend, executing them, and inspecting the measurement data that
-          comes back.
+          <Keyword tone="qiskit">Qiskit</Keyword> is not a quantum computer. It is a software toolkit for
+          describing <Keyword tone="circuit">circuits</Keyword>, transforming them for a{' '}
+          <Keyword tone="backend">backend</Keyword>, executing them, and inspecting the{' '}
+          <Keyword tone="measurement">measurement data</Keyword> that comes back.
         </p>
 
         <DefinitionBox term="Qiskit">
-          Qiskit is a Python software development kit for quantum computing workflows. At the
-          introductory level, its main role is to let you define a circuit mathematically, simulate it
-          locally, and compare the measured statistics with theoretical expectations.
+          <Keyword tone="qiskit">Qiskit</Keyword> is a Python software development kit for quantum
+          computing workflows. At the introductory level, its main role is to let you define a
+          {' '}<Keyword tone="circuit">circuit</Keyword> mathematically, simulate it locally, and compare the
+          measured statistics with theoretical expectations.
         </DefinitionBox>
 
         <div className="mt-4">
@@ -388,7 +432,7 @@ export default function Qiskit() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="qiskit-first-circuit" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 2</p>
         <h2 className="section-heading">A first circuit: description first, execution second</h2>
         <p className="section-sub">
@@ -444,7 +488,7 @@ export default function Qiskit() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="qiskit-gate-api" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 3</p>
         <h2 className="section-heading">Reading the gate API without mysticism</h2>
         <p className="section-sub">
@@ -482,7 +526,7 @@ export default function Qiskit() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="qiskit-bell" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 4</p>
         <h2 className="section-heading">Bell states in code</h2>
         <p className="section-sub">
@@ -527,7 +571,7 @@ export default function Qiskit() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="qiskit-judgment" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 5</p>
         <h2 className="section-heading">From simulator output to engineering judgment</h2>
         <p className="section-sub">
@@ -593,7 +637,7 @@ export default function Qiskit() {
         />
       </div>
 
-      <section className="mt-10 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+      <section id="qiskit-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
         <p className="section-label">Next Steps</p>
         <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">Continue from syntax into circuit reasoning</h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">

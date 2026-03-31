@@ -7,10 +7,46 @@ import ExampleBox from '../../components/ExampleBox'
 import RemarkBox from '../../components/RemarkBox'
 import PrereqList from '../../components/PrereqList'
 import DiagramFrame from '../../components/DiagramFrame'
+import Keyword from '../../components/Keyword'
+import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
+
+const BRAKET_OUTLINE = [
+  { id: 'braket-kets', label: 'Kets and the computational basis' },
+  { id: 'braket-bras', label: 'Bras as dual vectors' },
+  { id: 'braket-inner-products', label: 'Inner products and overlap' },
+  { id: 'braket-reading', label: 'Reading the notation in practice' },
+  { id: 'braket-next', label: 'Next steps' },
+]
+
+function BraKetSupport() {
+  return (
+    <>
+      <RailCard label="Core Symbols" title="Read The Notation">
+        <ul className="space-y-2">
+          <li><span className="font-mono text-indigo-300">|ψ⟩</span>: ket, the state vector.</li>
+          <li><span className="font-mono text-violet-300">⟨ψ|</span>: bra, the conjugate-transposed dual vector.</li>
+          <li><span className="font-mono text-emerald-300">⟨φ|ψ⟩</span>: inner product, measuring overlap.</li>
+        </ul>
+      </RailCard>
+
+      <RailCard label="Checkpoint" title="What This Chapter Should Clarify">
+        <ul className="space-y-2">
+          <li>Amplitudes are not probabilities until you take absolute squares.</li>
+          <li>Complex conjugation is part of the bra, not an optional flourish.</li>
+          <li>Inner products connect notation directly to measurement rules.</li>
+        </ul>
+        <div className="mt-4 flex flex-col gap-2">
+          <Link to="/phase" className="btn-secondary justify-center">Go To Phase</Link>
+          <Link to="/glossary" className="btn-ghost justify-center">Open Glossary</Link>
+        </div>
+      </RailCard>
+    </>
+  )
+}
 
 function BasisStatesFigure() {
   return (
@@ -206,20 +242,24 @@ export default function BraKet() {
       moduleId="braket"
       title="Bra-Ket Notation"
       subtitle="A careful introduction to the notation used for quantum states, dual vectors, and overlaps."
+      outline={BRAKET_OUTLINE}
+      aside={<BraKetSupport />}
       prev={{ to: '/intuition', label: 'Module 1: Big-Picture Intuition' }}
       next={{ to: '/phase', label: 'Module 3: Phase & Measurement Angles' }}
     >
       <div className="prose-quantum max-w-none">
         <p>
           Bra-ket notation, also called Dirac notation, is the compact language used throughout
-          introductory quantum computing. It lets us write basis states, general state vectors, and
-          measurement rules in a form that is concise but still mathematically precise.
+          introductory quantum computing. It lets us write <Keyword tone="basis">basis states</Keyword>,
+          general <Keyword tone="ket">state vectors</Keyword>, and <Keyword tone="measurement">measurement rules</Keyword>{' '}
+          in a form that is concise but still mathematically precise.
         </p>
         <p>
           This page introduces the notation at the single-qubit level. The goal is not to cover all
           of linear algebra, but to make the symbols readable enough that later modules on
-          <GlossaryTooltip term="Gate">gates</GlossaryTooltip>, <GlossaryTooltip term="Measurement">measurement</GlossaryTooltip>,
-          and circuits no longer feel mysterious.
+          <GlossaryTooltip term="Gate"><Keyword tone="gate">gates</Keyword></GlossaryTooltip>,{' '}
+          <GlossaryTooltip term="Measurement"><Keyword tone="measurement">measurement</Keyword></GlossaryTooltip>, and{' '}
+          <Keyword tone="circuit">circuits</Keyword> no longer feel mysterious.
         </p>
       </div>
 
@@ -240,32 +280,34 @@ export default function BraKet() {
 
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
           <p className="section-label">Learning Objectives</p>
-          <ul className="mt-3 space-y-2 text-sm text-slate-300 leading-relaxed">
-            <li>Read kets such as |0⟩, |1⟩, and |ψ⟩ as vectors rather than as decorative symbols.</li>
-            <li>Understand how bras are formed from kets and why complex conjugation matters.</li>
-            <li>Use the inner product to interpret orthogonality and measurement probability.</li>
+          <ul className="chapter-list mt-3 space-y-2">
+            <li>Read <Keyword tone="ket">kets</Keyword> such as |0⟩, |1⟩, and |ψ⟩ as vectors rather than as decorative symbols.</li>
+            <li>Understand how <Keyword tone="bra">bras</Keyword> are formed from <Keyword tone="ket">kets</Keyword> and why complex conjugation matters.</li>
+            <li>Use the <Keyword tone="inner">inner product</Keyword> to interpret orthogonality and <Keyword tone="measurement">measurement probability</Keyword>.</li>
           </ul>
         </div>
       </div>
 
-      <section className="mt-10">
+      <section id="braket-kets" className="mt-10 scroll-mt-28">
         <p className="section-label">Section 1</p>
         <h2 className="section-heading">Kets and the computational basis</h2>
         <p className="section-sub">
-          A ket is a vector that describes a quantum state. For a single qubit, the standard basis
-          consists of the two vectors |0⟩ and |1⟩.
+          A <Keyword tone="ket">ket</Keyword> is a vector that describes a quantum state. For a single{' '}
+          <Keyword tone="qubit">qubit</Keyword>, the standard <Keyword tone="basis">basis</Keyword> consists of the two vectors |0⟩ and |1⟩.
         </p>
 
         <DefinitionBox term="Ket">
-          A ket is a state vector written with a right bracket, such as <InlineMath>{'|\\psi\\rangle'}</InlineMath>.
-          In the single-qubit setting, every ket can be expressed as a linear combination of the basis
-          kets <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>.
+          A <Keyword tone="ket">ket</Keyword> is a state vector written with a right bracket, such as{' '}
+          <InlineMath>{'|\\psi\\rangle'}</InlineMath>. In the single-qubit setting, every ket can be expressed
+          as a linear combination of the <Keyword tone="basis">basis kets</Keyword>{' '}
+          <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>.
         </DefinitionBox>
 
         <div className="mt-4">
           <DefinitionBox term="Computational Basis">
-            The computational basis is the default basis used to describe one-qubit states and the
-            default basis associated with standard measurement outcomes 0 and 1.
+            The <Keyword tone="basis">computational basis</Keyword> is the default basis used to describe
+            one-qubit states and the default basis associated with standard <Keyword tone="measurement">measurement</Keyword>{' '}
+            outcomes 0 and 1.
           </DefinitionBox>
         </div>
 
@@ -302,7 +344,7 @@ export default function BraKet() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="braket-bras" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 2</p>
         <h2 className="section-heading">Bras as dual vectors</h2>
         <p className="section-sub">
@@ -338,7 +380,7 @@ export default function BraKet() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="braket-inner-products" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 3</p>
         <h2 className="section-heading">Inner products and overlap</h2>
         <p className="section-sub">
@@ -371,7 +413,7 @@ export default function BraKet() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="braket-reading" className="mt-12 scroll-mt-28">
         <p className="section-label">Section 4</p>
         <h2 className="section-heading">Reading the notation in practice</h2>
         <p className="section-sub">
@@ -420,7 +462,7 @@ export default function BraKet() {
         />
       </div>
 
-      <section className="mt-10 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+      <section id="braket-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
         <p className="section-label">Next Steps</p>
         <h2 className="mt-3 text-2xl font-bold text-white tracking-tight">Continue into phase and basis changes</h2>
         <p className="mt-3 text-sm text-slate-400 leading-relaxed">

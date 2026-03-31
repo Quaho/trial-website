@@ -9,7 +9,7 @@ export default function SummaryBox({ points }) {
       </div>
       <ul className="space-y-2">
         {points.map((p, i) => (
-          <li key={i} className="flex items-start gap-2 text-slate-300 text-sm">
+          <li key={i} className="chapter-text flex items-start gap-2">
             <span className="mt-0.5 w-5 h-5 flex-shrink-0 rounded-full bg-indigo-600/30 text-indigo-400
                              flex items-center justify-center text-xs font-bold">
               {i + 1}

@@ -18,19 +18,35 @@
 
 @layer components {
   .prose-quantum {
-    @apply text-slate-300 leading-relaxed;
+    @apply text-[0.98rem] leading-7 text-slate-300 sm:text-base;
   }
 
   .prose-quantum p {
     @apply mb-4;
   }
 
+  .prose-quantum p:last-child {
+    @apply mb-0;
+  }
+
+  .chapter-text {
+    @apply text-[0.98rem] leading-7 text-slate-300 sm:text-base;
+  }
+
+  .chapter-muted {
+    @apply text-[0.98rem] leading-7 text-slate-400 sm:text-base;
+  }
+
+  .chapter-list {
+    @apply text-[0.98rem] leading-7 text-slate-300 sm:text-base;
+  }
+
   .section-heading {
-    @apply text-2xl font-bold text-white mb-2 tracking-tight;
+    @apply mb-2 text-2xl font-bold tracking-tight text-white sm:text-[1.7rem];
   }
 
   .section-sub {
-    @apply text-slate-400 mb-6;
+    @apply mb-6 text-[0.98rem] leading-7 text-slate-400 sm:text-base;
   }
 
   .section-label {
@@ -121,8 +137,22 @@
 
 /* ── KaTeX overrides ───────────────────────────────────────────────────── */
 .katex {
-  font-size: 1.05em !important;
+  font-size: 1.07em !important;
   color: inherit;
+}
+
+.math-display {
+  font-size: 1.05rem;
+}
+
+.math-display .katex {
+  font-size: 1.28em !important;
+}
+
+@media (min-width: 640px) {
+  .math-display {
+    font-size: 1.1rem;
+  }
 }
 
 /* Prevent wide equations from overflowing on mobile */

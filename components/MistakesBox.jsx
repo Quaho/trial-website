@@ -10,8 +10,8 @@ export default function MistakesBox({ items }) {
       <ul className="space-y-3">
         {items.map(({ mistake, clarification }, i) => (
           <li key={i} className="space-y-1">
-            <p className="text-amber-200 text-sm font-medium"><span aria-hidden="true">✗ </span><span className="sr-only">Misconception: </span>{mistake}</p>
-            <p className="text-slate-400 text-sm pl-4">{clarification}</p>
+            <p className="chapter-text font-medium text-amber-200"><span aria-hidden="true">✗ </span><span className="sr-only">Misconception: </span>{mistake}</p>
+            <p className="chapter-muted pl-4">{clarification}</p>
           </li>
         ))}
       </ul>

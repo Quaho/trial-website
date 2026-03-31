@@ -7,7 +7,7 @@ export function MathInline({ children }) {
 
 export function MathDisplay({ children }) {
   return (
-    <div className="my-4 w-full overflow-x-auto">
+    <div className="math-display my-5 w-full overflow-x-auto">
       <BlockMath math={children} />
     </div>
   )

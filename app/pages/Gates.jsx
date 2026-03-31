@@ -1,63 +1,106 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
-import LessonCard from '../../components/LessonCard'
-import StepNav from '../../components/StepNav'
+import DefinitionBox from '../../components/DefinitionBox'
+import NotationBox from '../../components/NotationBox'
+import ExampleBox from '../../components/ExampleBox'
+import RemarkBox from '../../components/RemarkBox'
+import PrereqList from '../../components/PrereqList'
+import Keyword from '../../components/Keyword'
+import RailCard from '../../components/RailCard'
+import SummaryBox from '../../components/SummaryBox'
+import MistakesBox from '../../components/MistakesBox'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
-import { useProgress } from '../../lib/hooks/useProgress'
-import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
 
-/* ── Visuals ──────────────────────────────────────────────────────────────── */
+const GATES_OUTLINE = [
+  { id: 'gates-unitary', label: 'Gates are reversible transformations' },
+  { id: 'gates-x', label: 'Pauli-X' },
+  { id: 'gates-z', label: 'Pauli-Z' },
+  { id: 'gates-h', label: 'Hadamard' },
+  { id: 'gates-phase', label: 'S and T phase gates' },
+  { id: 'gates-next', label: 'Next steps' },
+]
+
+function GatesSupport() {
+  return (
+    <>
+      <RailCard label="Key Identities" title="Single-Qubit Gate Landmarks">
+        <ul className="space-y-2 font-mono text-slate-200">
+          <li>U†U = I</li>
+          <li>X² = I</li>
+          <li>H² = I</li>
+          <li>S² = Z</li>
+          <li>T² = S</li>
+        </ul>
+      </RailCard>
+
+      <RailCard label="Reading Lens" title="What This Chapter Should Settle">
+        <ul className="space-y-2">
+          <li>Gates are unitary transformations, not measurements.</li>
+          <li>X, Z, and H look different depending on the basis you use to read the state.</li>
+          <li>Phase gates matter because later operations can turn phase into observable amplitude differences.</li>
+        </ul>
+        <div className="mt-4 flex flex-col gap-2">
+          <Link to="/multiqubit" className="btn-secondary justify-center">Go To Multi-Qubit</Link>
+          <Link to="/glossary" className="btn-ghost justify-center">Review Glossary</Link>
+        </div>
+      </RailCard>
+    </>
+  )
+}
 
 function GateConceptVisual() {
   const [applied, setApplied] = useState(false)
 
   return (
-    <div className="card border-sky-800/30 my-6 text-center py-6">
-      <p className="text-xs text-sky-400 uppercase tracking-wider mb-5">
-        Quantum gate pipeline
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Interactive Check</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Unitary Action on a State</h3>
+      <p className="mt-2 text-sm leading-relaxed text-slate-400">
+        Toggle the operator <InlineMath>{'U'}</InlineMath>. The point is not animation for its own
+        sake, but the distinction between the input state <InlineMath>{'|\\psi\\rangle'}</InlineMath> and
+        the transformed state <InlineMath>{'U|\\psi\\rangle'}</InlineMath>.
       </p>
-      <div className="flex items-center justify-center gap-3 sm:gap-5 flex-wrap mb-5">
-        {/* Input state */}
-        <div className={`px-4 py-3 rounded-xl border-2 font-mono text-lg transition-all duration-300
-          ${applied
-            ? 'border-slate-700 bg-slate-900/40 text-slate-500'
-            : 'border-sky-500 bg-sky-900/30 text-sky-300'}`}>
-          |&#x03C8;&#x27E9;
+
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-5">
+        <div
+          className={`rounded-xl border-2 px-4 py-3 font-mono text-lg transition-all duration-300 ${
+            applied
+              ? 'border-slate-700 bg-slate-900/40 text-slate-500'
+              : 'border-sky-500 bg-sky-900/30 text-sky-300'
+          }`}
+        >
+          |ψ⟩
         </div>
-
-        <div className="text-slate-600 text-xl">&rarr;</div>
-
-        {/* Gate box */}
-        <div className="w-14 h-14 rounded-xl bg-sky-900/40 border-2 border-sky-600/60
-                        flex items-center justify-center text-sky-300 font-bold text-xl">
+        <div className="text-xl text-slate-600">→</div>
+        <div className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-sky-600/60 bg-sky-900/40 text-xl font-bold text-sky-300">
           U
         </div>
-
-        <div className="text-slate-600 text-xl">&rarr;</div>
-
-        {/* Output state */}
-        <div className={`px-4 py-3 rounded-xl border-2 font-mono text-lg transition-all duration-300
-          ${applied
-            ? 'border-sky-500 bg-sky-900/30 text-sky-300'
-            : 'border-slate-700 bg-slate-900/40 text-slate-500'}`}>
-          U|&#x03C8;&#x27E9;
+        <div className="text-xl text-slate-600">→</div>
+        <div
+          className={`rounded-xl border-2 px-4 py-3 font-mono text-lg transition-all duration-300 ${
+            applied
+              ? 'border-sky-500 bg-sky-900/30 text-sky-300'
+              : 'border-slate-700 bg-slate-900/40 text-slate-500'
+          }`}
+        >
+          U|ψ⟩
         </div>
       </div>
 
       <button
-        onClick={() => setApplied(a => !a)}
-        className="btn-primary text-sm"
-        aria-label={applied ? 'Reverse gate to show input state' : 'Apply gate U to the input state'}
+        onClick={() => setApplied((value) => !value)}
+        className="btn-primary mt-5 text-sm"
+        aria-label={applied ? 'Undo the unitary action' : 'Apply the unitary action'}
       >
-        {applied ? 'Reverse (apply U\u2020)' : 'Apply gate U'}
+        {applied ? 'Apply U†' : 'Apply U'}
       </button>
 
-      <p className="text-xs text-slate-500 mt-4">
-        {applied
-          ? 'The output lights up. Every gate is reversible \u2014 press to undo.'
-          : 'The input state is ready. Press to apply the gate.'}
+      <p className="mt-4 text-xs leading-relaxed text-slate-500">
+        A gate changes the state vector without measuring it. Because the operator is unitary, the
+        inverse <InlineMath>{'U^\\dagger'}</InlineMath> restores the original state.
       </p>
     </div>
   )
@@ -65,138 +108,138 @@ function GateConceptVisual() {
 
 function XGateVisual() {
   const states = [
-    { input: '|0\u27E9', output: '|1\u27E9', changed: true, desc: 'Flipped: 0 becomes 1' },
-    { input: '|1\u27E9', output: '|0\u27E9', changed: true, desc: 'Flipped: 1 becomes 0' },
-    { input: '|+\u27E9', output: '|+\u27E9', changed: false, desc: 'Unchanged! |+\u27E9 is an eigenvector of X' },
-    { input: '|\u2212\u27E9', output: '|\u2212\u27E9', changed: false, desc: 'Also unchanged \u2014 |\u2212\u27E9 is an X eigenvector too' },
+    { input: '|0⟩', output: '|1⟩', accent: 'amber', desc: 'In the computational basis, X swaps 0 and 1.' },
+    { input: '|1⟩', output: '|0⟩', accent: 'amber', desc: 'The same swap works in the opposite direction.' },
+    { input: '|+⟩', output: '|+⟩', accent: 'emerald', desc: '|+⟩ is an eigenstate of X with eigenvalue +1.' },
+    { input: '|−⟩', output: '|−⟩', accent: 'emerald', desc: '|−⟩ is preserved up to a global sign, so the physical state is unchanged.' },
   ]
   const [selected, setSelected] = useState(0)
-  const s = states[selected]
+  const current = states[selected]
+
+  const outputClass =
+    current.accent === 'amber'
+      ? 'border-amber-500/60 bg-amber-900/20 text-amber-300'
+      : 'border-emerald-500/60 bg-emerald-900/20 text-emerald-300'
+
+  const descClass = current.accent === 'amber' ? 'text-amber-400' : 'text-emerald-400'
 
   return (
-    <div className="card border-sky-800/30 my-6">
-      <p className="text-xs text-sky-400 uppercase tracking-wider mb-4 text-center">
-        X Gate \u2014 choose an input state
-      </p>
-      <div className="flex gap-2 justify-center mb-5 flex-wrap">
-        {states.map((st, i) => (
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Interactive Check</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Pauli-X Across Different Input States</h3>
+      <div className="mt-5 flex flex-wrap justify-center gap-2">
+        {states.map((state, index) => (
           <button
-            key={i}
-            onClick={() => setSelected(i)}
-            className={`px-3 py-1.5 rounded-full text-sm font-mono font-medium transition-colors
-              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-              ${i === selected
+            key={state.input}
+            onClick={() => setSelected(index)}
+            className={`rounded-full px-3 py-1.5 font-mono text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+              index === selected
                 ? 'bg-sky-600 text-white focus-visible:outline-sky-400'
-                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
-            aria-label={`Select input state ${st.input}`}
+                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'
+            }`}
+            aria-label={`Use ${state.input} as the input state`}
           >
-            {st.input}
+            {state.input}
           </button>
         ))}
       </div>
 
       <AnimatePresence mode="wait">
         <motion.div
-          key={selected}
+          key={current.input}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
-          className="flex items-center justify-center gap-3 sm:gap-5 mb-4"
+          className="mt-6 flex items-center justify-center gap-3 sm:gap-5"
         >
-          <div className="px-4 py-3 rounded-xl border-2 border-sky-600/50 bg-sky-900/20
-                          font-mono text-lg text-sky-300">
-            {s.input}
+          <div className="rounded-xl border-2 border-sky-600/50 bg-sky-900/20 px-4 py-3 font-mono text-lg text-sky-300">
+            {current.input}
           </div>
-          <div className="text-slate-600 text-xl">&rarr;</div>
-          <div className="w-12 h-12 rounded-lg bg-sky-900/40 border-2 border-sky-600/60
-                          flex items-center justify-center text-sky-300 font-bold text-lg">
+          <div className="text-xl text-slate-600">→</div>
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-sky-600/60 bg-sky-900/40 font-mono text-lg font-bold text-sky-300">
             X
           </div>
-          <div className="text-slate-600 text-xl">&rarr;</div>
-          <div className={`px-4 py-3 rounded-xl border-2 font-mono text-lg transition-colors
-            ${s.changed
-              ? 'border-amber-500/60 bg-amber-900/20 text-amber-300'
-              : 'border-green-500/60 bg-green-900/20 text-green-300'}`}>
-            {s.output}
+          <div className="text-xl text-slate-600">→</div>
+          <div className={`rounded-xl border-2 px-4 py-3 font-mono text-lg ${outputClass}`}>
+            {current.output}
           </div>
         </motion.div>
       </AnimatePresence>
 
-      <p className={`text-center text-sm font-medium
-        ${s.changed ? 'text-amber-400' : 'text-green-400'}`}>
-        {s.desc}
-      </p>
+      <p className={`mt-4 text-center text-sm font-medium ${descClass}`}>{current.desc}</p>
     </div>
   )
 }
 
 function ZGateVisual() {
   return (
-    <div className="card border-sky-800/30 my-6">
-      <p className="text-xs text-sky-400 uppercase tracking-wider mb-3 text-center">
-        Z applied to |+&#x27E9;
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Interactive Check</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Why Z Looks Invisible in One Basis and Obvious in Another</h3>
+      <p className="mt-2 text-sm leading-relaxed text-slate-400">
+        Start with <InlineMath>{'|+\\rangle'}</InlineMath>. Applying <InlineMath>{'Z'}</InlineMath> changes
+        relative phase, so the computational-basis probabilities stay the same even though the state has changed.
       </p>
-      <div className="text-center mb-5">
-        <p className="font-mono text-sky-300 text-base sm:text-lg">
-          Z|+&#x27E9; = (|0&#x27E9; &minus; |1&#x27E9;) / &radic;2 = |&minus;&#x27E9;
+
+      <div className="mt-5 text-center">
+        <p className="font-mono text-base text-sky-300 sm:text-lg">
+          Z|+⟩ = (|0⟩ − |1⟩) / √2 = |−⟩
         </p>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        {/* Z-basis measurement */}
-        <div className="bg-slate-900/60 rounded-xl p-4">
-          <p className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-medium">
-            Z-basis measurement
-          </p>
-          <div className="space-y-3">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+          <p className="text-xs font-medium uppercase tracking-widest text-slate-500">Measure in Z basis</p>
+          <div className="mt-4 space-y-3">
             <div>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-slate-300 font-mono">|0&#x27E9;</span>
+              <div className="mb-1 flex justify-between text-xs">
+                <span className="font-mono text-slate-300">|0⟩</span>
                 <span className="text-slate-400">50%</span>
               </div>
-              <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-sky-500/70 rounded-full" style={{ width: '50%' }} />
+              <div className="h-3 overflow-hidden rounded-full bg-slate-800">
+                <div className="h-full rounded-full bg-sky-500/70" style={{ width: '50%' }} />
               </div>
             </div>
             <div>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-slate-300 font-mono">|1&#x27E9;</span>
+              <div className="mb-1 flex justify-between text-xs">
+                <span className="font-mono text-slate-300">|1⟩</span>
                 <span className="text-slate-400">50%</span>
               </div>
-              <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-sky-500/70 rounded-full" style={{ width: '50%' }} />
+              <div className="h-3 overflow-hidden rounded-full bg-slate-800">
+                <div className="h-full rounded-full bg-sky-500/70" style={{ width: '50%' }} />
               </div>
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-3">Same as |+&#x27E9; &mdash; Z is invisible here</p>
+          <p className="mt-3 text-xs text-slate-500">
+            The outcome distribution matches the original <InlineMath>{'|+\\rangle'}</InlineMath> state.
+          </p>
         </div>
 
-        {/* X-basis measurement */}
-        <div className="bg-slate-900/60 rounded-xl p-4">
-          <p className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-medium">
-            X-basis measurement
-          </p>
-          <div className="space-y-3">
+        <div className="rounded-xl border border-violet-800/40 bg-violet-950/20 p-4">
+          <p className="text-xs font-medium uppercase tracking-widest text-violet-300">Measure in X basis</p>
+          <div className="mt-4 space-y-3">
             <div>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-slate-300 font-mono">|+&#x27E9;</span>
+              <div className="mb-1 flex justify-between text-xs">
+                <span className="font-mono text-slate-300">|+⟩</span>
                 <span className="text-slate-400">0%</span>
               </div>
-              <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-red-500/70 rounded-full" style={{ width: '0%' }} />
+              <div className="h-3 overflow-hidden rounded-full bg-slate-800">
+                <div className="h-full rounded-full bg-red-500/70" style={{ width: '0%' }} />
               </div>
             </div>
             <div>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-slate-300 font-mono">|&minus;&#x27E9;</span>
+              <div className="mb-1 flex justify-between text-xs">
+                <span className="font-mono text-slate-300">|−⟩</span>
                 <span className="text-amber-400">100%</span>
               </div>
-              <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
-                <div className="h-full bg-amber-500/70 rounded-full" style={{ width: '100%' }} />
+              <div className="h-3 overflow-hidden rounded-full bg-slate-800">
+                <div className="h-full rounded-full bg-amber-500/70" style={{ width: '100%' }} />
               </div>
             </div>
           </div>
-          <p className="text-xs text-amber-400 mt-3">Completely flipped &mdash; phase matters here!</p>
+          <p className="mt-3 text-xs text-violet-300">
+            Basis change converts the relative phase into a detectable difference.
+          </p>
         </div>
       </div>
     </div>
@@ -205,65 +248,60 @@ function ZGateVisual() {
 
 function HadamardVisual() {
   const states = [
-    { input: '|0\u27E9', output: '|+\u27E9', desc: 'Definite 0 \u2192 equal superposition' },
-    { input: '|1\u27E9', output: '|\u2212\u27E9', desc: 'Definite 1 \u2192 superposition with minus sign' },
-    { input: '|+\u27E9', output: '|0\u27E9', desc: 'Superposition \u2192 back to definite 0' },
-    { input: '|\u2212\u27E9', output: '|1\u27E9', desc: 'Superposition \u2192 back to definite 1' },
+    { input: '|0⟩', output: '|+⟩', desc: 'Maps a Z-basis state into an X-basis superposition.' },
+    { input: '|1⟩', output: '|−⟩', desc: 'The minus sign distinguishes the second X-basis vector.' },
+    { input: '|+⟩', output: '|0⟩', desc: 'Running H again moves back from the X basis into the Z basis.' },
+    { input: '|−⟩', output: '|1⟩', desc: 'This is why H is its own inverse: H² = I.' },
   ]
   const [selected, setSelected] = useState(0)
-  const s = states[selected]
-  const isCreating = selected < 2
+  const current = states[selected]
 
   return (
-    <div className="card border-sky-800/30 my-6">
-      <p className="text-xs text-sky-400 uppercase tracking-wider mb-4 text-center">
-        Hadamard gate &mdash; choose an input state
-      </p>
-      <div className="flex gap-2 justify-center mb-5 flex-wrap">
-        {states.map((st, i) => (
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Interactive Check</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Hadamard as a Basis-Change Operator</h3>
+      <div className="mt-5 flex flex-wrap justify-center gap-2">
+        {states.map((state, index) => (
           <button
-            key={i}
-            onClick={() => setSelected(i)}
-            className={`px-3 py-1.5 rounded-full text-sm font-mono font-medium transition-colors
-              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-              ${i === selected
+            key={state.input}
+            onClick={() => setSelected(index)}
+            className={`rounded-full px-3 py-1.5 font-mono text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
+              index === selected
                 ? 'bg-sky-600 text-white focus-visible:outline-sky-400'
-                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
-            aria-label={`Select input state ${st.input}`}
+                : 'bg-slate-800 text-slate-400 hover:text-white focus-visible:outline-slate-400'
+            }`}
+            aria-label={`Use ${state.input} as the Hadamard input`}
           >
-            {st.input}
+            {state.input}
           </button>
         ))}
       </div>
 
       <AnimatePresence mode="wait">
         <motion.div
-          key={selected}
+          key={current.input}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
-          className="flex items-center justify-center gap-3 sm:gap-5 mb-4"
+          className="mt-6 flex items-center justify-center gap-3 sm:gap-5"
         >
-          <div className="px-4 py-3 rounded-xl border-2 border-sky-600/50 bg-sky-900/20
-                          font-mono text-lg text-sky-300">
-            {s.input}
+          <div className="rounded-xl border-2 border-sky-600/50 bg-sky-900/20 px-4 py-3 font-mono text-lg text-sky-300">
+            {current.input}
           </div>
-          <div className="text-slate-600 text-xl">&rarr;</div>
-          <div className="w-12 h-12 rounded-lg bg-sky-900/40 border-2 border-sky-600/60
-                          flex items-center justify-center text-sky-300 font-bold text-lg">
+          <div className="text-xl text-slate-600">→</div>
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-sky-600/60 bg-sky-900/40 font-mono text-lg font-bold text-sky-300">
             H
           </div>
-          <div className="text-slate-600 text-xl">&rarr;</div>
-          <div className="px-4 py-3 rounded-xl border-2 border-sky-500/60 bg-sky-900/20
-                          font-mono text-lg text-sky-300">
-            {s.output}
+          <div className="text-xl text-slate-600">→</div>
+          <div className="rounded-xl border-2 border-sky-500/60 bg-sky-900/20 px-4 py-3 font-mono text-lg text-sky-300">
+            {current.output}
           </div>
         </motion.div>
       </AnimatePresence>
 
-      <p className="text-center text-sm font-medium text-sky-400">{s.desc}</p>
-      <p className="text-center text-xs text-slate-500 mt-2">
-        {isCreating ? 'Creates superposition' : 'Collapses superposition'}
+      <p className="mt-4 text-center text-sm font-medium text-sky-400">{current.desc}</p>
+      <p className="mt-2 text-center text-xs text-slate-500">
+        The Hadamard gate changes basis. It does not measure the qubit and it does not "collapse" anything.
       </p>
     </div>
   )
@@ -271,74 +309,100 @@ function HadamardVisual() {
 
 function PhaseGatesVisual() {
   const gates = [
-    { label: 'T', angle: 45, color: '#f97316', desc: '\u03C0/4 (45\u00B0)' },
-    { label: 'S', angle: 90, color: '#8b5cf6', desc: '\u03C0/2 (90\u00B0)' },
-    { label: 'Z', angle: 180, color: '#38bdf8', desc: '\u03C0 (180\u00B0)' },
+    { label: 'T', angle: 45, color: '#f97316', desc: 'π/4 rotation' },
+    { label: 'S', angle: 90, color: '#8b5cf6', desc: 'π/2 rotation' },
+    { label: 'Z', angle: 180, color: '#38bdf8', desc: 'π rotation' },
   ]
 
-  const cx = 80, cy = 80, r = 58
+  const cx = 80
+  const cy = 80
+  const radius = 58
 
-  function toXY(deg) {
-    const rad = (deg * Math.PI) / 180
-    return { x: cx + r * Math.cos(rad), y: cy - r * Math.sin(rad) }
+  function toXY(degrees) {
+    const radians = (degrees * Math.PI) / 180
+    return { x: cx + radius * Math.cos(radians), y: cy - radius * Math.sin(radians) }
   }
 
-  function arcPath(deg) {
-    const rad = (deg * Math.PI) / 180
-    const ex = cx + r * Math.cos(rad)
-    const ey = cy - r * Math.sin(rad)
-    const large = deg > 180 ? 1 : 0
-    return `M ${cx + r} ${cy} A ${r} ${r} 0 ${large} 0 ${ex} ${ey}`
+  function arcPath(degrees) {
+    const radians = (degrees * Math.PI) / 180
+    const endX = cx + radius * Math.cos(radians)
+    const endY = cy - radius * Math.sin(radians)
+    const largeArc = degrees > 180 ? 1 : 0
+    return `M ${cx + radius} ${cy} A ${radius} ${radius} 0 ${largeArc} 0 ${endX} ${endY}`
   }
 
   return (
-    <div className="card border-sky-800/30 my-6">
-      <p className="text-xs text-sky-400 uppercase tracking-wider mb-4 text-center">
-        Phase gates on the unit circle
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Interactive Map</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Nested Z-Axis Rotations</h3>
+      <p className="mt-2 text-sm leading-relaxed text-slate-400">
+        The gates <InlineMath>{'T'}</InlineMath>, <InlineMath>{'S'}</InlineMath>, and <InlineMath>{'Z'}</InlineMath>{' '}
+        sit on the same rotational family. The only difference is the angle added to the phase of the
+        <InlineMath>{'|1\\rangle'}</InlineMath> component.
       </p>
-      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-        <svg viewBox="0 0 160 160" className="w-32 h-32 sm:w-44 sm:h-44 flex-shrink-0" role="img"
-             aria-label="Unit circle showing T at 45 degrees, S at 90 degrees, and Z at 180 degrees">
-          {/* Circle */}
-          <circle cx={cx} cy={cy} r={r} fill="none" stroke="#334155" strokeWidth="1.5" />
-          {/* Axes */}
-          <line x1={cx - r - 8} y1={cy} x2={cx + r + 8} y2={cy} stroke="#475569" strokeWidth="1" />
-          <line x1={cx} y1={cy - r - 8} x2={cx} y2={cy + r + 8} stroke="#475569" strokeWidth="1" />
-          {/* Start point (1) */}
-          <circle cx={cx + r} cy={cy} r={4} fill="#94a3b8" />
-          <text x={cx + r + 6} y={cy + 4} fill="#94a3b8" fontSize="9" fontFamily="monospace">1</text>
-          {/* Arcs and endpoints */}
-          {gates.map(({ label, angle, color }) => {
-            const pt = toXY(angle)
+
+      <div className="mt-5 flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-6">
+        <svg
+          viewBox="0 0 160 160"
+          className="h-32 w-32 flex-shrink-0 sm:h-44 sm:w-44"
+          role="img"
+          aria-label="Unit circle showing T at 45 degrees, S at 90 degrees, and Z at 180 degrees"
+        >
+          <circle cx={cx} cy={cy} r={radius} fill="none" stroke="#334155" strokeWidth="1.5" />
+          <line x1={cx - radius - 8} y1={cy} x2={cx + radius + 8} y2={cy} stroke="#475569" strokeWidth="1" />
+          <line x1={cx} y1={cy - radius - 8} x2={cx} y2={cy + radius + 8} stroke="#475569" strokeWidth="1" />
+          <circle cx={cx + radius} cy={cy} r={4} fill="#94a3b8" />
+          <text x={cx + radius + 6} y={cy + 4} fill="#94a3b8" fontFamily="monospace" fontSize="9">1</text>
+
+          {gates.map((gate) => {
+            const point = toXY(gate.angle)
             return (
-              <g key={label}>
-                <path d={arcPath(angle)} fill="none" stroke={color} strokeWidth="2" opacity="0.5"
-                      strokeDasharray="4 3" />
-                <circle cx={pt.x} cy={pt.y} r={5} fill={color} />
-                <text x={pt.x + (angle <= 90 ? 8 : -16)} y={pt.y + (angle <= 90 ? -6 : 4)}
-                      fill={color} fontSize="11" fontWeight="bold" fontFamily="monospace">{label}</text>
+              <g key={gate.label}>
+                <path
+                  d={arcPath(gate.angle)}
+                  fill="none"
+                  stroke={gate.color}
+                  strokeDasharray="4 3"
+                  strokeWidth="2"
+                  opacity="0.5"
+                />
+                <circle cx={point.x} cy={point.y} r={5} fill={gate.color} />
+                <text
+                  x={point.x + (gate.angle <= 90 ? 8 : -16)}
+                  y={point.y + (gate.angle <= 90 ? -6 : 4)}
+                  fill={gate.color}
+                  fontFamily="monospace"
+                  fontSize="11"
+                  fontWeight="bold"
+                >
+                  {gate.label}
+                </text>
               </g>
             )
           })}
-          <text x={cx + 2} y={cy - r - 4} fill="#64748b" fontSize="9">Im</text>
-          <text x={cx + r + 4} y={cy + 12} fill="#64748b" fontSize="9">Re</text>
+
+          <text x={cx + 2} y={cy - radius - 4} fill="#64748b" fontSize="9">Im</text>
+          <text x={cx + radius + 4} y={cy + 12} fill="#64748b" fontSize="9">Re</text>
         </svg>
 
-        <div className="flex-1 space-y-3 w-full">
-          {gates.map(({ label, desc, color }) => (
-            <div key={label} className="flex items-center gap-3 bg-slate-900/50 rounded-lg p-3">
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center font-bold font-mono text-base flex-shrink-0"
-                   style={{ backgroundColor: color + '20', border: `1px solid ${color}50`, color }}>
-                {label}
+        <div className="w-full flex-1 space-y-3">
+          {gates.map((gate) => (
+            <div key={gate.label} className="flex items-center gap-3 rounded-lg bg-slate-900/50 p-3">
+              <div
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg font-mono text-base font-bold"
+                style={{ backgroundColor: `${gate.color}20`, border: `1px solid ${gate.color}50`, color: gate.color }}
+              >
+                {gate.label}
               </div>
               <div>
-                <span className="text-sm text-white font-medium">{label} gate</span>
-                <span className="text-sm text-slate-400"> &mdash; phase {desc}</span>
+                <span className="text-sm font-medium text-white">{gate.label} gate</span>
+                <span className="text-sm text-slate-400"> adds a {gate.desc} around the Z axis.</span>
               </div>
             </div>
           ))}
-          <p className="text-xs text-slate-500 pl-1">
-            T&sup2; = S &middot; S&sup2; = Z &middot; Each is half the previous.
+          <p className="pl-1 text-xs text-slate-500">
+            The algebraic relationships <InlineMath>{'T^2 = S'}</InlineMath> and <InlineMath>{'S^2 = Z'}</InlineMath>{' '}
+            reflect the same nesting shown geometrically here.
           </p>
         </div>
       </div>
@@ -348,26 +412,25 @@ function PhaseGatesVisual() {
 
 function GateSummaryVisual() {
   const gates = [
-    { sym: 'X', name: 'Bit Flip', action: '|0\u27E9\u2194|1\u27E9', axis: '180\u00B0 around X-axis' },
-    { sym: 'Z', name: 'Phase Flip', action: '|1\u27E9\u2192\u2212|1\u27E9', axis: '180\u00B0 around Z-axis' },
-    { sym: 'H', name: 'Hadamard', action: 'Z\u2194X basis', axis: '180\u00B0 around (X+Z)/\u221A2' },
-    { sym: 'S', name: 'Phase \u03C0/2', action: '|1\u27E9\u2192i|1\u27E9', axis: '90\u00B0 around Z-axis' },
-    { sym: 'T', name: 'Phase \u03C0/4', action: '|1\u27E9\u2192e^(i\u03C0/4)|1\u27E9', axis: '45\u00B0 around Z-axis' },
-    { sym: 'Y', name: 'Bit+Phase', action: '|0\u27E9\u2194i|1\u27E9', axis: '180\u00B0 around Y-axis' },
+    { symbol: 'X', name: 'Bit flip', action: '|0⟩ ↔ |1⟩', axis: '180° around X' },
+    { symbol: 'Y', name: 'Bit + phase', action: '|0⟩ ↔ i|1⟩', axis: '180° around Y' },
+    { symbol: 'Z', name: 'Phase flip', action: '|1⟩ → −|1⟩', axis: '180° around Z' },
+    { symbol: 'H', name: 'Basis change', action: 'Z basis ↔ X basis', axis: 'Bridge between bases' },
+    { symbol: 'S', name: 'Quarter-turn phase', action: '|1⟩ → i|1⟩', axis: '90° around Z' },
+    { symbol: 'T', name: 'Eighth-turn phase', action: '|1⟩ → e^(iπ/4)|1⟩', axis: '45° around Z' },
   ]
 
   return (
-    <div className="grid sm:grid-cols-2 gap-3 my-6">
-      {gates.map(({ sym, name, action, axis }) => (
-        <div key={sym} className="card flex gap-3 items-start">
-          <div className="w-10 h-10 rounded-lg bg-sky-900/40 border border-sky-700/50
-                          flex items-center justify-center text-sky-400 font-bold font-mono text-lg flex-shrink-0">
-            {sym}
+    <div className="grid gap-3 sm:grid-cols-2">
+      {gates.map((gate) => (
+        <div key={gate.symbol} className="flex items-start gap-3 rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-sky-700/50 bg-sky-900/40 font-mono text-lg font-bold text-sky-400">
+            {gate.symbol}
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-white">{name}</p>
-            <p className="font-mono text-sky-400 text-xs mt-0.5">{action}</p>
-            <p className="text-xs text-slate-500 mt-0.5">{axis}</p>
+            <p className="text-sm font-semibold text-white">{gate.name}</p>
+            <p className="mt-0.5 font-mono text-xs text-sky-400">{gate.action}</p>
+            <p className="mt-0.5 text-xs text-slate-500">{gate.axis}</p>
           </div>
         </div>
       ))}
@@ -375,304 +438,327 @@ function GateSummaryVisual() {
   )
 }
 
-/* ── Lessons ──────────────────────────────────────────────────────────────── */
-
-const LESSONS = [
-  {
-    title: 'Gates as Actions',
-    hook: 'A quantum gate rotates a qubit\u2019s state \u2014 reversibly, without measuring it.',
-    hookSub: 'Gates are the verbs of quantum computing.',
-    visual: <GateConceptVisual />,
-    bullets: [
-      <>
-        Every <GlossaryTooltip term="Gate">gate</GlossaryTooltip> is a{' '}
-        <GlossaryTooltip term="Unitary">unitary</GlossaryTooltip> matrix \u2014 it preserves probabilities
-        and is always reversible.
-      </>,
-      <>
-        Gates rotate the <GlossaryTooltip term="Qubit">qubit</GlossaryTooltip> state on the Bloch sphere.
-        Different gates rotate around different axes.
-      </>,
-      'Combining gates in sequence builds algorithms \u2014 like assembling a recipe from steps.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Analogy:</strong> A quantum gate is like a Rubik&apos;s cube move.
-        Every move has a reverse. No information is lost.</p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>Unitarity means <InlineMath>{'U^\\dagger U = I'}</InlineMath>. Every gate has an inverse
-        that perfectly undoes it. This is fundamentally different from classical computing where gates
-        like AND and OR are irreversible &mdash; you can&apos;t recover the inputs from the output.</p>
-        <p>Reversibility is not optional. Quantum mechanics requires all evolution
-        (except measurement) to be unitary. This constraint is what makes quantum error
-        correction possible.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'What property must every quantum gate have?',
-      choices: [
-        'It must double the number of qubits',
-        'It must be reversible (unitary)',
-        'It must create superposition',
-        'It must measure the qubit',
-      ],
-      correct: 1,
-    },
-  },
-  {
-    title: 'The X Gate (Bit Flip)',
-    hook: 'The X gate swaps |0\u27E9 and |1\u27E9 \u2014 the quantum NOT gate.',
-    visual: <XGateVisual />,
-    bullets: [
-      'X|0\u27E9 = |1\u27E9 and X|1\u27E9 = |0\u27E9. It flips the computational basis states.',
-      'On the Bloch sphere, X is a 180\u00B0 rotation around the x-axis.',
-      'Apply X twice and you\u2019re back: XX = I. Every flip can be unflipped.',
-    ],
-    example: (
-      <div>
-        <MathDisplay>{'X = \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}'}</MathDisplay>
-        <p className="text-xs text-slate-500 text-center -mt-2">
-          The X matrix: swap the top and bottom entries of any state vector.
-        </p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p><InlineMath>{'X|+\\rangle = |+\\rangle'}</InlineMath> because <InlineMath>{'|+\\rangle'}</InlineMath> is
-        an eigenvector of X with eigenvalue +1.
-        Similarly, <InlineMath>{'X|-\\rangle = -|-\\rangle'}</InlineMath> with eigenvalue &minus;1.</p>
-        <p>X is one of the three Pauli matrices (X, Y, Z). Each is Hermitian
-        (<InlineMath>{'X = X^\\dagger'}</InlineMath>), unitary, and its own
-        inverse (<InlineMath>{'X^2 = I'}</InlineMath>). They form the basis of single-qubit error
-        descriptions.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'What is X applied to |+\u27E9 = (|0\u27E9 + |1\u27E9)/\u221A2?',
-      choices: [
-        '|\u2212\u27E9 = (|0\u27E9 \u2212 |1\u27E9)/\u221A2',
-        '|0\u27E9',
-        '|+\u27E9 (unchanged)',
-        '|1\u27E9',
-      ],
-      correct: 2,
-    },
-  },
-  {
-    title: 'The Z Gate (Phase Flip)',
-    hook: 'The Z gate flips the sign of |1\u27E9 \u2014 invisible in Z, game-changing in X.',
-    hookSub: 'Phase changes are silent \u2014 until you look from a different angle.',
-    visual: <ZGateVisual />,
-    bullets: [
-      <>
-        Z|0\u27E9 = |0\u27E9 and Z|1\u27E9 = \u2212|1\u27E9. Only the{' '}
-        <GlossaryTooltip term="Phase">phase</GlossaryTooltip> of |1\u27E9 changes.
-      </>,
-      'Measure in Z basis: probabilities are identical. Z is completely invisible.',
-      'Measure in X basis: Z turns |+\u27E9 into |\u2212\u27E9. The phase flip is now detectable.',
-    ],
-    example: (
-      <div>
-        <MathDisplay>{'Z|+\\rangle = Z \\frac{|0\\rangle + |1\\rangle}{\\sqrt{2}} = \\frac{|0\\rangle - |1\\rangle}{\\sqrt{2}} = |-\\rangle'}</MathDisplay>
-        <p className="text-xs text-slate-500 text-center -mt-2">
-          Z flips the relative phase: + becomes &minus;. Probabilities in Z basis? Still 50/50.
-        </p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>Z is diagonal: <InlineMath>{'Z = \\text{diag}(1, -1)'}</InlineMath>. Diagonal matrices only
-        affect phases, never probabilities in the computational basis. That is why Z
-        is &ldquo;invisible&rdquo; when measured in the Z basis.</p>
-        <p>To detect a Z gate, change your measurement basis. Applying H before measuring
-        converts a Z-basis measurement into an X-basis measurement, revealing the phase flip.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'If you apply Z to |0\u27E9 and measure in the Z basis, what do you get?',
-      choices: [
-        'Always 1 \u2014 Z flips everything',
-        'Always 0 \u2014 Z leaves |0\u27E9 unchanged',
-        '50/50 \u2014 Z creates superposition',
-        'An error \u2014 Z can\u2019t be applied to |0\u27E9',
-      ],
-      correct: 1,
-    },
-  },
-  {
-    title: 'The Hadamard Gate',
-    hook: 'The Hadamard gate is the bridge between definite states and superposition.',
-    hookSub: 'It\u2019s the most-used gate in quantum computing \u2014 and it\u2019s its own inverse.',
-    visual: <HadamardVisual />,
-    bullets: [
-      <>
-        The <GlossaryTooltip term="Hadamard">Hadamard</GlossaryTooltip> gate maps |0\u27E9 to |+\u27E9 and
-        |1\u27E9 to |\u2212\u27E9. It creates superposition from definite states.
-      </>,
-      'H|+\u27E9 = |0\u27E9 and H|\u2212\u27E9 = |1\u27E9. Applied again, it undoes itself: HH = I.',
-      'H converts between Z-basis and X-basis \u2014 it starts nearly every quantum algorithm.',
-    ],
-    example: (
-      <div>
-        <MathDisplay>{'H = \\frac{1}{\\sqrt{2}} \\begin{pmatrix} 1 & 1 \\\\ 1 & -1 \\end{pmatrix} \\qquad H^2 = I'}</MathDisplay>
-        <p className="text-xs text-slate-500 text-center -mt-2">
-          H is symmetric and self-inverse. Apply it twice and nothing changes.
-        </p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>Geometrically, H is a 180&deg; rotation around the (X+Z)/&radic;2 axis on the Bloch sphere.
-        It swaps the north pole (|0&#x27E9;) with the +x point (|+&#x27E9;).</p>
-        <p>Applied to n qubits in parallel, <InlineMath>{'H^{\\otimes n}|0\\rangle^{\\otimes n}'}</InlineMath> produces
-        an equal superposition of all <InlineMath>{'2^n'}</InlineMath> computational basis states.
-        This is why H appears at the start of nearly every quantum algorithm.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'What is H applied twice to any state |\u03C8\u27E9?',
-      choices: [
-        'A random state \u2014 double superposition',
-        '|\u03C8\u27E9 \u2014 back to the original state',
-        '|0\u27E9 \u2014 everything resets',
-        'An entangled state',
-      ],
-      correct: 1,
-    },
-  },
-  {
-    title: 'S and T Gates',
-    hook: 'S and T are fractional Z rotations \u2014 the precision tools of quantum circuits.',
-    hookSub: 'Z rotates by \u03C0. S by \u03C0/2. T by \u03C0/4.',
-    visual: <PhaseGatesVisual />,
-    bullets: [
-      'S adds 90\u00B0 phase to |1\u27E9: S|1\u27E9 = i|1\u27E9. Think of it as the square root of Z.',
-      'T adds 45\u00B0 phase to |1\u27E9: T|1\u27E9 = e^(i\u03C0/4)|1\u27E9. It\u2019s the square root of S.',
-      'T\u00B2 = S and S\u00B2 = Z. These fractional rotations enable precise phase control.',
-    ],
-    example: (
-      <div>
-        <MathDisplay>{'S = \\begin{pmatrix} 1 & 0 \\\\ 0 & i \\end{pmatrix} \\qquad T = \\begin{pmatrix} 1 & 0 \\\\ 0 & e^{i\\pi/4} \\end{pmatrix}'}</MathDisplay>
-        <p className="text-xs text-slate-500 text-center -mt-2">
-          Both are diagonal &mdash; they only affect the phase of |1&#x27E9;, never the probabilities.
-        </p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>The set &#123;H, T, CNOT&#125; forms a <em>universal gate set</em>. Any quantum computation
-        can be approximated to arbitrary precision using just these three gates (the Solovay-Kitaev
-        theorem).</p>
-        <p>In fault-tolerant quantum computing, T gates are extremely expensive. They require a
-        technique called &ldquo;magic state distillation&rdquo; which consumes many physical qubits
-        to produce one clean T gate. Minimizing T-count is a major optimization goal.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'What does applying S twice give you?',
-      choices: [
-        'The identity (nothing)',
-        'The T gate',
-        'The Z gate',
-        'The Hadamard gate',
-      ],
-      correct: 2,
-    },
-  },
-  {
-    title: 'Gate Reference',
-    hook: 'Every single-qubit gate is a rotation on the Bloch sphere.',
-    hookSub: 'Different axes, different angles \u2014 but always a rotation.',
-    visual: <GateSummaryVisual />,
-    bullets: [
-      'X, Y, Z rotate by 180\u00B0 around their respective axes \u2014 the Pauli gates.',
-      'H rotates by 180\u00B0 around the (X+Z)/\u221A2 axis \u2014 bridging the Z and X worlds.',
-      'S and T are partial Z-axis rotations. They add phase without changing probabilities.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">The quantum toolbox:</strong> With just H, T, and CNOT (a
-        two-qubit gate you&apos;ll meet in the next module), you can approximate any quantum computation.
-        This is quantum universality.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'Which gate converts between the Z basis and the X basis?',
-      choices: [
-        'The X gate',
-        'The Z gate',
-        'The Hadamard gate',
-        'The T gate',
-      ],
-      correct: 2,
-    },
-  },
-]
-
-/* ── Module Page ──────────────────────────────────────────────────────────── */
-
 export default function Gates() {
-  const [step, setStep] = useState(0)
-  const { markDone, markLessonPassed, getLessonPassed, completed } = useProgress()
-  const passed = getLessonPassed('gates', LESSONS.length)
-  const allPassed = passed.every(Boolean)
-  const lesson = LESSONS[step]
-
-  useEffect(() => {
-    if (allPassed && !completed['gates']) markDone('gates')
-  }, [allPassed])
-
-  function handleQuizPass() {
-    markLessonPassed('gates', step)
-  }
-
   return (
     <ModuleLayout
       moduleId="gates"
       title="Single-Qubit Gates"
-      subtitle="The building blocks that transform qubit states."
-      stepInfo={{ current: step, total: LESSONS.length, passed }}
+      subtitle="Unitary operations that rotate one-qubit states, change basis, and control phase."
       prev={{ to: '/qiskit', label: 'Module 4: Qiskit' }}
       next={{ to: '/multiqubit', label: 'Module 6: Multi-Qubit Systems' }}
+      outline={GATES_OUTLINE}
+      aside={<GatesSupport />}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.2 }}
+      <div className="prose-quantum max-w-none">
+        <p>
+          <Keyword tone="gate">Single-qubit gates</Keyword> are the first place where the abstract
+          notation becomes operational. A state such as{' '}
+          <InlineMath>{'|\\psi\\rangle = \\alpha|0\\rangle + \\beta|1\\rangle'}</InlineMath> is not static;
+          gates transform it in controlled, reversible ways. The central question is not merely "what
+          button did we press?" but which <Keyword tone="amplitude">amplitudes</Keyword> changed, which
+          <Keyword tone="phase">phases</Keyword> changed, and in which <Keyword tone="basis">measurement basis</Keyword>{' '}
+          those changes become visible.
+        </p>
+        <p>
+          This chapter focuses on the standard beginner gate family: the Pauli operators, the Hadamard
+          gate, and the <Keyword tone="phase">phase gates</Keyword> <InlineMath>{'S'}</InlineMath> and
+          <InlineMath>{'T'}</InlineMath>. The aim is not exhaustive coverage. It is to build a durable
+          model for how one-qubit operations behave mathematically and how that behavior shows up in circuits.
+        </p>
+      </div>
+
+      <div className="mt-8 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <PrereqList
+          items={[
+            'Comfort with bra-ket notation, computational basis states, and relative phase.',
+            'Familiarity with the Qiskit chapter helps, but this module stays focused on the mathematics.',
+            'Basic linear-algebra language is useful: matrix, vector, inverse, and eigenstate.',
+          ]}
         >
-          <LessonCard
-            lesson={lesson}
-            lessonIndex={step}
-            totalLessons={LESSONS.length}
-            isPassed={passed[step]}
-            onPass={handleQuizPass}
-            bulletStyle={MODULE_LAYOUT_STYLES.gates.bullet}
-          />
+          If you want to reconnect the mathematics to API calls before diving in, revisit{' '}
+          <Link to="/qiskit" className="text-indigo-400 transition-colors hover:text-indigo-300">
+            Qiskit
+          </Link>
+          .
+        </PrereqList>
 
-          {step === LESSONS.length - 1 && allPassed && (
-            <div className="mt-6 p-5 rounded-2xl bg-green-950/30 border border-green-800/40 text-center">
-              <div className="text-2xl mb-2">&#127881;</div>
-              <p className="text-green-300 font-semibold">Module 5 complete.</p>
-              <p className="text-slate-400 text-sm mt-1">Head to Module 6 to explore multi-qubit systems.</p>
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+          <p className="section-label">Learning Objectives</p>
+          <ul className="chapter-list mt-3 space-y-2">
+            <li>Understand single-qubit <Keyword tone="gate">gates</Keyword> as <GlossaryTooltip term="Unitary"><Keyword tone="unitary">unitary</Keyword></GlossaryTooltip> operators rather than as <Keyword tone="measurement">measurements</Keyword>.</li>
+            <li>Predict how X, Z, H, S, and T act on both <Keyword tone="basis">basis states</Keyword> and <Keyword tone="superposition">superposition states</Keyword>.</li>
+            <li>Recognize when a gate changes observable probabilities and when it changes only <Keyword tone="phase">phase</Keyword>.</li>
+          </ul>
+        </div>
+      </div>
 
-      <StepNav
-        steps={LESSONS.length}
-        current={step}
-        passed={passed}
-        onNext={() => setStep(s => s + 1)}
-        onPrev={() => setStep(s => s - 1)}
-        onGoto={setStep}
-      />
+      <section id="gates-unitary" className="mt-10 scroll-mt-28">
+        <p className="section-label">Section 1</p>
+        <h2 className="section-heading">Gates are reversible state transformations</h2>
+        <p className="section-sub">
+          Before distinguishing X from Z or H from S, it is worth fixing the common structure: every
+          ordinary <Keyword tone="gate">gate</Keyword> is a reversible linear transformation on the state
+          vector of the <Keyword tone="qubit">qubit</Keyword>.
+        </p>
+
+        <DefinitionBox term="Single-Qubit Gate">
+          A single-qubit <GlossaryTooltip term="Gate"><Keyword tone="gate">gate</Keyword></GlossaryTooltip>{' '}
+          is a <InlineMath>{'2 \\times 2'}</InlineMath> <Keyword tone="unitary">unitary</Keyword> matrix
+          acting on a one-qubit state vector. It changes <Keyword tone="amplitude">amplitudes</Keyword>{' '}
+          and <Keyword tone="phase">phases</Keyword> while preserving total probability.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <NotationBox symbol="U†U = I">
+            <Keyword tone="unitary">Unitarity</Keyword> means the adjoint <InlineMath>{'U^\\dagger'}</InlineMath>{' '}
+            is the inverse of <InlineMath>{'U'}</InlineMath>. That is why a <Keyword tone="gate">gate</Keyword>{' '}
+            can be undone exactly, unlike an ordinary <Keyword tone="measurement">measurement</Keyword>.
+          </NotationBox>
+        </div>
+
+        <div className="mt-4">
+          <NotationBox symbol="qc.x(0), qc.z(0), qc.h(0), qc.s(0), qc.t(0)">
+            In Qiskit, the method names mirror the mathematical gates closely. The software syntax is
+            intentionally thin because the matrix action is the real content.
+          </NotationBox>
+        </div>
+
+        <div className="mt-6">
+          <GateConceptVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: Linear Action">
+            <MathDisplay>{'U(\\alpha|0\\rangle + \\beta|1\\rangle) = \\alpha U|0\\rangle + \\beta U|1\\rangle'}</MathDisplay>
+            <p>
+              This is why understanding the gate action on basis states is so useful. Once you know what
+              a gate does to <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>,
+              linearity tells you how it acts on every superposition built from them.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            Measurement is intentionally separate from this chapter&apos;s core idea. Gates are unitary and
+            reversible. Measurement is neither. Confusing the two leads to most beginner mistakes.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="gates-x" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 2</p>
+        <h2 className="section-heading">Pauli-X: basis-state flip, not universal change</h2>
+        <p className="section-sub">
+          X is the closest quantum analogue of a classical NOT gate, but that analogy is only fully
+          reliable in the computational basis.
+        </p>
+
+        <DefinitionBox term="Pauli-X">
+          The Pauli-X gate swaps the computational-basis states:
+          <InlineMath>{'X|0\\rangle = |1\\rangle'}</InlineMath> and
+          <InlineMath>{'X|1\\rangle = |0\\rangle'}</InlineMath>. On the Bloch sphere, it is a 180-degree
+          rotation about the X axis.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <XGateVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: Why X Leaves |+⟩ Alone">
+            <MathDisplay>{'X|+\\rangle = X\\frac{|0\\rangle + |1\\rangle}{\\sqrt{2}} = \\frac{|1\\rangle + |0\\rangle}{\\sqrt{2}} = |+\\rangle'}</MathDisplay>
+            <p>
+              The state <InlineMath>{'|+\\rangle'}</InlineMath> is an eigenstate of X. That is why a gate
+              that obviously flips <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>
+              can appear to do nothing when the qubit is expressed in a different basis.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            Do not overlearn the phrase "X flips the qubit." It flips computational-basis labels. More
+            generally, it rotates the state vector, and some states lie directly on that rotation axis.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="gates-z" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 3</p>
+        <h2 className="section-heading">Pauli-Z: phase changes that require the right viewpoint</h2>
+        <p className="section-sub">
+          Z is the cleanest illustration of why phase matters. It can change the state in a physically
+          meaningful way without changing computational-basis probabilities at all.
+        </p>
+
+        <DefinitionBox term="Pauli-Z">
+          The Pauli-Z gate leaves <InlineMath>{'|0\\rangle'}</InlineMath> unchanged and multiplies
+          <InlineMath>{'|1\\rangle'}</InlineMath> by <InlineMath>{'-1'}</InlineMath>. It is therefore a
+          phase operator rather than a bit-flip operator.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <ExampleBox title="Worked Example: Z on the Plus State">
+            <MathDisplay>{'Z|+\\rangle = Z\\frac{|0\\rangle + |1\\rangle}{\\sqrt{2}} = \\frac{|0\\rangle - |1\\rangle}{\\sqrt{2}} = |-\\rangle'}</MathDisplay>
+            <p>
+              In the Z basis, both <InlineMath>{'|+\\rangle'}</InlineMath> and <InlineMath>{'|-\\rangle'}</InlineMath>
+              still give 50/50 outcomes. The phase change becomes visible only after a basis change.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <ZGateVisual />
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            This is the right mental model for phase-sensitive computation: a gate can matter deeply even
+            when a single measurement basis makes it look invisible.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="gates-h" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 4</p>
+        <h2 className="section-heading">Hadamard: moving between the Z and X worlds</h2>
+        <p className="section-sub">
+          Hadamard is the gate that turns basis states into X-basis superpositions and turns those
+          superpositions back into basis states. That is why it appears constantly in algorithms.
+        </p>
+
+        <DefinitionBox term="Hadamard Gate">
+          The Hadamard gate maps <InlineMath>{'|0\\rangle'}</InlineMath> to
+          <InlineMath>{'|+\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath> to
+          <InlineMath>{'|-\\rangle'}</InlineMath>. It is its own inverse, so
+          <InlineMath>{'H^2 = I'}</InlineMath>.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <ExampleBox title="Worked Example: Basis Conversion Identity">
+            <MathDisplay>{'HXH = Z \\qquad HZH = X'}</MathDisplay>
+            <p>
+              These identities formalize the idea that H changes viewpoint. Conjugating by Hadamard
+              swaps which axis of the Bloch sphere looks like the "measurement axis" of interest.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <HadamardVisual />
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            A Hadamard gate does not partially measure the qubit, and it does not "collapse
+            superposition." It is a fully coherent unitary basis change.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="gates-phase" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 5</p>
+        <h2 className="section-heading">S and T: fractional phase control and the broader gate map</h2>
+        <p className="section-sub">
+          Once Z is understood as a phase flip, S and T become natural: they are smaller rotations about
+          the same axis, useful when algorithms need more precise control over interference.
+        </p>
+
+        <DefinitionBox term="Phase Gates">
+          The gates <InlineMath>{'S'}</InlineMath> and <InlineMath>{'T'}</InlineMath> act diagonally in the
+          computational basis. They leave <InlineMath>{'|0\\rangle'}</InlineMath> unchanged and rotate only
+          the phase of the <InlineMath>{'|1\\rangle'}</InlineMath> component.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <NotationBox symbol="S² = Z, T² = S">
+            These identities show that S and T are nested Z-axis rotations. The algebra and the geometry
+            say the same thing in different languages.
+          </NotationBox>
+        </div>
+
+        <div className="mt-6">
+          <PhaseGatesVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: Explicit Phase Factors">
+            <MathDisplay>{'S|1\\rangle = i|1\\rangle \\qquad T|1\\rangle = e^{i\\pi/4}|1\\rangle'}</MathDisplay>
+            <p>
+              Neither gate changes computational-basis probabilities by itself. Their value is that they
+              alter relative phase in a controlled way, which later circuits can convert into amplitude
+              differences.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <GateSummaryVisual />
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            In standard universality results, a small gate set can approximate arbitrary quantum
+            computation. One common example is <InlineMath>{'{H, T, CNOT}'}</InlineMath>. In practical
+            fault-tolerant settings, T gates are often the costly resource, which is why T-count
+            optimization matters.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <div className="mt-12">
+        <MistakesBox
+          items={[
+            {
+              mistake: 'Assuming a gate only matters if computational-basis measurement probabilities change immediately.',
+              clarification:
+                'Phase gates can alter the state without changing Z-basis probabilities. A later basis change can reveal the difference.',
+            },
+            {
+              mistake: 'Thinking Hadamard performs a partial measurement or collapse.',
+              clarification:
+                'Hadamard is a unitary basis change. Measurement is a separate, non-unitary operation.',
+            },
+            {
+              mistake: 'Believing X always "flips the qubit" in the same visible way for every state.',
+              clarification:
+                'X flips computational-basis states, but eigenstates such as |+⟩ behave differently because the action depends on basis.',
+            },
+          ]}
+        />
+      </div>
+
+      <div className="mt-10">
+        <SummaryBox
+          points={[
+            'Single-qubit gates are 2x2 unitary operators that transform amplitudes and phases reversibly.',
+            'X is a computational-basis flip, Z is a phase operator, and H changes between the Z and X bases.',
+            'S and T are fractional Z-axis rotations whose importance comes from precise phase control.',
+            'Whether a gate looks observable depends on measurement basis, not just on the gate itself.',
+          ]}
+        />
+      </div>
+
+      <section id="gates-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p className="section-label">Next Steps</p>
+        <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">Move from one wire to many</h2>
+        <p className="mt-3 text-sm leading-relaxed text-slate-400">
+          The next chapter extends this gate vocabulary to multi-qubit systems, where tensor products,
+          control structure, and entanglement make the geometry more interesting and the bookkeeping more demanding.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link to="/multiqubit" className="btn-primary">
+            Continue to Multi-Qubit Systems
+          </Link>
+          <Link to="/qiskit" className="btn-secondary">
+            Revisit Qiskit
+          </Link>
+          <Link to="/glossary" className="btn-secondary">
+            Review the Glossary
+          </Link>
+        </div>
+      </section>
     </ModuleLayout>
   )
 }
