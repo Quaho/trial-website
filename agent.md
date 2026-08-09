@@ -4,158 +4,136 @@
 Phase 2 structure work. See `TASKS.md`.
 
 ## TASK-020 — COMPLETE (2026-08-09)
-Diagnostic Placement Pilot — CLAUDE.md amendment (doc-only). See `TASKS.md`
-and CLAUDE.md's "Diagnostic Placement & Concept Evidence" section, which
-every later task in this pilot is bound by.
-
----
+CLAUDE.md amendment (doc-only). See `TASKS.md` and CLAUDE.md's "Diagnostic
+Placement & Concept Evidence" section.
 
 ## TASK-021 — COMPLETE (2026-08-09)
-Diagnostic Placement Pilot — concept graph + diagnostic question data model.
+Concept graph + diagnostic question data model
+(`lib/data/concepts.js`, `lib/data/diagnostic.js`). See `TASKS.md`.
+
+## TASK-022 — COMPLETE (2026-08-09)
+`useDiagnostic` hook (`lib/hooks/useDiagnostic.js`). See `TASKS.md`.
+
+## TASK-023 — COMPLETE (2026-08-09)
+Diagnostic page/route + Roadmap entry point.
 
 ### What was built
-- **`lib/data/concepts.js`** — `CONCEPTS` array, 14 entries across the 3
-  pilot modules (5 intuition, 4 braket, 5 gates), each with `id`, `label`,
-  `area`, `moduleId`, `sectionId` (the real `<section id="...">` in that
-  page's outline — verified against `Intuition.jsx`/`BraKet.jsx`/
-  `Gates.jsx` directly, not guessed), and concept-level `prereqs`. Plus
-  `CONCEPTS_BY_ID` for O(1) lookup. Does not touch `MODULES[].prereqs` in
-  `modules.js` — that keeps driving navigation/Roadmap unchanged.
-- **`lib/data/diagnostic.js`** — `DIAGNOSTIC_VERSION = 1` with the
-  bump-contract comment specified in CLAUDE.md, `DIAGNOSTIC_AREAS` (3:
-  math-notation, states, gates), `DIAGNOSTIC_QUESTIONS` (22 questions: 7 +
-  7 + 8), and `DIAGNOSTIC_QUESTIONS_BY_AREA` for the sectioned UI. Question
-  content is grounded in what the pilot pages actually teach (e.g. the
-  Z/H/S/T behavior, the `⟨0|0⟩=1`/`⟨0|1⟩=0` overlap examples already in
-  `BraKet.jsx`, and several distractors lifted from `Gates.jsx`'s own
-  `MistakesBox` misconceptions) — not generic textbook trivia.
-- Per the authoring rule in CLAUDE.md, 9 of 14 concepts have ≥2 tagged
-  questions and are collapsible-eligible once TASK-022's evidence
-  derivation exists; 5 are deliberately left below threshold
-  (`quantum-advantage-limits` has 0, `notation-reading`/`pauli-z`/
-  `s-t-gates` have 1) — always insufficient-evidence, by design, not a gap.
+- **`components/DiagnosticQuestion.jsx`** — one question, 4 lettered choice
+  buttons, visually consistent with `Quiz.jsx` but behaviorally distinct:
+  no correctness reveal, no retry, `role="radiogroup"`/`radio` semantics.
+- **`app/pages/Diagnostic.jsx`** — three states in one page: an intro
+  screen (what it is, ~10 minutes, explicit "Skip — go to Study Paths"
+  link so it never reads as mandatory), a question flow across the 3
+  `DIAGNOSTIC_AREAS` with a progress bar and `aria-live` announcement, and
+  a results view (per-area score bars, demonstrated-concept list via
+  `CONCEPTS_BY_ID`, suggested starting module + skim candidates via
+  `MODULES`, a link to `/roadmap`, and a retake button calling
+  `diagnostic.reset()`). Resumes mid-diagnostic from stored answers if the
+  student reloads or leaves and comes back.
+- **`/diagnostic` route** in `App.jsx`, registered via `lazyWithRecovery`
+  exactly matching the existing pattern (not plain `lazy()`).
+- **Roadmap entry point** — a plain CTA section added above the
+  `STUDY_PATHS` cards in `Roadmap.jsx`: "Not sure where your knowledge
+  stands? Take the placement diagnostic." No data dependency on
+  `useDiagnostic`, no per-path recommendation badge — `STUDY_PATHS` and its
+  matching logic are untouched, per CLAUDE.md.
 
 ### Verification performed
-- Programmatic cross-check (ad hoc Node script, not persisted): every
-  question's `concepts`/`area` ids resolve against `concepts.js`, every
-  concept's `prereqs` resolve, all question ids unique, all concept ids
-  unique, every `choices` array has exactly 4 entries with `correct` in
-  range. All passed.
-- `npm run build` — passes. Expected: neither file is imported anywhere
-  yet, so this is a no-behavior-change addition.
+- `npm run build` — passes, produces a separate `Diagnostic-*.js` chunk
+  (confirms the route code-splits correctly).
+- Code review against `Quiz.jsx`, `ModuleLayout.jsx`, `Roadmap.jsx` for
+  visual/interaction consistency (focus-visible states, `btn-primary`/
+  `btn-secondary`/`btn-ghost` reuse, `section-label` conventions).
+- **Not yet visually verified in an actual browser** — the user does that
+  manually (this project's convention: no Playwright/Chromium tooling for
+  verification here). If something renders wrong, expect a follow-up fix
+  task rather than assuming this is pixel-perfect from code review alone.
 
 ### Non-goals honored
-No hook, no UI, no wiring into any page — those are TASK-022 onward.
+No `ConceptSection`, no wiring into the pilot module pages, no video
+aside — those are TASK-024 onward. `Gates.jsx`/`Intuition.jsx`/
+`BraKet.jsx` are untouched by TASK-023.
 
 ---
 
-## TASK-022: `useDiagnostic` hook
+## TASK-024: `ConceptSection` + wiring into Intuition/Bra-Ket/Gates
 
 ### Why this task now
-Third slice of the Diagnostic Placement pilot (Phase 3a). `concepts.js`
-and `diagnostic.js` (TASK-021) exist but nothing reads them yet. This task
-builds the one hook that turns raw stored answers into everything the UI
-needs — area scores, per-concept evidence status, staleness detection —
-per CLAUDE.md's "Diagnostic Placement & Concept Evidence" section and the
-approved plan at `/Users/frank/.claude/plans/nifty-foraging-meteor.md`
-(external to this repo — the rules that matter are already restated in
-CLAUDE.md; treat CLAUDE.md as authoritative if the two ever disagree).
+Fifth slice of the Diagnostic Placement pilot (Phase 3a). The diagnostic
+now exists and can be taken, but nothing on the pilot pages reacts to its
+results yet — `useDiagnostic()`'s `demonstrated` Set is unused outside the
+results view. This task is what makes taking the diagnostic actually
+change anything on `/intuition`, `/braket`, `/gates`.
 
 ### File to create
-`lib/hooks/useDiagnostic.js`, mirroring the load/save-to-localStorage
-pattern already used by `lib/hooks/useProgress.js` (read that file first).
+`components/ConceptSection.jsx`
 
 ### Requirements
 
-**Persistence — raw answers only, never precomputed scores:**
-```js
-const STORAGE_KEY = 'quantum_diagnostic_v1'
-// shape: { version: number, answers: { [questionId]: choiceIndex }, completedAt: string | null }
-```
-`completedAt` is `null` while the student is mid-diagnostic (some areas
-answered, not all), and set once every question across all 3
-`DIAGNOSTIC_AREAS` has been answered.
+**Props:** `conceptIds` (array of concept ids from `concepts.js`),
+`demonstrated` (the `Set` from a page-level `useDiagnostic()` call — this
+component does NOT call the hook itself), `children`.
 
-**Staleness check:** on load, compare the stored `version` against
-`DIAGNOSTIC_VERSION` from `diagnostic.js`. If they differ, treat the result
-as stale: expose something like `isStale: true` and do not derive scores
-from it. The hook should make it easy for the UI to say "your diagnostic
-results are out of date, retake it" rather than silently grading old
-answers against a changed question bank.
+**Behavior:**
+- If every id in `conceptIds` is present in `demonstrated` → render
+  `children` inside a collapsed `<details>` (closed by default), styled
+  like `ExpandableAside.jsx`, labeled *"Your diagnostic suggests you
+  already know this — expand to review"* (never "mastered").
+- Otherwise (partial or no overlap, or diagnostic never taken) → render
+  `children` exactly as-is, fully expanded. This must be pixel-identical
+  to today's page for any visitor who hasn't taken the diagnostic — no
+  behavior change is the default, not the exception.
 
-**Live-derived area scores:** for each `DIAGNOSTIC_AREAS[].id`, compute
-`{ correct, attempted, total }` by joining the stored `answers` against
-the *current* `DIAGNOSTIC_QUESTIONS` (not a cached/persisted number).
+**Wraps the box cluster only, never the section heading:** per CLAUDE.md,
+the outer `<section id="...">` heading and intro sentence stay outside
+`ConceptSection` — `Gates.jsx`'s and the other pages' outline nav anchors
+on those ids, and collapsing them would break scroll-to-section and hide
+chapter structure from someone scanning. Only the
+`DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox` cluster underneath
+a heading goes inside `ConceptSection`.
 
-**Three-way concept status — implement exactly as specified in CLAUDE.md:**
-For each concept id appearing in any question's `concepts` array, compute
-`attempted` (count of tagging questions answered) and `correct` (of those,
-answered right), then:
-- `attempted < 2` → `'insufficient-evidence'`
-- `attempted >= 2 && correct === attempted` → `'demonstrated'`
-- `attempted >= 2 && correct < attempted` → `'needs-review'`
+### Files to modify
+`app/pages/Intuition.jsx`, `app/pages/BraKet.jsx`, `app/pages/Gates.jsx` —
+add one `const diagnostic = useDiagnostic()` call near the top of each page
+component, then wrap each section's content cluster in `ConceptSection`
+using the `conceptIds`/`sectionId` mapping already defined in
+`lib/data/concepts.js` (match by `sectionId`, e.g. `gates-x` →
+`conceptIds={['pauli-x']}`). Concepts with only 1 tagged question
+(`notation-reading`, `pauli-z`, `s-t-gates`) or 0 (`quantum-advantage-limits`)
+will simply never collapse in this pilot — that's expected, not a bug to
+route around.
 
-Expose a `conceptStatus(id)` function returning one of the three strings,
-and a `demonstrated` `Set` containing exactly the concept ids currently at
-`'demonstrated'` status (this is the Set that TASK-024's `ConceptSection`
-will receive as a prop — do not have `ConceptSection` call this hook
-itself, per CLAUDE.md; call `useDiagnostic()` once per page).
-
-**Recommendation signals (not a Study Path selection):** derive
-`recommendedStartModuleId` and `reviewModuleIds` from the 3 pilot modules'
-area scores (e.g. lowest-scoring area's `moduleId` → recommended start;
-areas scoring high → review/skim candidates). Do **not** read
-`STUDY_PATHS` and do **not** attempt to pick a `Path A/B/C` — CLAUDE.md is
-explicit that a 3-area content diagnostic cannot distinguish background
-(a CS major who knows no quantum vs. a total beginner), so this hook must
-not try. `Roadmap.jsx`'s existing path-matching logic is out of scope for
-this task entirely — do not touch `Roadmap.jsx` in TASK-022.
-
-**Answer-recording API:** something like `recordAnswer(questionId,
-choiceIndex)` that updates `answers` and persists, plus `reset()` mirroring
-`useProgress.js`'s `reset()`.
-
-**Call-site discipline:** nothing about the hook's own implementation
-enforces "called once per page" — that's a TASK-023/024 usage concern — but
-keep the hook cheap to call and side-effect-free on read so that discipline
-is easy to honor later.
-
-### Non-goals for TASK-022
-- No new page, no new route, no UI component. This is the hook only.
-- No changes to `Roadmap.jsx`, `App.jsx`, or any pilot module page.
-- No changes to `concepts.js` or `diagnostic.js` (TASK-021 is closed;
-  if you find an inconsistency, flag it rather than editing those files
-  silently, since TASK-021's cross-check already passed).
+### Non-goals for TASK-024
+- No content rewriting — that's TASK-025 (Gates matrix tables, Intuition
+  audit). Wrap existing content as-is.
+- No changes to `concepts.js`, `diagnostic.js`, or `useDiagnostic.js`.
+- No video aside — that's TASK-026.
 
 ### Acceptance criteria
-- [ ] `lib/hooks/useDiagnostic.js` exists, exports a hook usable as
-      `const diagnostic = useDiagnostic()`
-- [ ] Raw answers persisted to `localStorage` under `quantum_diagnostic_v1`
-      exactly as specified — no precomputed scores in storage
-- [ ] Version mismatch is detected and surfaced (`isStale` or equivalent),
-      not silently rescored
-- [ ] Area scores derived live from current `DIAGNOSTIC_QUESTIONS`
-- [ ] `conceptStatus(id)` implements the exact three-way rule above
-- [ ] `demonstrated` Set contains only `'demonstrated'`-status concept ids
-- [ ] `recommendedStartModuleId` / `reviewModuleIds` derived from area
-      scores only — no `STUDY_PATHS` import, no path selection
+- [ ] `components/ConceptSection.jsx` exists, matches the behavior above
+- [ ] All 14 concepts from `concepts.js` are wired into their `sectionId`
+      on the correct pilot page
+- [ ] Fresh localStorage: all 3 pilot pages render identically to before
+      this task (nothing collapsed)
+- [ ] After answering all `dq-math-*` questions correctly in the
+      diagnostic: `/braket`'s ket-notation, bra-notation, and
+      inner-product sections render collapsed; `notation-reading` does not
+      (only 1 tagged question, always insufficient-evidence)
+- [ ] Section headings and outline-nav scroll anchors are unaffected in
+      every case
 - [ ] `npm run build` passes
-- [ ] Nothing else in the repo changes behavior (hook isn't imported
-      anywhere yet — that's TASK-023)
 
 ### Verification steps
 1. `npm run build` — must pass.
-2. Sanity-check the hook in isolation (e.g. a throwaway test harness or
-   manual `console.log` from a temporary import) rather than trusting the
-   implementation blind: simulate answering all `dq-math-*` questions
-   correctly and confirm `ket-notation`, `bra-notation`, `inner-product`
-   land in `demonstrated`, while `notation-reading` (only 1 tagged
-   question) stays `insufficient-evidence` regardless of correctness.
-3. Simulate a stored `version` of `0` against `DIAGNOSTIC_VERSION = 1` and
-   confirm the hook reports staleness rather than deriving scores.
+2. Fresh localStorage, visit all 3 pilot pages — confirm no visual change
+   from before TASK-024.
+3. Take the diagnostic, answer the `dq-gates-*` questions to get
+   `unitary-gate`, `pauli-x`, and `hadamard` all correct (2/2 each) and
+   `pauli-z`/`s-t-gates` however you like — revisit `/gates` and confirm
+   exactly those 3 sections collapse, `gates-z` and `gates-phase` do not.
+4. Confirm outline nav (the "On This Page" rail) still scrolls to the
+   right heading even when that section's content is collapsed.
 
 ### Next task
-TASK-023 — `Diagnostic.jsx` page + `DiagnosticQuestion.jsx` component +
-`/diagnostic` route (via `lazyWithRecovery`, matching `App.jsx`'s existing
-pattern exactly) + a plain entry-point CTA on `Roadmap.jsx` linking to it
-(no data coupling, no per-path badge — see CLAUDE.md).
+TASK-025 — Gates.jsx explicit gate matrices (X/Z/H/S/T via `MathDisplay`
+`pmatrix`) + Intuition.jsx analogy audit.

@@ -57,6 +57,7 @@ const Labs = lazyWithRecovery('labs', () => import('./pages/Labs'))
 const Noise = lazyWithRecovery('noise', () => import('./pages/Noise'))
 const UseCases = lazyWithRecovery('usecases', () => import('./pages/UseCases'))
 const Roadmap = lazyWithRecovery('roadmap', () => import('./pages/Roadmap'))
+const Diagnostic = lazyWithRecovery('diagnostic', () => import('./pages/Diagnostic'))
 const Glossary = lazyWithRecovery('glossary', () => import('./pages/Glossary'))
 const Challenges = lazyWithRecovery('challenges', () => import('./pages/Challenges'))
 const References = lazyWithRecovery('references', () => import('./pages/References'))
@@ -124,6 +125,7 @@ export default function App() {
 
               {/* Extra pages */}
               <Route path="/roadmap"    element={<Roadmap />} />
+              <Route path="/diagnostic" element={<Diagnostic />} />
               <Route path="/glossary"   element={<Glossary />} />
               <Route path="/references" element={<References />} />
               <Route path="/challenges" element={<Challenges />} />

@@ -187,6 +187,30 @@ export default function Roadmap() {
         </div>
       </section>
 
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 sm:pt-12">
+        <div className="rounded-2xl border border-indigo-800/40 bg-indigo-950/20 p-5 sm:p-6
+                         flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="section-label text-indigo-400">Optional</p>
+            <h2 className="mt-2 text-lg font-semibold text-white">
+              Not sure where your knowledge stands?
+            </h2>
+            <p className="mt-1 text-sm text-slate-400 leading-relaxed max-w-xl">
+              Take the placement diagnostic (about 10 minutes) to see which sections you can
+              likely skim and which are worth starting with. It does not choose a path for
+              you — the paths below are still based on your background.
+            </p>
+          </div>
+          <Link
+            to="/diagnostic"
+            className="btn-secondary flex-shrink-0 justify-center"
+          >
+            Take the Diagnostic
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </section>
+
       <section className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
         <div className="grid gap-4 md:grid-cols-3">
           {[
