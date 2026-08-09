@@ -25,13 +25,13 @@ The site should **not** feel like:
 React 18 + Vite + Tailwind CSS v3 + KaTeX + React Router v6 + Framer Motion + Prism.js.
 
 ### Current State
-The identity shift is complete. The site is now branded as **SIGQuantum — Technical Onboarding Handbook** (previously “QuantumLeap”). The homepage has been rewritten around technical onboarding with five sections (title/purpose, audience, topics, usage guidance, footer). The navbar is rebranded, marketing elements and progress gamification are removed, and navigation includes Study Paths, Glossary, and References. Structural components are in place: DefinitionBox, NotationBox, ExampleBox, RemarkBox, and PrereqList are ready for use in module pages. A curated References page exists at `/references`. Orb animations and decorative motion have been removed from the homepage and CSS.
+The identity shift is complete. The site is now branded as **SIGQuantum — Technical Onboarding Handbook** (previously “QuantumLeap”). The homepage has been rewritten around technical onboarding with five sections (title/purpose, audience, topics, usage guidance, footer). The navbar is rebranded, marketing elements and progress gamification are removed, and navigation includes Study Paths, Glossary, and References. Structural components are in place: DefinitionBox, NotationBox, ExampleBox, RemarkBox, and PrereqList are ready for use in module pages. A curated References page exists at `/references`. Orb animations and decorative motion have been removed from the homepage and CSS. `Roadmap.jsx` (Study Paths) is fully implemented: three background-based paths (CS/Python, physics/theory, new to both), a full handbook map by topic group, and machine-project status, all driven by `useProgress`. Several module pages (`BraKet.jsx`, `Gates.jsx`, `Intuition.jsx`) already use the full handbook block vocabulary — DefinitionBox/NotationBox/ExampleBox/RemarkBox, outline nav, and a right-rail aside — at a level of rigor closer to Phase 3's target than earlier status notes reflected.
 
 ### What remains
-- Rewrite module page content for rigor, clarity, and handbook tone (Phase 3)
-- Add study paths by background (Phase 3)
+- Rewrite/audit remaining module page content for rigor, clarity, and handbook tone (Phase 3)
 - Accessibility, mobile, and rendering polish (Phase 4)
-- Existing module pages still use the old casual/course tone and need content revision
+- Some older module pages still use the old casual/course tone and need content revision
+- Diagnostic Placement pilot (Phase 3a — see Build Plan below): concept-level metadata, a soft/advisory placement quiz, and evidence-based section collapsing, piloted on Intuition/Bra-Ket/Gates before any wider rollout
 
 ---
 
@@ -442,6 +442,14 @@ Interactivity is optional support, not the core identity of the site.
 
 The site should remain useful even when read statically.
 
+### IBM Video Sourcing
+
+Optional supplementary video is allowed under the same "optional support" rule:
+- Source only from IBM Quantum's official YouTube channel
+- Place only inside a foldable aside, never in the main reading flow
+- Always show a permanently visible text summary of the video's content — the summary is not itself inside the disclosure, so the page stays useful with the video collapsed and unwatched
+- Never autoplay; defer loading the embed until the viewer's first interaction with the disclosure, not merely on page load
+
 ---
 
 ## Navigation Guidelines
@@ -551,6 +559,51 @@ Start with:
 - qiskit
 
 These paths should feel advisory and practical.
+
+---
+
+## Diagnostic Placement & Concept Evidence
+
+The handbook may offer a short, optional placement diagnostic so a student
+who already knows some material isn't re-taught it from zero. This is an
+extension of the advisory philosophy above, not a departure from it.
+
+### The soft-only rule
+The diagnostic must never hard-lock content. Skipping it, or answering
+poorly, always leaves every page fully readable exactly as it is today —
+per Interactivity Guidelines, the site must remain useful when read
+statically. The diagnostic *recommends and pre-collapses already-covered
+material*; it never restricts navigation, and there are no lock icons,
+streaks, or forced sequencing anywhere in this system.
+
+### Terminology: "demonstrated," never "mastered"
+A short multiple-choice diagnostic cannot establish mastery of a topic —
+it can only note evidence toward it. Use "demonstrated" / "the diagnostic
+suggests you already know this," never "mastered." A concept needs at
+least two independently answered, correctly answered diagnostic questions
+before it is treated as demonstrated; fewer than that is insufficient
+evidence and must render exactly as it would for a student who never took
+the diagnostic — fully expanded, never collapsed.
+
+### Study Paths stay background-based, not diagnostic-derived
+The diagnostic measures topic-content knowledge (e.g. notation, states,
+gates). `Study Paths` above are keyed by a student's self-reported
+background (CS/Python, physics/theory, neither). A content diagnostic
+cannot reliably distinguish "a CS major who knows no quantum yet" from "a
+complete beginner who knows no quantum yet," even though those students
+belong on different paths — so the diagnostic must not auto-select a
+`Study Path`. It surfaces a suggested starting module and topics worth
+reviewing; the student still chooses their path the way they do today.
+
+### Concept-level collapsing
+Where module pages tag a coherent chunk of content (a definition plus its
+notation, example, and remark — not individual boxes in isolation) with
+the concept(s) it teaches, and the diagnostic has shown evidence the
+student already knows all of them, that chunk may render collapsed by
+default with a one-line "you already know this — review it" affordance.
+The section heading and its introductory sentence are never part of the
+collapse — outline navigation and chapter scanability must survive
+regardless of diagnostic state.
 
 ---
 
@@ -810,7 +863,24 @@ Every review should ask:
 - [ ] Rewrite core pages for rigor and clarity
 - [ ] Add notation support and explicit definitions
 - [ ] Add canonical worked examples
-- [ ] Add study paths by background
+- [x] Add study paths by background (`Roadmap.jsx` — three paths, full handbook map, machine-project status)
+
+### Phase 3a — Diagnostic Placement Pilot
+Scope: Intuition, Bra-Ket, and Gates only. See "Diagnostic Placement &
+Concept Evidence" above for the governing rules. Full slicing lives in
+`agent.md`'s task history; do not roll out beyond the pilot modules until
+this phase is reviewed.
+- [ ] Concept graph + diagnostic question data model, with an explicit
+      version-bump contract so edited questions can't silently rescore old
+      answers
+- [ ] `useDiagnostic` hook — raw-answer persistence, staleness detection,
+      live-derived area scores and three-way concept evidence status
+- [ ] Diagnostic page/route + Roadmap entry point (link only, no data
+      coupling into Study Paths)
+- [ ] Concept-level section collapsing wired into the 3 pilot pages
+- [ ] Gates.jsx gate-matrix content gap + Intuition.jsx analogy audit
+- [ ] Optional IBM video aside, deferred-load, official channel only
+- [ ] Accessibility verification pass on all new interactive elements
 
 ### Phase 4 — Polish
 - [ ] Accessibility audit

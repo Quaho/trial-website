@@ -1,223 +1,161 @@
 # agent.md — Current Codex Task
 
-## TASK-019: Phase 2 — Structure (Navigation, Page Template Components, References Page)
+## TASK-019 — COMPLETE (reconciled 2026-08-09)
+Phase 2 structure work. See `TASKS.md`.
+
+## TASK-020 — COMPLETE (2026-08-09)
+Diagnostic Placement Pilot — CLAUDE.md amendment (doc-only). See `TASKS.md`
+and CLAUDE.md's "Diagnostic Placement & Concept Evidence" section, which
+every later task in this pilot is bound by.
+
+---
+
+## TASK-021 — COMPLETE (2026-08-09)
+Diagnostic Placement Pilot — concept graph + diagnostic question data model.
+
+### What was built
+- **`lib/data/concepts.js`** — `CONCEPTS` array, 14 entries across the 3
+  pilot modules (5 intuition, 4 braket, 5 gates), each with `id`, `label`,
+  `area`, `moduleId`, `sectionId` (the real `<section id="...">` in that
+  page's outline — verified against `Intuition.jsx`/`BraKet.jsx`/
+  `Gates.jsx` directly, not guessed), and concept-level `prereqs`. Plus
+  `CONCEPTS_BY_ID` for O(1) lookup. Does not touch `MODULES[].prereqs` in
+  `modules.js` — that keeps driving navigation/Roadmap unchanged.
+- **`lib/data/diagnostic.js`** — `DIAGNOSTIC_VERSION = 1` with the
+  bump-contract comment specified in CLAUDE.md, `DIAGNOSTIC_AREAS` (3:
+  math-notation, states, gates), `DIAGNOSTIC_QUESTIONS` (22 questions: 7 +
+  7 + 8), and `DIAGNOSTIC_QUESTIONS_BY_AREA` for the sectioned UI. Question
+  content is grounded in what the pilot pages actually teach (e.g. the
+  Z/H/S/T behavior, the `⟨0|0⟩=1`/`⟨0|1⟩=0` overlap examples already in
+  `BraKet.jsx`, and several distractors lifted from `Gates.jsx`'s own
+  `MistakesBox` misconceptions) — not generic textbook trivia.
+- Per the authoring rule in CLAUDE.md, 9 of 14 concepts have ≥2 tagged
+  questions and are collapsible-eligible once TASK-022's evidence
+  derivation exists; 5 are deliberately left below threshold
+  (`quantum-advantage-limits` has 0, `notation-reading`/`pauli-z`/
+  `s-t-gates` have 1) — always insufficient-evidence, by design, not a gap.
+
+### Verification performed
+- Programmatic cross-check (ad hoc Node script, not persisted): every
+  question's `concepts`/`area` ids resolve against `concepts.js`, every
+  concept's `prereqs` resolve, all question ids unique, all concept ids
+  unique, every `choices` array has exactly 4 entries with `correct` in
+  range. All passed.
+- `npm run build` — passes. Expected: neither file is imported anywhere
+  yet, so this is a no-behavior-change addition.
+
+### Non-goals honored
+No hook, no UI, no wiring into any page — those are TASK-022 onward.
+
+---
+
+## TASK-022: `useDiagnostic` hook
 
 ### Why this task now
-Phase 1 established the new SIGQuantum identity. Phase 2 creates the structural foundation: reorganized navigation that reflects the handbook's topic structure, reusable content block components for handbook pages, and a References page. These are prerequisites for Phase 3 (content rewriting).
+Third slice of the Diagnostic Placement pilot (Phase 3a). `concepts.js`
+and `diagnostic.js` (TASK-021) exist but nothing reads them yet. This task
+builds the one hook that turns raw stored answers into everything the UI
+needs — area scores, per-concept evidence status, staleness detection —
+per CLAUDE.md's "Diagnostic Placement & Concept Evidence" section and the
+approved plan at `/Users/frank/.claude/plans/nifty-foraging-meteor.md`
+(external to this repo — the rules that matter are already restated in
+CLAUDE.md; treat CLAUDE.md as authoritative if the two ever disagree).
 
-### Relevant project standards from CLAUDE.md
-- Navigation: calm, predictable, hierarchical. Must support linear reading order and direct topic access.
-- Section template: title, prerequisites, definitions, main explanation, worked example, common confusion, key takeaways, next section
-- Component architecture lists: DefinitionBox, NotationBox, ExampleBox, RemarkBox, PrereqList
-- References page: curated external readings, Qiskit docs, textbooks, refreshers
-- Suggested topic sequence: Part I Foundations, Part II Mathematical Language, Part III States and Operators, Part IV Circuits and Measurement, Part V Qiskit Preparation, Part VI Paths Forward
-
-### Files to modify
-1. `lib/data/modules.js` — update NAV_GROUPS to reflect handbook structure
-2. `components/Navbar.jsx` — update desktop nav extras (Roadmap label, add References link)
-3. `app/App.jsx` — add route for References page
-4. `app/pages/References.jsx` — **new file**, curated references page
-
-### Files to create (new components)
-5. `components/DefinitionBox.jsx` — formal definition callout
-6. `components/NotationBox.jsx` — notation/symbol explanation callout
-7. `components/ExampleBox.jsx` — worked example block
-8. `components/RemarkBox.jsx` — clarifying remark or caveat
-9. `components/PrereqList.jsx` — prerequisites list for a page
+### File to create
+`lib/hooks/useDiagnostic.js`, mirroring the load/save-to-localStorage
+pattern already used by `lib/hooks/useProgress.js` (read that file first).
 
 ### Requirements
 
-#### 1. lib/data/modules.js — Update NAV_GROUPS
-
-Replace the current 3 groups:
+**Persistence — raw answers only, never precomputed scores:**
 ```js
-export const NAV_GROUPS = [
-  { label: 'Foundations', group: 'foundations' },
-  { label: 'Circuits',    group: 'circuits'    },
-  { label: 'Advanced',    group: 'advanced'    },
-]
+const STORAGE_KEY = 'quantum_diagnostic_v1'
+// shape: { version: number, answers: { [questionId]: choiceIndex }, completedAt: string | null }
 ```
+`completedAt` is `null` while the student is mid-diagnostic (some areas
+answered, not all), and set once every question across all 3
+`DIAGNOSTIC_AREAS` has been answered.
 
-With 4 groups that better reflect the handbook's topic structure:
-```js
-export const NAV_GROUPS = [
-  { label: 'Foundations',   group: 'foundations' },
-  { label: 'Gates & Circuits', group: 'circuits' },
-  { label: 'Advanced',     group: 'advanced'    },
-]
-```
+**Staleness check:** on load, compare the stored `version` against
+`DIAGNOSTIC_VERSION` from `diagnostic.js`. If they differ, treat the result
+as stale: expose something like `isStale: true` and do not derive scores
+from it. The hook should make it easy for the UI to say "your diagnostic
+results are out of date, retake it" rather than silently grading old
+answers against a changed question bank.
 
-Actually, keep the groups as-is but rename the second label from `'Circuits'` to `'Gates & Circuits'`. The module grouping by `group` field stays the same — modules are already well-grouped. Just the display label changes.
+**Live-derived area scores:** for each `DIAGNOSTIC_AREAS[].id`, compute
+`{ correct, attempted, total }` by joining the stored `answers` against
+the *current* `DIAGNOSTIC_QUESTIONS` (not a cached/persisted number).
 
-#### 2. components/Navbar.jsx — Update nav extras
+**Three-way concept status — implement exactly as specified in CLAUDE.md:**
+For each concept id appearing in any question's `concepts` array, compute
+`attempted` (count of tagging questions answered) and `correct` (of those,
+answered right), then:
+- `attempted < 2` → `'insufficient-evidence'`
+- `attempted >= 2 && correct === attempted` → `'demonstrated'`
+- `attempted >= 2 && correct < attempted` → `'needs-review'`
 
-In the desktop nav "extras" section (after the group dropdowns and the divider):
-- Change the Roadmap link label from `'Roadmap'` to `'Study Paths'` (the route `/roadmap` stays the same)
-- Add a References link: `{ to: '/references', icon: BookOpen, label: 'References' }` — place it after Glossary
+Expose a `conceptStatus(id)` function returning one of the three strings,
+and a `demonstrated` `Set` containing exactly the concept ids currently at
+`'demonstrated'` status (this is the Set that TASK-024's `ConceptSection`
+will receive as a prop — do not have `ConceptSection` call this hook
+itself, per CLAUDE.md; call `useDiagnostic()` once per page).
 
-In the mobile nav "Explore" section:
-- Change `'Course Roadmap'` label to `'Study Paths'` (if not already changed in Phase 1 — verify first)
-- Add `{ to: '/references', label: 'References' }` after Glossary
+**Recommendation signals (not a Study Path selection):** derive
+`recommendedStartModuleId` and `reviewModuleIds` from the 3 pilot modules'
+area scores (e.g. lowest-scoring area's `moduleId` → recommended start;
+areas scoring high → review/skim candidates). Do **not** read
+`STUDY_PATHS` and do **not** attempt to pick a `Path A/B/C` — CLAUDE.md is
+explicit that a 3-area content diagnostic cannot distinguish background
+(a CS major who knows no quantum vs. a total beginner), so this hook must
+not try. `Roadmap.jsx`'s existing path-matching logic is out of scope for
+this task entirely — do not touch `Roadmap.jsx` in TASK-022.
 
-Note: Do NOT remove or change the `useProgress` import if it was already removed in Phase 1. Just check the current state of the file and make only the changes described above.
+**Answer-recording API:** something like `recordAnswer(questionId,
+choiceIndex)` that updates `answers` and persists, plus `reset()` mirroring
+`useProgress.js`'s `reset()`.
 
-#### 3. app/App.jsx — Add References route
+**Call-site discipline:** nothing about the hook's own implementation
+enforces "called once per page" — that's a TASK-023/024 usage concern — but
+keep the hook cheap to call and side-effect-free on read so that discipline
+is easy to honor later.
 
-Add a lazy import for References:
-```js
-const References = lazy(() => import('./pages/References'))
-```
-
-Add a route alongside the glossary route:
-```jsx
-<Route path="/references" element={<References />} />
-```
-
-#### 4. app/pages/References.jsx — New file
-
-Create a curated references page following the handbook style. Structure:
-
-- Page title: "References & Further Reading"
-- Short intro paragraph explaining the page's purpose
-- Organized into sections:
-
-**Section 1 — Textbooks and Course Notes**
-- Nielsen & Chuang, *Quantum Computation and Quantum Information* — the standard graduate reference
-- Yanofsky & Mannucci, *Quantum Computing for Computer Scientists* — accessible for CS students
-- Mermin, *Quantum Computer Science: An Introduction* — concise and mathematically careful
-- Kaye, Laflamme & Mosca, *An Introduction to Quantum Computing* — balanced theory and applications
-
-**Section 2 — Online Resources**
-- IBM Qiskit Textbook (learning.quantum.ibm.com) — interactive, code-first introduction
-- Qiskit Documentation (docs.quantum.ibm.com) — API reference and tutorials
-- Brilliant.org Quantum Computing course — visual, interactive fundamentals
-- MIT OpenCourseWare 8.370x — rigorous university-level course
-
-**Section 3 — Mathematical Background**
-- 3Blue1Brown, *Essence of Linear Algebra* (YouTube) — visual linear algebra refresher
-- Axler, *Linear Algebra Done Right* — clean theoretical treatment
-- Khan Academy Linear Algebra — free, structured review
-
-**Section 4 — Tools**
-- Qiskit (qiskit.org) — open-source quantum SDK
-- Quirk (algassert.com/quirk) — drag-and-drop circuit simulator
-- IBM Quantum Composer — visual circuit builder with real hardware access
-
-Style:
-- Use `max-w-3xl mx-auto px-4 sm:px-6` for content width
-- Each section: H2 heading, then a list of items
-- Each item: resource name (bold/semibold, text-white), dash, short description (text-slate-400)
-- Items in cards: `bg-slate-900 border border-slate-800 rounded-xl p-5` with a small vertical gap between items
-- Back-to-home link at the bottom
-- Do NOT use Framer Motion — keep static
-- Import only Link from react-router-dom and ChevronLeft from lucide-react
-
-#### 5–9. Reusable content block components
-
-Create these 5 components. They will be used in module pages during Phase 3. Each should be simple, semantic, and visually distinct.
-
-**All components share these principles:**
-- Accept `children` as the main content
-- Use semantic HTML
-- Use the existing dark theme (slate-900 backgrounds, slate-800 borders)
-- Use clear visual differentiation (left border color, icon, label)
-- Accessible: proper heading levels or ARIA roles
-- No Framer Motion — keep static
-- Keep them small and focused (under 40 lines each)
-
-**5. components/DefinitionBox.jsx**
-```jsx
-// Props: term (string), children (JSX)
-// Visual: indigo left border, "Definition" label, term in bold, then content
-// Style: rounded-xl border-l-4 border-l-indigo-500 border border-slate-800 bg-slate-900 p-5
-```
-
-Example usage:
-```jsx
-<DefinitionBox term="Qubit">
-  A qubit is the fundamental unit of quantum information...
-</DefinitionBox>
-```
-
-Render:
-- Small "Definition" label (text-xs, uppercase, tracking-widest, text-indigo-400, mb-2)
-- Term as h4 or strong (font-semibold, text-white, mb-2)
-- Children as body text (text-slate-300, text-sm, leading-relaxed)
-
-**6. components/NotationBox.jsx**
-```jsx
-// Props: symbol (string, optional), children (JSX)
-// Visual: violet left border, "Notation" label
-// Style: rounded-xl border-l-4 border-l-violet-500 border border-slate-800 bg-slate-900 p-5
-```
-
-Render:
-- "Notation" label (text-xs, uppercase, tracking-widest, text-violet-400, mb-2)
-- If symbol provided, show it in monospace (font-mono, text-white, text-lg, mb-2)
-- Children as explanation (text-slate-300, text-sm, leading-relaxed)
-
-**7. components/ExampleBox.jsx**
-```jsx
-// Props: title (string, optional, default "Worked Example"), children (JSX)
-// Visual: emerald left border, title label
-// Style: rounded-xl border-l-4 border-l-emerald-500 border border-slate-800 bg-slate-900 p-5
-```
-
-Render:
-- Title label (text-xs, uppercase, tracking-widest, text-emerald-400, mb-3)
-- Children as content (text-slate-300, text-sm, leading-relaxed)
-
-**8. components/RemarkBox.jsx**
-```jsx
-// Props: children (JSX)
-// Visual: amber left border, "Remark" label
-// Style: rounded-xl border-l-4 border-l-amber-500 border border-slate-800 bg-slate-900 p-5
-```
-
-Render:
-- "Remark" label (text-xs, uppercase, tracking-widest, text-amber-400, mb-2)
-- Children as content (text-slate-300, text-sm, leading-relaxed)
-
-**9. components/PrereqList.jsx**
-```jsx
-// Props: items (array of strings), children (optional JSX for extra context)
-// Visual: clean list with check icons
-// Style: rounded-xl border border-slate-800 bg-slate-900 p-5
-```
-
-Render:
-- "Prerequisites" label (text-xs, uppercase, tracking-widest, text-slate-500, mb-3)
-- Unordered list of items, each with a small circle bullet or dash
-- Items as text-slate-300, text-sm
-- Optional children rendered below the list
-
-### Non-goals
-- Do NOT modify any module page content (Intuition.jsx, BraKet.jsx, etc.)
-- Do NOT modify Home.jsx, ModuleLayout.jsx, or ProjectLayout.jsx
-- Do NOT modify glossary.js, projects.js
-- Do NOT change existing module `group` assignments in modules.js
-- Do NOT add new dependencies
-- Do NOT change the Tailwind config
+### Non-goals for TASK-022
+- No new page, no new route, no UI component. This is the hook only.
+- No changes to `Roadmap.jsx`, `App.jsx`, or any pilot module page.
+- No changes to `concepts.js` or `diagnostic.js` (TASK-021 is closed;
+  if you find an inconsistency, flag it rather than editing those files
+  silently, since TASK-021's cross-check already passed).
 
 ### Acceptance criteria
-- [ ] NAV_GROUPS second label reads "Gates & Circuits"
-- [ ] Desktop nav shows "Study Paths" and "References" links
-- [ ] Mobile nav shows "Study Paths" and "References" in Explore section
-- [ ] `/references` route works and shows curated references page
-- [ ] References page has 4 sections with curated resources
-- [ ] DefinitionBox, NotationBox, ExampleBox, RemarkBox, PrereqList components exist and export correctly
-- [ ] Each content block component uses the specified left-border color and label
-- [ ] `npm run build` passes with no errors
+- [ ] `lib/hooks/useDiagnostic.js` exists, exports a hook usable as
+      `const diagnostic = useDiagnostic()`
+- [ ] Raw answers persisted to `localStorage` under `quantum_diagnostic_v1`
+      exactly as specified — no precomputed scores in storage
+- [ ] Version mismatch is detected and surfaced (`isStale` or equivalent),
+      not silently rescored
+- [ ] Area scores derived live from current `DIAGNOSTIC_QUESTIONS`
+- [ ] `conceptStatus(id)` implements the exact three-way rule above
+- [ ] `demonstrated` Set contains only `'demonstrated'`-status concept ids
+- [ ] `recommendedStartModuleId` / `reviewModuleIds` derived from area
+      scores only — no `STUDY_PATHS` import, no path selection
+- [ ] `npm run build` passes
+- [ ] Nothing else in the repo changes behavior (hook isn't imported
+      anywhere yet — that's TASK-023)
 
 ### Verification steps
-1. `npm run build` — must pass
-2. Navigate to `/references` — see curated references page with 4 sections
-3. Check navbar desktop — "Gates & Circuits" dropdown label, "Study Paths" link, "References" link
-4. Check navbar mobile — "Study Paths" and "References" in Explore section
-5. Verify component files exist: `ls components/DefinitionBox.jsx components/NotationBox.jsx components/ExampleBox.jsx components/RemarkBox.jsx components/PrereqList.jsx`
+1. `npm run build` — must pass.
+2. Sanity-check the hook in isolation (e.g. a throwaway test harness or
+   manual `console.log` from a temporary import) rather than trusting the
+   implementation blind: simulate answering all `dq-math-*` questions
+   correctly and confirm `ket-notation`, `bra-notation`, `inner-product`
+   land in `demonstrated`, while `notation-reading` (only 1 tagged
+   question) stays `insufficient-evidence` regardless of correctness.
+3. Simulate a stored `version` of `0` against `DIAGNOSTIC_VERSION = 1` and
+   confirm the hook reports staleness rather than deriving scores.
 
-### Constraints
-- Only modify/create the files listed above
-- Follow existing code patterns (Tailwind classes, component structure)
-- Keep all accessibility features
-- Components should be simple — no state management, no Framer Motion
+### Next task
+TASK-023 — `Diagnostic.jsx` page + `DiagnosticQuestion.jsx` component +
+`/diagnostic` route (via `lazyWithRecovery`, matching `App.jsx`'s existing
+pattern exactly) + a plain entry-point CTA on `Roadmap.jsx` linking to it
+(no data coupling, no per-path badge — see CLAUDE.md).
