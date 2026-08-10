@@ -19,19 +19,18 @@ The site should **not** feel like:
 
 ---
 
-## Project Status (March 2026)
+## Project Status (August 2026)
 
 ### Stack
 React 18 + Vite + Tailwind CSS v3 + KaTeX + React Router v6 + Framer Motion + Prism.js.
 
 ### Current State
-The identity shift is complete. The site is now branded as **SIGQuantum — Technical Onboarding Handbook** (previously “QuantumLeap”). The homepage has been rewritten around technical onboarding with five sections (title/purpose, audience, topics, usage guidance, footer). The navbar is rebranded, marketing elements and progress gamification are removed, and navigation includes Study Paths, Glossary, and References. Structural components are in place: DefinitionBox, NotationBox, ExampleBox, RemarkBox, and PrereqList are ready for use in module pages. A curated References page exists at `/references`. Orb animations and decorative motion have been removed from the homepage and CSS. `Roadmap.jsx` (Study Paths) is fully implemented: three background-based paths (CS/Python, physics/theory, new to both), a full handbook map by topic group, and machine-project status, all driven by `useProgress`. Several module pages (`BraKet.jsx`, `Gates.jsx`, `Intuition.jsx`) already use the full handbook block vocabulary — DefinitionBox/NotationBox/ExampleBox/RemarkBox, outline nav, and a right-rail aside — at a level of rigor closer to Phase 3's target than earlier status notes reflected.
+The identity shift and structural phases are complete, and Phase 3 content work has substantially progressed. The site is branded **SIGQuantum — Technical Onboarding Handbook**. The handbook now spans **14 sequential modules**, Big-Picture Intuition through Use Cases (see Information Architecture below), each following the section template. `Roadmap.jsx` (Study Paths) is fully implemented: three background-based paths (CS/Python, physics/theory, new to both), a full topic map, and machine-project status, all driven by `useProgress`. Three **Machine Projects** (First Quantum Circuit, Bell State Explorer, Algorithm Showdown) are built end to end with real Qiskit code, predict/reflect checkpoints, and step-gated progress via `ProjectLayout`. The **Diagnostic Placement pilot** (Phase 3a) shipped in full, scoped to Intuition, Bra-Ket, and Gates: a soft/advisory placement quiz, concept-level content collapsing, a linked-list study sequence, and a no-account save/restore code (see Diagnostic Placement & Concept Evidence below). Separately, every one of the 14 modules — not just the 3 pilot modules — now carries one optional, source-verified video aside (see Video Sourcing); that rollout was content-only and did not extend the concept-graph/diagnostic-collapsing system itself beyond the pilot.
 
 ### What remains
-- Rewrite/audit remaining module page content for rigor, clarity, and handbook tone (Phase 3)
-- Accessibility, mobile, and rendering polish (Phase 4)
-- Some older module pages still use the old casual/course tone and need content revision
-- Diagnostic Placement pilot (Phase 3a — see Build Plan below): concept-level metadata, a soft/advisory placement quiz, and evidence-based section collapsing, piloted on Intuition/Bra-Ket/Gates before any wider rollout
+- Continue Phase 3 rigor/clarity review on modules outside the diagnostic pilot — the concept-graph and evidence-based collapsing stop at Intuition/Bra-Ket/Gates by design, so other modules haven’t had that same line-by-line audit
+- Decide whether to roll the concept graph + diagnostic out beyond the 3 pilot modules (see Phase 3a)
+- Phase 4 polish: accessibility, mobile, and rendering audits
 
 ---
 
@@ -164,21 +163,31 @@ The site should be organized around **technical onboarding**, not event promotio
 - Glossary
 - References
 
-### Recommended structure
+### Current structure
 ```text
 /                    Home
-/foundations         Why quantum information is different from classical information
-/math-language       Vectors, complex numbers, inner products, bra-ket notation
-/states              Qubits, superposition, basis states, amplitudes
-/gates               Single-qubit gates, multi-qubit structure, circuit notation
-/measurement         Measurement postulate, basis dependence, probabilities
-/qiskit              Basic Qiskit workflow and minimal programming preparation
-/study-paths         Suggested preparation routes by background
+/intuition           Module 1  — Big-Picture Intuition
+/math-language       Module 2  — Mathematical Language
+/braket              Module 3  — Bra-Ket Notation
+/phase               Module 4  — Phase & Measurement Angles
+/qiskit              Module 5  — Qiskit
+/gates               Module 6  — Single-Qubit Gates
+/multiqubit          Module 7  — Multi-Qubit Systems
+/entanglement        Module 8  — Entanglement
+/circuits            Module 9  — Quantum Circuits
+/measurement         Module 10 — Measurement & Basis
+/algorithms          Module 11 — Core Algorithms
+/labs                Module 12 — Qiskit Labs
+/noise               Module 13 — Noise & Hardware
+/usecases            Module 14 — Use Cases
+/diagnostic          Optional placement diagnostic — soft/advisory, see below
+/roadmap             Study Paths — by-background routes + full topic map
+/projects/*          Machine Projects — hands-on Qiskit walkthroughs
 /glossary            Technical terms and notation
 /references          External readings, tools, and next steps
 ```
 
-This structure may expand, but it must remain centered on readiness for SIGQuantum participation.
+This structure may still expand, but it must remain centered on readiness for SIGQuantum participation. Module order and prerequisites are the source of truth in `lib/data/modules.js`, not this list — update both together if they ever diverge.
 
 ---
 
@@ -206,8 +215,8 @@ The homepage should introduce the site as a **technical preparation resource**.
 4. **How to use this handbook**  
    read sequentially if new, jump by topic if reviewing, use glossary and references as needed
 
-5. **Recommended starting paths**  
-   for CS students, for physics students, and for complete beginners to quantum notation
+5. **Footer**  
+   minimal closing (organization name only). Detailed starting-path guidance by background lives on `/roadmap` (Study Paths), reached via the hero’s secondary CTA — it is not duplicated on the homepage itself.
 
 ### Homepage must avoid
 - event schedules
@@ -219,7 +228,7 @@ The homepage should introduce the site as a **technical preparation resource**.
 - H1 should be sober and specific
 - subheading should explain purpose, not advertise
 - supporting content should emphasize preparation, structure, and readiness
-- CTAs should be directional, such as “Begin with Foundations” or “Choose a Study Path”
+- CTAs should be directional, such as “Begin with the Diagnostic” or “Choose a Study Path” — the current homepage hero uses exactly this pair, primary CTA to `/diagnostic` and secondary to `/roadmap`
 
 Good examples:
 - “Technical Onboarding for SIGQuantum”
@@ -444,12 +453,12 @@ The site should remain useful even when read statically.
 
 ### Video Sourcing
 
-Optional supplementary video is allowed under the same "optional support" rule:
-- Prefer IBM/Qiskit's official channels. Other reputable sources are acceptable — established institutions (e.g. MIT OpenCourseWare) and well-known science-education channels with a genuine track record (e.g. 3Blue1Brown, Veritasium) — never an unverified or low-subscriber channel picked up from a casual search result.
-- Verify the source before using it. Search results and video titles are not proof of who uploaded something — confirm the actual channel (e.g. via YouTube's oEmbed endpoint, `https://www.youtube.com/oembed?url=<video_url>&format=json`, which returns `author_name`/`author_url`) before treating any video as sourced from a given channel. Reject anything that doesn't check out rather than assuming a plausible-looking title is correct.
+Optional supplementary video is allowed under the same “optional support” rule:
+- Prefer IBM/Qiskit’s official channels. Other reputable sources are acceptable — established institutions (e.g. MIT OpenCourseWare) and well-known science-education channels with a genuine track record (e.g. 3Blue1Brown, Veritasium) — never an unverified or low-subscriber channel picked up from a casual search result.
+- Verify the source before using it. Search results and video titles are not proof of who uploaded something — confirm the actual channel (e.g. via YouTube’s oEmbed endpoint, `https://www.youtube.com/oembed?url=<video_url>&format=json`, which returns `author_name`/`author_url`) before treating any video as sourced from a given channel. Reject anything that doesn’t check out rather than assuming a plausible-looking title is correct.
 - Place only inside a foldable aside, never in the main reading flow
-- Always show a permanently visible text summary of the video's content and its source — the summary is not itself inside the disclosure, so the page stays useful with the video collapsed and unwatched
-- Never autoplay; defer loading the embed until the viewer's first interaction with the disclosure, not merely on page load
+- Always show a permanently visible text summary of the video’s content and its source — the summary is not itself inside the disclosure, so the page stays useful with the video collapsed and unwatched
+- Never autoplay; defer loading the embed until the viewer’s first interaction with the disclosure, not merely on page load
 
 ---
 
@@ -566,7 +575,7 @@ These paths should feel advisory and practical.
 ## Diagnostic Placement & Concept Evidence
 
 The handbook may offer a short, optional placement diagnostic so a student
-who already knows some material isn't re-taught it from zero. This is an
+who already knows some material isn’t re-taught it from zero. This is an
 extension of the advisory philosophy above, not a departure from it.
 
 ### The soft-only rule
@@ -577,10 +586,10 @@ statically. The diagnostic *recommends and pre-collapses already-covered
 material*; it never restricts navigation, and there are no lock icons,
 streaks, or forced sequencing anywhere in this system.
 
-### Terminology: "demonstrated," never "mastered"
+### Terminology: “demonstrated,” never “mastered”
 A short multiple-choice diagnostic cannot establish mastery of a topic —
-it can only note evidence toward it. Use "demonstrated" / "the diagnostic
-suggests you already know this," never "mastered." A concept needs at
+it can only note evidence toward it. Use “demonstrated” / “the diagnostic
+suggests you already know this,” never “mastered.” A concept needs at
 least two independently answered, correctly answered diagnostic questions
 before it is treated as demonstrated; fewer than that is insufficient
 evidence and must render exactly as it would for a student who never took
@@ -588,23 +597,33 @@ the diagnostic — fully expanded, never collapsed.
 
 ### Study Paths stay background-based, not diagnostic-derived
 The diagnostic measures topic-content knowledge (e.g. notation, states,
-gates). `Study Paths` above are keyed by a student's self-reported
+gates). `Study Paths` above are keyed by a student’s self-reported
 background (CS/Python, physics/theory, neither). A content diagnostic
-cannot reliably distinguish "a CS major who knows no quantum yet" from "a
-complete beginner who knows no quantum yet," even though those students
+cannot reliably distinguish “a CS major who knows no quantum yet” from “a
+complete beginner who knows no quantum yet,” even though those students
 belong on different paths — so the diagnostic must not auto-select a
-`Study Path`. It surfaces a suggested starting module and topics worth
-reviewing; the student still chooses their path the way they do today.
+`Study Path`. Instead it produces its own ordered study sequence (weakest
+diagnosed area first, each entry pointing to the next) covering only the
+modules it actually tested; the student still chooses their `Study Path`
+by background the way they do today.
 
 ### Concept-level collapsing
 Where module pages tag a coherent chunk of content (a definition plus its
 notation, example, and remark — not individual boxes in isolation) with
 the concept(s) it teaches, and the diagnostic has shown evidence the
 student already knows all of them, that chunk may render collapsed by
-default with a one-line "you already know this — review it" affordance.
+default with a one-line “you already know this — review it” affordance.
 The section heading and its introductory sentence are never part of the
 collapse — outline navigation and chapter scanability must survive
 regardless of diagnostic state.
+
+### Save and restore, no accounts
+A completed diagnostic can be exported as a short, copyable code and
+re-imported later — on another device, after clearing browser data, or
+simply to hand to someone else with the same result. This stays consistent
+with “least data, no accounts”: the code is generated and read entirely in
+the browser, nothing is transmitted anywhere, and it carries no
+personally identifying information — only the raw answer set.
 
 ---
 
@@ -679,17 +698,22 @@ The references page should help learners continue independently.
 | `NotationBox` | Explain symbols and conventions |
 | `ExampleBox` | Worked example with interpretation |
 | `RemarkBox` | Clarifying nuance or caveat |
-| `PathCard` | Recommended study path cards |
-| `ReferenceList` | Curated reading links |
-| `FigureFrame` | Labeled technical diagrams |
 | `PrereqList` | Explicit prerequisites for a page |
+| `ConceptSection` | Diagnostic-evidence-aware content collapsing — see Diagnostic Placement & Concept Evidence |
+| `VideoAside` | Optional sourced video embed, deferred load — see Video Sourcing |
+| `DiagnosticQuestion` | Placement-quiz choice UI (records and moves on; no reveal/retry, unlike `Quiz`) |
+| `ProjectLayout` | Machine Project page shell — step list, progress bar, predict/reflect pattern |
+
+`PathCard`, `ReferenceList`, and `FigureFrame` were planned but never built as named; their roles are covered instead by `Roadmap.jsx`’s own path cards, the References page’s plain list, and `DiagramFrame` respectively. Update this table rather than reintroducing the unused names if that ever changes.
 
 ### Optional
 | Component | Role |
 |---|---|
-| `CircuitStepper` | Small, focused circuit walkthrough |
 | `GlossaryTooltip` | Hover or inline term explanation |
 | `ExpandableAside` | Optional mathematical or implementation detail |
+| `DiagramFrame` | Labeled technical diagram wrapper (the built equivalent of the originally-planned `FigureFrame`) |
+
+`CircuitStepper` was planned but never built as a standalone component; `Quiz`/`LessonCard`/`StepNav`/`DeepDive` cover step-by-step circuit walkthroughs on the module pages that still use the older lesson-stepper pattern (see Build Plan — Phase 3).
 
 When rewriting Phase 3 pages:
 - Keep the best interactive example in the main reading flow if it materially improves understanding
@@ -866,22 +890,39 @@ Every review should ask:
 - [ ] Add canonical worked examples
 - [x] Add study paths by background (`Roadmap.jsx` — three paths, full handbook map, machine-project status)
 
-### Phase 3a — Diagnostic Placement Pilot
-Scope: Intuition, Bra-Ket, and Gates only. See "Diagnostic Placement &
-Concept Evidence" above for the governing rules. Full slicing lives in
-`agent.md`'s task history; do not roll out beyond the pilot modules until
-this phase is reviewed.
-- [ ] Concept graph + diagnostic question data model, with an explicit
-      version-bump contract so edited questions can't silently rescore old
+### Phase 3a — Diagnostic Placement Pilot ✓ (completed 2026-08-09)
+Scope: Intuition, Bra-Ket, and Gates only. See “Diagnostic Placement &
+Concept Evidence” above for the governing rules. Full slicing lives in
+`agent.md`’s task history (TASK-020 through TASK-026). The concept graph
+and diagnostic-collapsing system remain scoped to these 3 modules — do
+not roll out further without reviewing this pilot first.
+- [x] Concept graph + diagnostic question data model, with an explicit
+      version-bump contract so edited questions can’t silently rescore old
       answers
-- [ ] `useDiagnostic` hook — raw-answer persistence, staleness detection,
+- [x] `useDiagnostic` hook — raw-answer persistence, staleness detection,
       live-derived area scores and three-way concept evidence status
-- [ ] Diagnostic page/route + Roadmap entry point (link only, no data
+- [x] Diagnostic page/route + Roadmap entry point (link only, no data
       coupling into Study Paths)
-- [ ] Concept-level section collapsing wired into the 3 pilot pages
-- [ ] Gates.jsx gate-matrix content gap + Intuition.jsx analogy audit
-- [ ] Optional IBM video aside, deferred-load, official channel only
-- [ ] Accessibility verification pass on all new interactive elements
+- [x] Concept-level section collapsing wired into the 3 pilot pages
+- [x] Gates.jsx gate-matrix content gap + Intuition.jsx analogy audit
+- [x] Optional video aside, deferred-load, source-verified
+- [x] Accessibility verification pass on all new interactive elements
+- [x] Study-sequence chain (linked-list, weakest area first) + no-account
+      save/restore code, added after user review of the initial results
+      view (TASK-028)
+
+**Follow-on work, broader than the pilot (does not reopen pilot scope):**
+- [x] One video aside per module, all 14 — not just the 3 pilot modules.
+      Video sourcing policy broadened from IBM-only to “IBM/Qiskit
+      preferred, other verified-reputable sources acceptable” (TASK-029).
+      This expanded video coverage only; the concept graph and diagnostic
+      collapsing are still Intuition/Bra-Ket/Gates only.
+- [x] New “Mathematical Language” module (module 2), fixing a real gap —
+      `BraKet.jsx` referenced vector familiarity with nothing to link to
+      (TASK-027)
+- [x] Both remaining Machine Projects (Bell State Explorer, Algorithm
+      Showdown) — full content (TASK-017/018)
+- [x] Home hero primary CTA rewired to `/diagnostic` (TASK-030)
 
 ### Phase 4 — Polish
 - [ ] Accessibility audit
