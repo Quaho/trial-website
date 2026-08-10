@@ -12,6 +12,7 @@ import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import ExpandableAside from '../../components/ExpandableAside'
+import VideoAside from '../../components/VideoAside'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const MULTIQUBIT_OUTLINE = [
@@ -504,6 +505,15 @@ export default function MultiQubit() {
             Tensor products describe independence. Entanglement begins precisely where this product
             description stops being possible.
           </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <VideoAside
+            title="Lecture 1.1 — Vector Spaces, Tensor Products, and Qubits"
+            description="A Qiskit lecture building up the tensor-product formalism from scratch — a more formal treatment of exactly the rule introduced above."
+            source="Qiskit"
+            videoId="xgA4Dx_7q34"
+          />
         </div>
       </section>
 

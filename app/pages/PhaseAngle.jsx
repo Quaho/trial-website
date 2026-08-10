@@ -11,6 +11,7 @@ import Keyword from '../../components/Keyword'
 import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
+import VideoAside from '../../components/VideoAside'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const PHASE_OUTLINE = [
@@ -525,6 +526,15 @@ export default function PhaseAngle() {
             leave <InlineMath>{'P(0)'}</InlineMath> and <InlineMath>{'P(1)'}</InlineMath> unchanged in the
             computational basis. That is why phase often feels hidden at first.
           </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <VideoAside
+            title="Qubits and Quantum States, Quantum Circuits, Measurements — Part 1"
+            description="A Qiskit lecture covering how a qubit's state, including phase, is represented — a more formal companion to the Bloch-sphere picture above."
+            source="Qiskit"
+            videoId="NZD9APb7ZtY"
+          />
         </div>
       </section>
 

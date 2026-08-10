@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 
 /**
- * Optional IBM Quantum video embed. See CLAUDE.md's "IBM Video Sourcing":
- * official channel only, foldable-aside only, permanently visible text
- * summary, never autoplay, embed deferred until first interaction.
+ * Optional video embed. See CLAUDE.md's "Video Sourcing": prefer IBM/
+ * Qiskit, other verified-reputable sources acceptable (checked via
+ * YouTube's oEmbed endpoint before use, never assumed from a title),
+ * foldable-aside only, permanently visible text summary, never autoplay,
+ * embed deferred until first interaction.
  *
  * Two things this deliberately does NOT do, both corrections from review:
  *  1. The title/description are NOT inside <summary> — a click on the
@@ -18,9 +20,11 @@ import { ChevronDown } from 'lucide-react'
  *   title       – video title
  *   description – 1-2 sentence summary, shown whether or not the
  *                 disclosure has been opened
- *   videoId     – YouTube video id (from an IBM Quantum official upload)
+ *   source      – channel/publisher name, e.g. "Qiskit", "MIT OpenCourseWare"
+ *                 — verify via oEmbed before use, never assume from a title
+ *   videoId     – YouTube video id
  */
-export default function VideoAside({ title, description, videoId }) {
+export default function VideoAside({ title, description, source, videoId }) {
   const [hasLoaded, setHasLoaded] = useState(false)
 
   function handleToggle(event) {
@@ -30,7 +34,7 @@ export default function VideoAside({ title, description, videoId }) {
   return (
     <aside className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
       <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
-        Optional Video — IBM Quantum
+        Optional Video{source ? ` — ${source}` : ''}
       </p>
       <h3 className="mt-2 text-base font-semibold text-white">{title}</h3>
       <p className="mt-2 text-sm text-slate-400 leading-relaxed">{description}</p>

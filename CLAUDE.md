@@ -442,12 +442,13 @@ Interactivity is optional support, not the core identity of the site.
 
 The site should remain useful even when read statically.
 
-### IBM Video Sourcing
+### Video Sourcing
 
 Optional supplementary video is allowed under the same "optional support" rule:
-- Source only from IBM Quantum's official YouTube channel
+- Prefer IBM/Qiskit's official channels. Other reputable sources are acceptable — established institutions (e.g. MIT OpenCourseWare) and well-known science-education channels with a genuine track record (e.g. 3Blue1Brown, Veritasium) — never an unverified or low-subscriber channel picked up from a casual search result.
+- Verify the source before using it. Search results and video titles are not proof of who uploaded something — confirm the actual channel (e.g. via YouTube's oEmbed endpoint, `https://www.youtube.com/oembed?url=<video_url>&format=json`, which returns `author_name`/`author_url`) before treating any video as sourced from a given channel. Reject anything that doesn't check out rather than assuming a plausible-looking title is correct.
 - Place only inside a foldable aside, never in the main reading flow
-- Always show a permanently visible text summary of the video's content — the summary is not itself inside the disclosure, so the page stays useful with the video collapsed and unwatched
+- Always show a permanently visible text summary of the video's content and its source — the summary is not itself inside the disclosure, so the page stays useful with the video collapsed and unwatched
 - Never autoplay; defer loading the embed until the viewer's first interaction with the disclosure, not merely on page load
 
 ---

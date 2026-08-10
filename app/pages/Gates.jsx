@@ -555,6 +555,7 @@ export default function Gates() {
             <VideoAside
               title="Quantum Gates"
               description="An IBM Research overview of the gates available on real quantum hardware and how they act on a qubit's state — a visual companion to the unitary-operator definition above."
+              source="IBM Research"
               videoId="QXJ96Kyt6TA"
             />
           </div>

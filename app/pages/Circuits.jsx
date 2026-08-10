@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import VideoAside from '../../components/VideoAside'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import CodeBlock from '../../components/CodeBlock'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
@@ -960,6 +961,15 @@ export default function Circuits() {
           )}
         </motion.div>
       </AnimatePresence>
+
+      <div className="mt-6">
+        <VideoAside
+          title="Lecture 1.2 — Introduction to Quantum Circuits"
+          description="A Qiskit lecture on reading and building quantum circuits — a more formal companion to this module's lesson-by-lesson walkthrough."
+          source="Qiskit"
+          videoId="94pZPZ_nsW8"
+        />
+      </div>
 
       <StepNav
         steps={LESSONS.length}

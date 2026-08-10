@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import VideoAside from '../../components/VideoAside'
 import CodeBlock from '../../components/CodeBlock'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { useProgress } from '../../lib/hooks/useProgress'
@@ -683,6 +684,15 @@ export default function Labs() {
           )}
         </motion.div>
       </AnimatePresence>
+
+      <div className="mt-6">
+        <VideoAside
+          title="Introduction to Qiskit — Coding with Qiskit 1.x"
+          description="A Qiskit walkthrough of writing and running real code — a hands-on companion to this module's lab exercises."
+          source="Qiskit"
+          videoId="Tk9LOL9--Y4"
+        />
+      </div>
 
       <StepNav
         steps={LESSONS.length}

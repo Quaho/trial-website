@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
@@ -598,6 +599,15 @@ export default function Algorithms() {
           )}
         </motion.div>
       </AnimatePresence>
+
+      <div className="mt-6">
+        <VideoAside
+          title="Grover's Algorithm — Coding with Qiskit"
+          description="A Qiskit walkthrough implementing Grover's search algorithm in code — a hands-on companion to this module's conceptual coverage."
+          source="Qiskit"
+          videoId="0RPFWZj7Jm0"
+        />
+      </div>
 
       <StepNav
         steps={LESSONS.length}

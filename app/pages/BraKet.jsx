@@ -13,6 +13,7 @@ import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import ConceptSection from '../../components/ConceptSection'
+import VideoAside from '../../components/VideoAside'
 import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
@@ -437,6 +438,15 @@ export default function BraKet() {
 
           <div className="mt-6">
             <CheatSheetTable />
+          </div>
+
+          <div className="mt-6">
+            <VideoAside
+              title="Dirac's Bra and Ket Notation"
+              description="MIT OpenCourseWare's full lecture on bra-ket notation (8.05 Quantum Physics II) — a deeper, more formal treatment than this page needs, useful if you want the complete mathematical picture."
+              source="MIT OpenCourseWare"
+              videoId="r2NMWEsNcTs"
+            />
           </div>
         </ConceptSection>
       </section>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
@@ -690,6 +691,15 @@ export default function Noise() {
           )}
         </motion.div>
       </AnimatePresence>
+
+      <div className="mt-6">
+        <VideoAside
+          title="Mitigating Noise in Quantum Hardware — Part 1"
+          description="A Qiskit Seminar Series talk on where noise comes from on real quantum hardware and how to work around it — a deeper companion to this module's introduction."
+          source="Qiskit"
+          videoId="Dv5cqB87nqk"
+        />
+      </div>
 
       <StepNav
         steps={LESSONS.length}

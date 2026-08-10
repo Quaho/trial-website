@@ -11,6 +11,7 @@ import Keyword from '../../components/Keyword'
 import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
+import VideoAside from '../../components/VideoAside'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const SETUP_CODE = `# Install Qiskit and the Aer simulator
@@ -429,6 +430,15 @@ export default function Qiskit() {
             circuit says what operation you want. A backend determines how that operation is actually
             carried out, whether in an ideal simulator or on noisy hardware.
           </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <VideoAside
+            title="What is Qiskit?"
+            description="IBM's own short introduction to Qiskit — what it is and what problem it solves, straight from the official Qiskit channel."
+            source="Qiskit"
+            videoId="jPGHPkuEGU0"
+          />
         </div>
       </section>
 

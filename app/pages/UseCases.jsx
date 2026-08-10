@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { useProgress } from '../../lib/hooks/useProgress'
 import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
@@ -768,11 +769,20 @@ export default function UseCases() {
             <div className="mt-6 p-5 rounded-2xl bg-green-950/30 border border-green-800/40 text-center">
               <div className="text-2xl mb-2">&#127881;</div>
               <p className="text-green-300 font-semibold">Course complete!</p>
-              <p className="text-slate-400 text-sm mt-1">You've finished all 13 modules. Congratulations!</p>
+              <p className="text-slate-400 text-sm mt-1">You've finished all 14 modules. Congratulations!</p>
             </div>
           )}
         </motion.div>
       </AnimatePresence>
+
+      <div className="mt-6">
+        <VideoAside
+          title="Mapping a Problem to a Quantum Computer"
+          description="A Qiskit talk from the Quantum Computing in Practice series on how real-world problems get translated into something a quantum computer can actually run — a practical companion to this module."
+          source="Qiskit"
+          videoId="BiKpHaev0XI"
+        />
+      </div>
 
       <StepNav
         steps={LESSONS.length}

@@ -10,6 +10,7 @@ import Keyword from '../../components/Keyword'
 import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
+import VideoAside from '../../components/VideoAside'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const MATH_LANGUAGE_OUTLINE = [
@@ -221,6 +222,15 @@ export default function MathLanguage() {
             The real numbers are a subset of the complex numbers (the case <InlineMath>{'b = 0'}</InlineMath>).
             Complex numbers extend that system; they do not replace it with something undefined.
           </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <VideoAside
+            title="Complex Number Fundamentals"
+            description="3Blue1Brown's visual introduction to complex numbers — a geometric companion to the modulus definition above, from one of the most respected math-education channels on YouTube."
+            source="3Blue1Brown"
+            videoId="5PcpBw5Hbwo"
+          />
         </div>
       </section>
 

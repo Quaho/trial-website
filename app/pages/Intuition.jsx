@@ -396,6 +396,7 @@ export default function Intuition() {
             <VideoAside
               title="What is Superposition?"
               description="A short explainer from IBM's Qiskit channel on superposition — one of the two core ideas, alongside measurement, this section introduces."
+              source="Qiskit"
               videoId="mAgnIj0UXLY"
             />
           </div>

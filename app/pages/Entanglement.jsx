@@ -11,6 +11,7 @@ import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import ExpandableAside from '../../components/ExpandableAside'
+import VideoAside from '../../components/VideoAside'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const ENTANGLEMENT_OUTLINE = [
@@ -377,6 +378,15 @@ export default function Entanglement() {
             Perfectly matched outcomes are a clue, not a definition. The nonclassical part is the joint structure
             that survives basis changes and defeats every local factorization story.
           </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <VideoAside
+            title="Quantum Entanglement & Spooky Action at a Distance"
+            description="Veritasium's well-known explainer on entanglement — an accessible, widely-cited introduction from one of the most established science-education channels on YouTube."
+            source="Veritasium"
+            videoId="ZuvK-od647c"
+          />
         </div>
       </section>
 

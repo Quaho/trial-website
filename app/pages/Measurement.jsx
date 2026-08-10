@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
 import LessonCard from '../../components/LessonCard'
 import StepNav from '../../components/StepNav'
+import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 import { useProgress } from '../../lib/hooks/useProgress'
@@ -612,6 +613,15 @@ export default function Measurement() {
           )}
         </motion.div>
       </AnimatePresence>
+
+      <div className="mt-6">
+        <VideoAside
+          title="Qubits and Quantum States, Quantum Circuits, Measurements — Part 2"
+          description="A Qiskit lecture on measurement, continuing directly from where the state/circuit formalism leaves off — a more formal companion to this module."
+          source="Qiskit"
+          videoId="SlZoTjkPy7o"
+        />
+      </div>
 
       <StepNav
         steps={LESSONS.length}

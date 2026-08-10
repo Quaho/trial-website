@@ -240,3 +240,55 @@ callouts, `CodeBlock`, `GlossaryTooltip`, step-gated progress via
 Backlog is now empty. `npm run build` passes for both. Neither has been
 visually verified in a browser (standing project convention: no
 Playwright/Chromium here).
+
+---
+
+## TASK-029 — COMPLETE (2026-08-09)
+One `VideoAside` per module, all 14 — user request, sourcing broadened
+beyond IBM-only ("ideally from IBM, but other reputable sources also
+works"). Full detail in `TASKS.md`.
+
+**Policy change, made in CLAUDE.md first, before touching any page:**
+"IBM Video Sourcing" → "Video Sourcing." IBM/Qiskit still preferred;
+other verified-reputable sources (established institutions, well-known
+science-education channels) are now acceptable. The **verify-before-use
+rule is unchanged and non-negotiable regardless of source** — every
+candidate this task used was checked via YouTube's oEmbed endpoint for
+its actual `author_name`, not assumed from a search-result title. Two
+more third-party channels were caught and rejected in this pass
+(`For the Love of Physics`, `Spectral Forge Labs`), on top of the two
+caught in TASK-026 — the discipline is holding up, not a one-time thing.
+
+**`VideoAside.jsx` changed shape**: `source` is now a prop (was
+hardcoded `"IBM Quantum"`). If you add a video anywhere, pass the real
+verified channel name.
+
+**Final sourcing, all confirmed via oEmbed:**
+9 Qiskit official channel, 1 IBM Research (`gates`, from TASK-026), 1
+MIT OpenCourseWare (`braket`), 1 3Blue1Brown (`math-language`), 1
+Veritasium (`entanglement`).
+
+**Placement pattern differs by page type — know this before adding more:**
+- Pilot pages with `ConceptSection` (`intuition`/`braket`/`gates`): video
+  goes inside the relevant existing cluster.
+- Other "modern" outline+aside pages, no `ConceptSection`
+  (`math-language`/`phase`/`qiskit`/`multiqubit`/`entanglement`): video is
+  a standalone block inside the most topically relevant `<section>`.
+- "Legacy" `stepInfo`/`LESSONS`-array pages
+  (`circuits`/`measurement`/`algorithms`/`labs`/`noise`/`usecases`): no
+  per-lesson slot exists without restructuring `LESSONS` data, so the
+  video is placed once, persistently, between the lesson stepper's
+  `</AnimatePresence>` and `<StepNav>` — visible on every lesson step,
+  not tied to one.
+
+**Also fixed, found by accident while in `UseCases.jsx`**: its module-
+complete message said "You've finished all 13 modules" — stale since
+TASK-027 made Mathematical Language module 14. Grepped the whole
+codebase for the same stale count; it was the only occurrence.
+
+**Verification, not just "looks right":** `grep -c "<VideoAside"` across
+all 14 pages confirms exactly one each; a dedupe pass on all 14
+`videoId`s confirms none were accidentally reused. `npm run build`
+passes; `VideoAside` code-splits into one shared chunk reused across all
+14 pages (confirms the component itself, not 14 copies of it). Not
+visually verified in a browser — standing project convention.
