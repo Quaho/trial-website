@@ -76,8 +76,8 @@ export default function Home() {
             in SIGQuantum projects, workshops, and Fall Fest technical activities.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link to="/intuition" className="btn-primary text-base px-7 py-3 group">
-              Begin with Foundations
+            <Link to="/diagnostic" className="btn-primary text-base px-7 py-3 group">
+              Begin with the Diagnostic
               <ArrowRight className="w-4 h-4 transition-transform duration-150 group-hover:translate-x-0.5" />
             </Link>
             <Link to="/roadmap" className="btn-secondary text-base px-7 py-3">
