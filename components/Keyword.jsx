@@ -20,6 +20,9 @@ const KEYWORD_STYLES = {
   bell: 'text-teal-300',
   decoherence: 'text-amber-300',
   entanglement: 'text-fuchsia-300',
+  complex: 'text-blue-300',
+  vector: 'text-cyan-300',
+  normalization: 'text-pink-300',
 }
 
 export default function Keyword({ tone = 'qubit', className = '', children }) {

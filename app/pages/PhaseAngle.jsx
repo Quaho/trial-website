@@ -402,8 +402,8 @@ export default function PhaseAngle() {
       subtitle="An introductory chapter on phase, unit-circle intuition, basis choice, and why phase drives interference."
       outline={PHASE_OUTLINE}
       aside={<PhaseAngleSupport />}
-      prev={{ to: '/braket', label: 'Module 2: Bra-Ket Notation' }}
-      next={{ to: '/qiskit', label: 'Module 4: Qiskit' }}
+      prev={{ to: '/braket', label: 'Module 3: Bra-Ket Notation' }}
+      next={{ to: '/qiskit', label: 'Module 5: Qiskit' }}
     >
       <div className="prose-quantum max-w-none">
         <p>

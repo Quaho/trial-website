@@ -38,6 +38,23 @@ Diagnostic page/route + Roadmap entry point.
   `useDiagnostic`, no per-path recommendation badge — `STUDY_PATHS` and its
   matching logic are untouched, per CLAUDE.md.
 
+## TASK-027 — COMPLETE (2026-08-09) — NOT part of the pilot
+A new "Mathematical Language" module (`app/pages/MathLanguage.jsx`,
+`/math-language`, module 2) was added to fix a real content gap:
+`BraKet.jsx` referenced "familiarity with vectors" with nothing to link to.
+Full details in `TASKS.md`. **Important for TASK-024/025/026 below: this
+did NOT expand the Diagnostic Placement pilot's scope.** `concepts.js`,
+`diagnostic.js`, and `useDiagnostic.js` are untouched — the pilot is still
+exactly Intuition/Bra-Ket/Gates. What DID change, relevant to those tasks:
+- Every module downstream of Intuition was renumbered (old 2–13 → 3–14,
+  `braket` is now module 3, `gates` is now module 6). If you're writing
+  new copy that mentions a module number, use the current `MODULES` data,
+  not a number from an earlier task description in this file.
+- `braket`'s prereqs changed from `['intuition']` to `['math-language']` at
+  the module level. `BraKet.jsx`'s own content/section ids
+  (`braket-kets`, `braket-bras`, etc.) are unchanged — TASK-024's
+  `ConceptSection` wiring plan for Bra-Ket is unaffected.
+
 ### Verification performed
 - `npm run build` — passes, produces a separate `Diagnostic-*.js` chunk
   (confirms the route code-splits correctly).

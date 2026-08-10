@@ -654,8 +654,8 @@ export default function Labs() {
       title="Qiskit Labs"
       subtitle="Write, run, and interpret real quantum code."
       stepInfo={{ current: step, total: LESSONS.length, passed }}
-      prev={{ to: '/algorithms', label: 'Module 10: Core Algorithms' }}
-      next={{ to: '/noise', label: 'Module 12: Noise & Hardware' }}
+      prev={{ to: '/algorithms', label: 'Module 11: Core Algorithms' }}
+      next={{ to: '/noise', label: 'Module 13: Noise & Hardware' }}
     >
       <AnimatePresence mode="wait">
         <motion.div

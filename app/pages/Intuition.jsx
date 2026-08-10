@@ -262,7 +262,7 @@ export default function Intuition() {
       subtitle="An introductory chapter on qubits, superposition, measurement, and why interference matters."
       outline={INTUITION_OUTLINE}
       aside={<IntuitionSupport />}
-      next={{ to: '/braket', label: 'Module 2: Bra-Ket Notation' }}
+      next={{ to: '/math-language', label: 'Module 2: Mathematical Language' }}
     >
       <div className="prose-quantum max-w-none">
         <p>

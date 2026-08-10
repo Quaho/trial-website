@@ -244,8 +244,8 @@ export default function BraKet() {
       subtitle="A careful introduction to the notation used for quantum states, dual vectors, and overlaps."
       outline={BRAKET_OUTLINE}
       aside={<BraKetSupport />}
-      prev={{ to: '/intuition', label: 'Module 1: Big-Picture Intuition' }}
-      next={{ to: '/phase', label: 'Module 3: Phase & Measurement Angles' }}
+      prev={{ to: '/math-language', label: 'Module 2: Mathematical Language' }}
+      next={{ to: '/phase', label: 'Module 4: Phase & Measurement Angles' }}
     >
       <div className="prose-quantum max-w-none">
         <p>

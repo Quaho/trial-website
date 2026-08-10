@@ -661,8 +661,8 @@ export default function Noise() {
       title="Noise & Hardware"
       subtitle="Why real qubits are hard."
       stepInfo={{ current: step, total: LESSONS.length, passed }}
-      prev={{ to: '/labs', label: 'Module 11: Qiskit Labs' }}
-      next={{ to: '/usecases', label: 'Module 13: Use Cases' }}
+      prev={{ to: '/labs', label: 'Module 12: Qiskit Labs' }}
+      next={{ to: '/usecases', label: 'Module 14: Use Cases' }}
     >
       <AnimatePresence mode="wait">
         <motion.div

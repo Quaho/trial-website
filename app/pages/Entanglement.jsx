@@ -275,8 +275,8 @@ export default function Entanglement() {
       moduleId="entanglement"
       title="Entanglement"
       subtitle="Why some two-qubit states must be treated as one joint object rather than as independent local states."
-      prev={{ to: '/multiqubit', label: 'Module 6: Multi-Qubit Systems' }}
-      next={{ to: '/circuits', label: 'Module 8: Quantum Circuits' }}
+      prev={{ to: '/multiqubit', label: 'Module 7: Multi-Qubit Systems' }}
+      next={{ to: '/circuits', label: 'Module 9: Quantum Circuits' }}
       outline={ENTANGLEMENT_OUTLINE}
       aside={<EntanglementSupport />}
     >

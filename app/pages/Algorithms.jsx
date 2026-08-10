@@ -569,8 +569,8 @@ export default function Algorithms() {
       title="Core Algorithms"
       subtitle="Why quantum beats classical — conceptually."
       stepInfo={{ current: step, total: LESSONS.length, passed }}
-      prev={{ to: '/measurement', label: 'Module 9: Measurement & Basis' }}
-      next={{ to: '/labs', label: 'Module 11: Qiskit Labs' }}
+      prev={{ to: '/measurement', label: 'Module 10: Measurement & Basis' }}
+      next={{ to: '/labs', label: 'Module 12: Qiskit Labs' }}
     >
       <AnimatePresence mode="wait">
         <motion.div

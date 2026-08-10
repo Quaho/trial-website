@@ -27,8 +27,9 @@ const STUDY_PATHS = [
     title: 'Physics student with stronger theory background',
     description:
       'You are comfortable with quantum ideas conceptually, but you want a cleaner route into Dirac notation, measurement language, and circuit workflow.',
-    moduleIds: ['braket', 'phase', 'measurement', 'circuits', 'qiskit'],
+    moduleIds: ['math-language', 'braket', 'phase', 'measurement', 'circuits', 'qiskit'],
     focus: [
+      'Start with the complex-number and vector toolkit so Dirac notation reads as familiar math, not new symbols.',
       'Start with notation and basis language so later circuit material reads naturally.',
       'Treat Measurement and Circuits as the bridge between formalism and operational reasoning.',
       'Use Intuition only as a review pass if the basic motivation is still fuzzy.',
@@ -43,8 +44,9 @@ const STUDY_PATHS = [
     title: 'New to both notation and implementation',
     description:
       'You want the most careful sequence, with fewer jumps in abstraction and more time spent on states, gates, and basis changes.',
-    moduleIds: ['intuition', 'braket', 'phase', 'gates', 'multiqubit', 'measurement', 'qiskit'],
+    moduleIds: ['intuition', 'math-language', 'braket', 'phase', 'gates', 'multiqubit', 'measurement', 'qiskit'],
     focus: [
+      'Take Mathematical Language before Bra-Ket Notation — complex numbers and vectors are easier to learn before they carry quantum meaning.',
       'Do not skip the notation pages; they remove most of the friction from later modules.',
       'Take Gates and Multi-Qubit Systems before deeper circuit reading so the symbols stay grounded.',
       'Move to Entanglement and Circuits only after the measurement rules feel routine.',

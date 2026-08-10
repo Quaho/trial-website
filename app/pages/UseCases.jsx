@@ -744,7 +744,7 @@ export default function UseCases() {
       title="Use Cases"
       subtitle="Where quantum matters — and where it doesn't."
       stepInfo={{ current: step, total: LESSONS.length, passed }}
-      prev={{ to: '/noise', label: 'Module 12: Noise & Hardware' }}
+      prev={{ to: '/noise', label: 'Module 13: Noise & Hardware' }}
       next={null}
     >
       <AnimatePresence mode="wait">

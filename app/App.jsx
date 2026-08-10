@@ -44,6 +44,7 @@ function lazyWithRecovery(key, importer) {
 
 const Home = lazyWithRecovery('home', () => import('./pages/Home'))
 const Intuition = lazyWithRecovery('intuition', () => import('./pages/Intuition'))
+const MathLanguage = lazyWithRecovery('math-language', () => import('./pages/MathLanguage'))
 const BraKet = lazyWithRecovery('braket', () => import('./pages/BraKet'))
 const PhaseAngle = lazyWithRecovery('phase', () => import('./pages/PhaseAngle'))
 const Qiskit = lazyWithRecovery('qiskit', () => import('./pages/Qiskit'))
@@ -108,6 +109,7 @@ export default function App() {
               {/* Existing modules */}
               <Route path="/"          element={<Home />} />
               <Route path="/intuition" element={<Intuition />} />
+              <Route path="/math-language" element={<MathLanguage />} />
               <Route path="/braket"    element={<BraKet />} />
               <Route path="/phase"     element={<PhaseAngle />} />
               <Route path="/qiskit"    element={<Qiskit />} />

@@ -343,8 +343,8 @@ export default function Qiskit() {
       moduleId="qiskit"
       title="Qiskit"
       subtitle="Programming, simulating, and analyzing quantum circuits with IBM's Python SDK."
-      prev={{ to: '/phase', label: 'Module 3: Phase & Measurement Angles' }}
-      next={{ to: '/gates', label: 'Module 5: Single-Qubit Gates' }}
+      prev={{ to: '/phase', label: 'Module 4: Phase & Measurement Angles' }}
+      next={{ to: '/gates', label: 'Module 6: Single-Qubit Gates' }}
       outline={QISKIT_OUTLINE}
       aside={<QiskitSupport />}
     >

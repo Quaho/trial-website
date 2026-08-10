@@ -583,8 +583,8 @@ export default function Measurement() {
       title="Measurement & Basis"
       subtitle="How you look changes what you get."
       stepInfo={{ current: step, total: LESSONS.length, passed }}
-      prev={{ to: '/circuits', label: 'Module 8: Quantum Circuits' }}
-      next={{ to: '/algorithms', label: 'Module 10: Core Algorithms' }}
+      prev={{ to: '/circuits', label: 'Module 9: Quantum Circuits' }}
+      next={{ to: '/algorithms', label: 'Module 11: Core Algorithms' }}
     >
       <AnimatePresence mode="wait">
         <motion.div

@@ -444,8 +444,8 @@ export default function Gates() {
       moduleId="gates"
       title="Single-Qubit Gates"
       subtitle="Unitary operations that rotate one-qubit states, change basis, and control phase."
-      prev={{ to: '/qiskit', label: 'Module 4: Qiskit' }}
-      next={{ to: '/multiqubit', label: 'Module 6: Multi-Qubit Systems' }}
+      prev={{ to: '/qiskit', label: 'Module 5: Qiskit' }}
+      next={{ to: '/multiqubit', label: 'Module 7: Multi-Qubit Systems' }}
       outline={GATES_OUTLINE}
       aside={<GatesSupport />}
     >

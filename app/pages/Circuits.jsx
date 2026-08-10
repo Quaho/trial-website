@@ -931,8 +931,8 @@ export default function Circuits() {
       title="Quantum Circuits"
       subtitle="Learn to read, build, and step through quantum circuits — the language of quantum algorithms."
       stepInfo={{ current: step, total: LESSONS.length, passed }}
-      prev={{ to: '/entanglement', label: 'Module 7: Entanglement' }}
-      next={{ to: '/measurement', label: 'Module 9: Measurement & Basis' }}
+      prev={{ to: '/entanglement', label: 'Module 8: Entanglement' }}
+      next={{ to: '/measurement', label: 'Module 10: Measurement & Basis' }}
     >
       <AnimatePresence mode="wait">
         <motion.div

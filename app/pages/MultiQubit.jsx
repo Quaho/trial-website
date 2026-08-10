@@ -330,8 +330,8 @@ export default function MultiQubit() {
       subtitle="How tensor products, basis states, and correlations change the bookkeeping once a system has more than one qubit."
       outline={MULTIQUBIT_OUTLINE}
       aside={<MultiQubitSupport />}
-      prev={{ to: '/gates', label: 'Module 5: Single-Qubit Gates' }}
-      next={{ to: '/entanglement', label: 'Module 7: Entanglement' }}
+      prev={{ to: '/gates', label: 'Module 6: Single-Qubit Gates' }}
+      next={{ to: '/entanglement', label: 'Module 8: Entanglement' }}
     >
       <div className="prose-quantum max-w-none">
         <p>
