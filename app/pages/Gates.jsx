@@ -568,6 +568,14 @@ export default function Gates() {
             rotation about the X axis.
           </DefinitionBox>
 
+          <div className="mt-4">
+            <NotationBox symbol="X = [[0, 1], [1, 0]]">
+              <MathDisplay>{'X = \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}'}</MathDisplay>
+              Applying this matrix to the column vectors for <InlineMath>{'|0\\rangle'}</InlineMath> and{' '}
+              <InlineMath>{'|1\\rangle'}</InlineMath> reproduces the swap stated above.
+            </NotationBox>
+          </div>
+
           <div className="mt-6">
             <XGateVisual />
           </div>
@@ -606,6 +614,14 @@ export default function Gates() {
             <InlineMath>{'|1\\rangle'}</InlineMath> by <InlineMath>{'-1'}</InlineMath>. It is therefore a
             phase operator rather than a bit-flip operator.
           </DefinitionBox>
+
+          <div className="mt-4">
+            <NotationBox symbol="Z = [[1, 0], [0, -1]]">
+              <MathDisplay>{'Z = \\begin{pmatrix} 1 & 0 \\\\ 0 & -1 \\end{pmatrix}'}</MathDisplay>
+              The matrix is diagonal, which is exactly why Z leaves computational-basis probabilities
+              alone and only changes relative phase.
+            </NotationBox>
+          </div>
 
           <div className="mt-4">
             <ExampleBox title="Worked Example: Z on the Plus State">
@@ -647,6 +663,14 @@ export default function Gates() {
           </DefinitionBox>
 
           <div className="mt-4">
+            <NotationBox symbol="H = (1/√2)[[1, 1], [1, -1]]">
+              <MathDisplay>{'H = \\frac{1}{\\sqrt{2}}\\begin{pmatrix} 1 & 1 \\\\ 1 & -1 \\end{pmatrix}'}</MathDisplay>
+              Every entry has the same magnitude; only the signs differ, which is what makes H mix the
+              basis states into equal-weight superpositions.
+            </NotationBox>
+          </div>
+
+          <div className="mt-4">
             <ExampleBox title="Worked Example: Basis Conversion Identity">
               <MathDisplay>{'HXH = Z \\qquad HZH = X'}</MathDisplay>
               <p>
@@ -683,6 +707,14 @@ export default function Gates() {
             computational basis. They leave <InlineMath>{'|0\\rangle'}</InlineMath> unchanged and rotate only
             the phase of the <InlineMath>{'|1\\rangle'}</InlineMath> component.
           </DefinitionBox>
+
+          <div className="mt-4">
+            <NotationBox symbol="S = [[1, 0], [0, i]], T = [[1, 0], [0, e^{iπ/4}]]">
+              <MathDisplay>{'S = \\begin{pmatrix} 1 & 0 \\\\ 0 & i \\end{pmatrix} \\qquad T = \\begin{pmatrix} 1 & 0 \\\\ 0 & e^{i\\pi/4} \\end{pmatrix}'}</MathDisplay>
+              Both matrices are diagonal with a 1 in the top-left, so neither touches{' '}
+              <InlineMath>{'|0\\rangle'}</InlineMath>; only the bottom-right phase factor differs between them.
+            </NotationBox>
+          </div>
 
           <div className="mt-4">
             <NotationBox symbol="S² = Z, T² = S">

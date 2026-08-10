@@ -134,77 +134,126 @@ later tasks:
 
 ---
 
-## TASK-025: Gates.jsx explicit gate matrices + Intuition.jsx analogy audit
+## TASK-025 — COMPLETE (2026-08-09)
+Gates.jsx explicit gate matrices + Intuition.jsx analogy audit.
+
+### What was built
+- **`Gates.jsx`** — added the 5 confirmed-missing matrices (X, Z, H, S, T)
+  via `MathDisplay`/`pmatrix`, matching `BraKet.jsx`'s established
+  convention. Each is a `NotationBox` placed immediately after its gate's
+  `DefinitionBox`, inside the same `ConceptSection` cluster TASK-024
+  already wired — not outside it, so the matrix collapses/expands
+  together with the rest of that gate's content, never orphaned. Scope
+  stayed exactly these 5; no generic `U` matrix was added to
+  `gates-unitary` (correctly out of scope).
+- **`Intuition.jsx`** — audited, not rewritten. Grepped for analogy-
+  signaling language (`like a`, `similar to`, `imagine`, `think of`,
+  `analog*`) — **zero matches**. Every section already leads with a formal
+  `DefinitionBox`, and the only analogy-adjacent text is `RemarkBox`es
+  that explicitly correct a naive analogy rather than rely on one.
+  **Conclusion: no change needed.** Documented in `TASKS.md` per the
+  task's explicit instruction not to force an edit to justify the task.
+
+### Verification performed
+- `npm run build` — passes; `Gates.jsx`'s chunk grew from 29.65kB to
+  31.06kB, consistent with 4 new `NotationBox`/`MathDisplay` additions
+  (S and T share one block).
+- Grep-based audit of `Intuition.jsx`, not just re-reading it — a
+  systematic check for the specific failure mode CLAUDE.md flags, not an
+  impression.
+- **Not yet visually verified in a browser** — same standing caveat as
+  every task this pilot (no Playwright/Chromium here).
+
+---
+
+## TASK-026: `VideoAside` + `ExpandableAside` focus-visible fix + accessibility pass
 
 ### Why this task now
-Sixth slice of the pilot. This is the one confirmed concrete content gap
-from the original review (verified by grep — `Gates.jsx` contains zero
-`pmatrix`/`bmatrix` usage anywhere despite extensively covering unitarity,
-eigenstates, and every named gate's *action* on states). It is a targeted
-fill, not a rewrite — re-reading `Intuition.jsx` and `Gates.jsx` in full
-this session confirmed both are already handbook-quality (formal
-definitions, worked examples, correct caveats). Treat this as an audit
-that may conclude "no change needed" for `Intuition.jsx`, not a mandate to
-rewrite it.
+Final slice of the Diagnostic Placement pilot (Phase 3a). Everything
+functional is built and verified (data model, hook, diagnostic UI,
+`ConceptSection` collapsing, the study-sequence chain, save/restore
+codes, Gates matrices). This task closes it out: the one deferred optional
+feature (IBM video embeds) plus a real accessibility sweep across
+everything added in TASK-020 through TASK-025, which so far has only had
+build-level and logic-level verification, never a dedicated a11y pass.
 
-### Files to modify
-`app/pages/Gates.jsx`, `app/pages/Intuition.jsx`
+### File to create
+`components/VideoAside.jsx`
 
-### Requirements
+### Requirements — VideoAside (see CLAUDE.md's "IBM Video Sourcing")
+- Text summary (title + description) is **permanently visible**, outside
+  any `<details>` — not inside `<summary>` either, so a click on the
+  description doesn't toggle playback.
+- The `<details>`/`<summary>` only gates the video embed. Track "has this
+  ever been opened" with React state (`hasLoaded`, set via `onToggle` when
+  `event.currentTarget.open` is true) and render `{hasLoaded && <iframe
+  .../>}` — gate on first-ever-open, not current-open state, so
+  closing/reopening doesn't reload or reset playback.
+- Explicit `focus-visible` styling on the `<summary>` toggle (see next
+  bullet — `ExpandableAside` is missing this today; don't repeat the gap).
+- Source only from IBM Quantum's official YouTube channel. Verify actual
+  video URLs live at implementation time — none are pre-selected. One
+  video per pilot module max (Intuition/Bra-Ket/Gates), placed only inside
+  the fold, never in the main reading flow, never autoplay.
 
-**Gates.jsx — add explicit 2×2 matrices, inside the existing
-`ConceptSection` clusters (not outside them):**
-- Pauli-X (`gates-x` cluster): `X = [[0,1],[1,0]]`
-- Pauli-Z (`gates-z` cluster): `Z = [[1,0],[0,-1]]`
-- Hadamard (`gates-h` cluster): `H = (1/√2)[[1,1],[1,-1]]`
-- S and T (`gates-phase` cluster): `S = [[1,0],[0,i]]`,
-  `T = [[1,0],[0,e^{iπ/4}]]`
+### Also fix: `components/ExpandableAside.jsx`
+Its `<summary>` currently has no `focus-visible` classes at all (confirmed
+by reading the file in an earlier session) — a real, if small, a11y gap.
+Add the same `focus-visible:outline focus-visible:outline-2
+focus-visible:outline-offset-2 focus-visible:outline-indigo-400` pattern
+used everywhere else in this codebase (see `ConceptSection.jsx`'s
+`<summary>` for the exact classes).
 
-Use `MathDisplay` with `pmatrix`, matching the exact convention
-`BraKet.jsx` already established for showing `|0⟩`/`|1⟩` as column
-vectors (see `BasisStatesFigure` there). Place each matrix in its gate's
-existing `DefinitionBox` or immediately after it — do not add a new
-`ConceptSection` wrapper; these matrices belong inside the cluster
-TASK-024 already wired for that concept. Scope is exactly these 5
-matrices — do not also invent a generic `U = [[u11,u12],[u21,u22]]` form
-for the `gates-unitary` section; that wasn't the confirmed gap and isn't
-required.
+### Accessibility verification pass — everything built in this pilot
+Not just VideoAside. Go through and actually check, not just read the
+code:
+- **Keyboard-only navigation**: `/diagnostic`'s choice buttons
+  (`DiagnosticQuestion.jsx`), the intro/results screens' buttons and
+  links, `ConceptSection`'s `<summary>` toggles on all 3 pilot pages, the
+  new save/restore code inputs on the results view, and `VideoAside`'s
+  toggle — all reachable via Tab, all operable via Enter/Space, all show a
+  visible focus ring.
+- **`aria-live` correctness**: `Diagnostic.jsx`'s question-progress
+  announcement — confirm it actually fires on question change and reads
+  sensibly with a screen reader, not just that the markup is present.
+- **Color is not the only signal**: `ConceptSection`'s emerald "already
+  known" styling and `StudyChainView`'s status colors (`start`/`continue`/
+  `skim`) — confirm each also carries a text label, not color alone. (They
+  do today — verify, don't just assume.)
+- **`RestoreCodeSection`'s error state** (`Diagnostic.jsx`) — confirm the
+  error message has `role="alert"` semantics that actually announce, and
+  that the input's label is programmatically associated (it uses
+  `htmlFor`/`id` today — verify it survived).
+- **Reduced motion**: nothing added this pilot should animate beyond the
+  `MotionConfig reducedMotion="user"` already set globally in `App.jsx` —
+  confirm no new component bypasses that.
 
-**Intuition.jsx — audit only:** re-read for any place an analogy
-substitutes for a real definition rather than supplementing one (CLAUDE.md
-flags this failure mode explicitly). On this session's full read, the page
-already seems to actively guard against this (e.g. the existing remark
-"A qubit should not be understood as 'two classical bits packed into one
-place'" is *correcting* a bad analogy, not relying on one). If the audit
-finds a genuine gap, fix it narrowly. If it doesn't, say so in `TASKS.md`
-and change nothing — do not force an edit to justify the task.
-
-### Non-goals for TASK-025
-- No changes to `ConceptSection.jsx`, `concepts.js`, `diagnostic.js`, or
-  `useDiagnostic.js`.
-- No changes to `BraKet.jsx` or `MathLanguage.jsx`.
-- No video aside — that's TASK-026.
+### Non-goals for TASK-026
+- No new content changes to `Intuition.jsx`/`BraKet.jsx`/`Gates.jsx`
+  beyond adding one `VideoAside` each.
+- No rollout beyond the 3 pilot modules.
+- No changes to `useDiagnostic.js`, `diagnosticCode.js`, `concepts.js`, or
+  `diagnostic.js`.
 
 ### Acceptance criteria
-- [ ] All 5 matrices present in `Gates.jsx`, each inside its existing
-      `ConceptSection` cluster, using `MathDisplay`/`pmatrix`
-- [ ] `Intuition.jsx` audit documented in `TASKS.md` regardless of outcome
-      (edited or left as-is)
+- [ ] `VideoAside.jsx` exists, matches the behavior above
+- [ ] `ExpandableAside.jsx`'s `<summary>` has `focus-visible` styling
+- [ ] One `VideoAside` added to each of the 3 pilot pages, inside a fold,
+      never in the main reading flow
+- [ ] Keyboard-only pass completed and documented in `TASKS.md` — what was
+      checked, not just "passed"
 - [ ] `npm run build` passes
-- [ ] Fresh localStorage: both pages still render fully expanded, matrices
-      visible as part of the normal (non-collapsed) reading flow
 
 ### Verification steps
 1. `npm run build` — must pass.
-2. Visit `/gates` fresh (no diagnostic taken) — confirm all 5 matrices
-   render correctly via KaTeX (no raw LaTeX source visible, no layout
-   overflow) and sit inside the same visual cluster as their gate's
-   existing definition/example/remark.
-3. Take the diagnostic, get `pauli-x`/`hadamard` to `demonstrated` —
-   confirm their matrices are still present once expanded from the
-   collapsed state (i.e., they went inside `ConceptSection`'s children,
-   not accidentally placed outside it).
+2. Keyboard-only walkthrough of `/diagnostic` end to end (intro → all 22
+   questions → results → save/restore) using only Tab/Enter/Space.
+3. Keyboard-only walkthrough of `/intuition`, `/braket`, `/gates`,
+   toggling every `ConceptSection` and `VideoAside` disclosure.
+4. Confirm via network tab that no `VideoAside` iframe loads until its
+   first open, and doesn't reload on close/reopen.
 
 ### Next task
-TASK-026 — `VideoAside` (+ `ExpandableAside` focus-visible fix) + a full
-accessibility verification pass on everything built across this pilot.
+None currently scoped — this closes out the Diagnostic Placement pilot
+(Phase 3a). Per CLAUDE.md, review the pilot before deciding whether to
+roll the concept graph + diagnostic out to the remaining 10 modules.
