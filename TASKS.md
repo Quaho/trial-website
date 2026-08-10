@@ -9,6 +9,8 @@
 - **[TASK-023]** Diagnostic Placement Pilot — Diagnostic page/route + Roadmap entry point. Added `components/DiagnosticQuestion.jsx`, `app/pages/Diagnostic.jsx` (intro → 3-area question flow → results view), `/diagnostic` route in `App.jsx` via `lazyWithRecovery`, and a plain entry-point CTA on `Roadmap.jsx` above the Study Path cards (no data coupling, no per-path badge). `npm run build` verified passing, produces a separate `Diagnostic-*.js` chunk. Not yet visually verified in a browser — pending user check. Completed 2026-08-09.
 - **[TASK-027]** New "Mathematical Language" module — content gap fix, NOT part of the Diagnostic Placement Pilot. `BraKet.jsx`'s own prereq list referenced "familiarity with vectors" with nowhere to send a student who didn't have it, and CLAUDE.md's IA promises `/math-language` with no route/page/MODULES entry behind it. Added `app/pages/MathLanguage.jsx` (complex numbers, vectors as columns, addition/scalar multiplication, normalization — full module matching the Intuition/Bra-Ket/Gates pattern: ModuleLayout with outline+aside, DefinitionBox/NotationBox/ExampleBox/RemarkBox, MistakesBox, SummaryBox), inserted as module 2 in `lib/data/modules.js` (`prereqs: ['intuition']`), and renumbered every downstream module (old 2–13 → 3–14) across `MODULES`, `MODULE_STYLES`, `MODULE_LAYOUT_STYLES`, and the hardcoded "Module N: ..." prev/next labels in all 13 existing module pages — verified as one consistent chain end to end. `braket`'s prereqs changed from `['intuition']` to `['math-language']`. `Roadmap.jsx`'s Study Paths B and C now include `math-language` (matching CLAUDE.md's stated sequences); Path A is unchanged (CLAUDE.md's Path A also omits it). Added 3 new `Keyword` tones (`complex`/`vector`/`normalization`) and a `Sigma` icon/blue color slot. Deliberately does NOT touch `lib/data/concepts.js`, `lib/data/diagnostic.js`, or `useDiagnostic.js` — the diagnostic pilot's scope stays the original 3 modules unless separately expanded. Verified: `npm run build` passes; a Node script confirmed `MODULES` numbers are sequential 1–14 with no gaps/duplicates, every id has a `MODULE_STYLES`/`MODULE_LAYOUT_STYLES` entry, and all prereqs resolve. Not yet visually verified in a browser. Completed 2026-08-09.
 
+- **[TASK-024]** Diagnostic Placement Pilot — `ConceptSection` + wiring into Intuition/Bra-Ket/Gates. Added `components/ConceptSection.jsx` (collapses only when every id in `conceptIds` is in the page's `demonstrated` Set; otherwise renders children exactly as-is — default is always fully expanded). Wired one `useDiagnostic()` call per page (not per block) into `Intuition.jsx` (5 clusters), `BraKet.jsx` (4 clusters), `Gates.jsx` (5 clusters) — all 14 concepts from `concepts.js` now wired to their `sectionId`, section headings/intros left outside the collapse so outline nav is unaffected. Verified with a standalone Node script replicating `useDiagnostic`'s exact derivation logic (not just code review): simulated answering all math-notation + gates questions correctly, confirmed `ket-notation`/`bra-notation`/`inner-product`/`unitary-gate`/`pauli-x`/`hadamard` reach `demonstrated` while `notation-reading`/`pauli-z`/`s-t-gates` correctly stay `insufficient-evidence` (only 1 tagged question each), and untouched-area concepts stay `insufficient-evidence` too. `npm run build` passes; `useDiagnostic` now code-splits into its own shared chunk across the 4 pages that use it. Not yet visually verified in a browser. Completed 2026-08-09.
+
 ## Active
 - **[TASK-017] MP2 — Bell State Explorer (full content)**
   Status: ASSIGNED TO CODEX
@@ -16,12 +18,11 @@
   Files: app/pages/projects/BellExplorer.jsx
   Note: confirmed still a stub (40-line "under construction" placeholder) as of 2026-08-09 — not done, despite drift elsewhere in project docs.
 
-- **[TASK-024] Diagnostic Placement Pilot — `ConceptSection` + wiring into Intuition/Bra-Ket/Gates**
+- **[TASK-025] Diagnostic Placement Pilot — Gates.jsx matrix tables + Intuition.jsx analogy audit**
   Status: ASSIGNED TO CODEX
-  Priority: infrastructure — fifth slice of the Diagnostic Placement + Concept-Level Blocks pilot (Phase 3a)
-  Files: components/ConceptSection.jsx (new), app/pages/Intuition.jsx, app/pages/BraKet.jsx, app/pages/Gates.jsx
+  Priority: content — sixth slice of the Diagnostic Placement + Concept-Level Blocks pilot (Phase 3a)
+  Files: app/pages/Gates.jsx, app/pages/Intuition.jsx
 
 ## Backlog (unordered, to be triaged)
 - **[TASK-018]** MP3 — Algorithm Showdown (full content)
-- **[TASK-025]** Diagnostic Placement Pilot — Gates.jsx matrix tables + Intuition.jsx analogy audit
 - **[TASK-026]** Diagnostic Placement Pilot — `VideoAside` + `ExpandableAside` focus-visible fix + accessibility verification

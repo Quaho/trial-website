@@ -12,6 +12,8 @@ import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
+import ConceptSection from '../../components/ConceptSection'
+import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const GATES_OUTLINE = [
@@ -439,6 +441,8 @@ function GateSummaryVisual() {
 }
 
 export default function Gates() {
+  const diagnostic = useDiagnostic()
+
   return (
     <ModuleLayout
       moduleId="gates"
@@ -501,49 +505,51 @@ export default function Gates() {
           vector of the <Keyword tone="qubit">qubit</Keyword>.
         </p>
 
-        <DefinitionBox term="Single-Qubit Gate">
-          A single-qubit <GlossaryTooltip term="Gate"><Keyword tone="gate">gate</Keyword></GlossaryTooltip>{' '}
-          is a <InlineMath>{'2 \\times 2'}</InlineMath> <Keyword tone="unitary">unitary</Keyword> matrix
-          acting on a one-qubit state vector. It changes <Keyword tone="amplitude">amplitudes</Keyword>{' '}
-          and <Keyword tone="phase">phases</Keyword> while preserving total probability.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['unitary-gate']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Single-Qubit Gate">
+            A single-qubit <GlossaryTooltip term="Gate"><Keyword tone="gate">gate</Keyword></GlossaryTooltip>{' '}
+            is a <InlineMath>{'2 \\times 2'}</InlineMath> <Keyword tone="unitary">unitary</Keyword> matrix
+            acting on a one-qubit state vector. It changes <Keyword tone="amplitude">amplitudes</Keyword>{' '}
+            and <Keyword tone="phase">phases</Keyword> while preserving total probability.
+          </DefinitionBox>
 
-        <div className="mt-4">
-          <NotationBox symbol="U†U = I">
-            <Keyword tone="unitary">Unitarity</Keyword> means the adjoint <InlineMath>{'U^\\dagger'}</InlineMath>{' '}
-            is the inverse of <InlineMath>{'U'}</InlineMath>. That is why a <Keyword tone="gate">gate</Keyword>{' '}
-            can be undone exactly, unlike an ordinary <Keyword tone="measurement">measurement</Keyword>.
-          </NotationBox>
-        </div>
+          <div className="mt-4">
+            <NotationBox symbol="U†U = I">
+              <Keyword tone="unitary">Unitarity</Keyword> means the adjoint <InlineMath>{'U^\\dagger'}</InlineMath>{' '}
+              is the inverse of <InlineMath>{'U'}</InlineMath>. That is why a <Keyword tone="gate">gate</Keyword>{' '}
+              can be undone exactly, unlike an ordinary <Keyword tone="measurement">measurement</Keyword>.
+            </NotationBox>
+          </div>
 
-        <div className="mt-4">
-          <NotationBox symbol="qc.x(0), qc.z(0), qc.h(0), qc.s(0), qc.t(0)">
-            In Qiskit, the method names mirror the mathematical gates closely. The software syntax is
-            intentionally thin because the matrix action is the real content.
-          </NotationBox>
-        </div>
+          <div className="mt-4">
+            <NotationBox symbol="qc.x(0), qc.z(0), qc.h(0), qc.s(0), qc.t(0)">
+              In Qiskit, the method names mirror the mathematical gates closely. The software syntax is
+              intentionally thin because the matrix action is the real content.
+            </NotationBox>
+          </div>
 
-        <div className="mt-6">
-          <GateConceptVisual />
-        </div>
+          <div className="mt-6">
+            <GateConceptVisual />
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox title="Worked Example: Linear Action">
-            <MathDisplay>{'U(\\alpha|0\\rangle + \\beta|1\\rangle) = \\alpha U|0\\rangle + \\beta U|1\\rangle'}</MathDisplay>
-            <p>
-              This is why understanding the gate action on basis states is so useful. Once you know what
-              a gate does to <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>,
-              linearity tells you how it acts on every superposition built from them.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox title="Worked Example: Linear Action">
+              <MathDisplay>{'U(\\alpha|0\\rangle + \\beta|1\\rangle) = \\alpha U|0\\rangle + \\beta U|1\\rangle'}</MathDisplay>
+              <p>
+                This is why understanding the gate action on basis states is so useful. Once you know what
+                a gate does to <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>,
+                linearity tells you how it acts on every superposition built from them.
+              </p>
+            </ExampleBox>
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            Measurement is intentionally separate from this chapter&apos;s core idea. Gates are unitary and
-            reversible. Measurement is neither. Confusing the two leads to most beginner mistakes.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              Measurement is intentionally separate from this chapter&apos;s core idea. Gates are unitary and
+              reversible. Measurement is neither. Confusing the two leads to most beginner mistakes.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="gates-x" className="mt-12 scroll-mt-28">
@@ -554,34 +560,36 @@ export default function Gates() {
           reliable in the computational basis.
         </p>
 
-        <DefinitionBox term="Pauli-X">
-          The Pauli-X gate swaps the computational-basis states:
-          <InlineMath>{'X|0\\rangle = |1\\rangle'}</InlineMath> and
-          <InlineMath>{'X|1\\rangle = |0\\rangle'}</InlineMath>. On the Bloch sphere, it is a 180-degree
-          rotation about the X axis.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['pauli-x']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Pauli-X">
+            The Pauli-X gate swaps the computational-basis states:
+            <InlineMath>{'X|0\\rangle = |1\\rangle'}</InlineMath> and
+            <InlineMath>{'X|1\\rangle = |0\\rangle'}</InlineMath>. On the Bloch sphere, it is a 180-degree
+            rotation about the X axis.
+          </DefinitionBox>
 
-        <div className="mt-6">
-          <XGateVisual />
-        </div>
+          <div className="mt-6">
+            <XGateVisual />
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox title="Worked Example: Why X Leaves |+⟩ Alone">
-            <MathDisplay>{'X|+\\rangle = X\\frac{|0\\rangle + |1\\rangle}{\\sqrt{2}} = \\frac{|1\\rangle + |0\\rangle}{\\sqrt{2}} = |+\\rangle'}</MathDisplay>
-            <p>
-              The state <InlineMath>{'|+\\rangle'}</InlineMath> is an eigenstate of X. That is why a gate
-              that obviously flips <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>
-              can appear to do nothing when the qubit is expressed in a different basis.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox title="Worked Example: Why X Leaves |+⟩ Alone">
+              <MathDisplay>{'X|+\\rangle = X\\frac{|0\\rangle + |1\\rangle}{\\sqrt{2}} = \\frac{|1\\rangle + |0\\rangle}{\\sqrt{2}} = |+\\rangle'}</MathDisplay>
+              <p>
+                The state <InlineMath>{'|+\\rangle'}</InlineMath> is an eigenstate of X. That is why a gate
+                that obviously flips <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>
+                can appear to do nothing when the qubit is expressed in a different basis.
+              </p>
+            </ExampleBox>
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            Do not overlearn the phrase "X flips the qubit." It flips computational-basis labels. More
-            generally, it rotates the state vector, and some states lie directly on that rotation axis.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              Do not overlearn the phrase "X flips the qubit." It flips computational-basis labels. More
+              generally, it rotates the state vector, and some states lie directly on that rotation axis.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="gates-z" className="mt-12 scroll-mt-28">
@@ -592,32 +600,34 @@ export default function Gates() {
           meaningful way without changing computational-basis probabilities at all.
         </p>
 
-        <DefinitionBox term="Pauli-Z">
-          The Pauli-Z gate leaves <InlineMath>{'|0\\rangle'}</InlineMath> unchanged and multiplies
-          <InlineMath>{'|1\\rangle'}</InlineMath> by <InlineMath>{'-1'}</InlineMath>. It is therefore a
-          phase operator rather than a bit-flip operator.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['pauli-z']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Pauli-Z">
+            The Pauli-Z gate leaves <InlineMath>{'|0\\rangle'}</InlineMath> unchanged and multiplies
+            <InlineMath>{'|1\\rangle'}</InlineMath> by <InlineMath>{'-1'}</InlineMath>. It is therefore a
+            phase operator rather than a bit-flip operator.
+          </DefinitionBox>
 
-        <div className="mt-4">
-          <ExampleBox title="Worked Example: Z on the Plus State">
-            <MathDisplay>{'Z|+\\rangle = Z\\frac{|0\\rangle + |1\\rangle}{\\sqrt{2}} = \\frac{|0\\rangle - |1\\rangle}{\\sqrt{2}} = |-\\rangle'}</MathDisplay>
-            <p>
-              In the Z basis, both <InlineMath>{'|+\\rangle'}</InlineMath> and <InlineMath>{'|-\\rangle'}</InlineMath>
-              still give 50/50 outcomes. The phase change becomes visible only after a basis change.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-4">
+            <ExampleBox title="Worked Example: Z on the Plus State">
+              <MathDisplay>{'Z|+\\rangle = Z\\frac{|0\\rangle + |1\\rangle}{\\sqrt{2}} = \\frac{|0\\rangle - |1\\rangle}{\\sqrt{2}} = |-\\rangle'}</MathDisplay>
+              <p>
+                In the Z basis, both <InlineMath>{'|+\\rangle'}</InlineMath> and <InlineMath>{'|-\\rangle'}</InlineMath>
+                still give 50/50 outcomes. The phase change becomes visible only after a basis change.
+              </p>
+            </ExampleBox>
+          </div>
 
-        <div className="mt-6">
-          <ZGateVisual />
-        </div>
+          <div className="mt-6">
+            <ZGateVisual />
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            This is the right mental model for phase-sensitive computation: a gate can matter deeply even
-            when a single measurement basis makes it look invisible.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              This is the right mental model for phase-sensitive computation: a gate can matter deeply even
+              when a single measurement basis makes it look invisible.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="gates-h" className="mt-12 scroll-mt-28">
@@ -628,33 +638,35 @@ export default function Gates() {
           superpositions back into basis states. That is why it appears constantly in algorithms.
         </p>
 
-        <DefinitionBox term="Hadamard Gate">
-          The Hadamard gate maps <InlineMath>{'|0\\rangle'}</InlineMath> to
-          <InlineMath>{'|+\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath> to
-          <InlineMath>{'|-\\rangle'}</InlineMath>. It is its own inverse, so
-          <InlineMath>{'H^2 = I'}</InlineMath>.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['hadamard']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Hadamard Gate">
+            The Hadamard gate maps <InlineMath>{'|0\\rangle'}</InlineMath> to
+            <InlineMath>{'|+\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath> to
+            <InlineMath>{'|-\\rangle'}</InlineMath>. It is its own inverse, so
+            <InlineMath>{'H^2 = I'}</InlineMath>.
+          </DefinitionBox>
 
-        <div className="mt-4">
-          <ExampleBox title="Worked Example: Basis Conversion Identity">
-            <MathDisplay>{'HXH = Z \\qquad HZH = X'}</MathDisplay>
-            <p>
-              These identities formalize the idea that H changes viewpoint. Conjugating by Hadamard
-              swaps which axis of the Bloch sphere looks like the "measurement axis" of interest.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-4">
+            <ExampleBox title="Worked Example: Basis Conversion Identity">
+              <MathDisplay>{'HXH = Z \\qquad HZH = X'}</MathDisplay>
+              <p>
+                These identities formalize the idea that H changes viewpoint. Conjugating by Hadamard
+                swaps which axis of the Bloch sphere looks like the "measurement axis" of interest.
+              </p>
+            </ExampleBox>
+          </div>
 
-        <div className="mt-6">
-          <HadamardVisual />
-        </div>
+          <div className="mt-6">
+            <HadamardVisual />
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            A Hadamard gate does not partially measure the qubit, and it does not "collapse
-            superposition." It is a fully coherent unitary basis change.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              A Hadamard gate does not partially measure the qubit, and it does not "collapse
+              superposition." It is a fully coherent unitary basis change.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="gates-phase" className="mt-12 scroll-mt-28">
@@ -665,46 +677,48 @@ export default function Gates() {
           the same axis, useful when algorithms need more precise control over interference.
         </p>
 
-        <DefinitionBox term="Phase Gates">
-          The gates <InlineMath>{'S'}</InlineMath> and <InlineMath>{'T'}</InlineMath> act diagonally in the
-          computational basis. They leave <InlineMath>{'|0\\rangle'}</InlineMath> unchanged and rotate only
-          the phase of the <InlineMath>{'|1\\rangle'}</InlineMath> component.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['s-t-gates']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Phase Gates">
+            The gates <InlineMath>{'S'}</InlineMath> and <InlineMath>{'T'}</InlineMath> act diagonally in the
+            computational basis. They leave <InlineMath>{'|0\\rangle'}</InlineMath> unchanged and rotate only
+            the phase of the <InlineMath>{'|1\\rangle'}</InlineMath> component.
+          </DefinitionBox>
 
-        <div className="mt-4">
-          <NotationBox symbol="S² = Z, T² = S">
-            These identities show that S and T are nested Z-axis rotations. The algebra and the geometry
-            say the same thing in different languages.
-          </NotationBox>
-        </div>
+          <div className="mt-4">
+            <NotationBox symbol="S² = Z, T² = S">
+              These identities show that S and T are nested Z-axis rotations. The algebra and the geometry
+              say the same thing in different languages.
+            </NotationBox>
+          </div>
 
-        <div className="mt-6">
-          <PhaseGatesVisual />
-        </div>
+          <div className="mt-6">
+            <PhaseGatesVisual />
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox title="Worked Example: Explicit Phase Factors">
-            <MathDisplay>{'S|1\\rangle = i|1\\rangle \\qquad T|1\\rangle = e^{i\\pi/4}|1\\rangle'}</MathDisplay>
-            <p>
-              Neither gate changes computational-basis probabilities by itself. Their value is that they
-              alter relative phase in a controlled way, which later circuits can convert into amplitude
-              differences.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox title="Worked Example: Explicit Phase Factors">
+              <MathDisplay>{'S|1\\rangle = i|1\\rangle \\qquad T|1\\rangle = e^{i\\pi/4}|1\\rangle'}</MathDisplay>
+              <p>
+                Neither gate changes computational-basis probabilities by itself. Their value is that they
+                alter relative phase in a controlled way, which later circuits can convert into amplitude
+                differences.
+              </p>
+            </ExampleBox>
+          </div>
 
-        <div className="mt-6">
-          <GateSummaryVisual />
-        </div>
+          <div className="mt-6">
+            <GateSummaryVisual />
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            In standard universality results, a small gate set can approximate arbitrary quantum
-            computation. One common example is <InlineMath>{'{H, T, CNOT}'}</InlineMath>. In practical
-            fault-tolerant settings, T gates are often the costly resource, which is why T-count
-            optimization matters.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              In standard universality results, a small gate set can approximate arbitrary quantum
+              computation. One common example is <InlineMath>{'{H, T, CNOT}'}</InlineMath>. In practical
+              fault-tolerant settings, T gates are often the costly resource, which is why T-count
+              optimization matters.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <div className="mt-12">

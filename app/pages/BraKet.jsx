@@ -12,6 +12,8 @@ import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
+import ConceptSection from '../../components/ConceptSection'
+import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const BRAKET_OUTLINE = [
@@ -237,6 +239,8 @@ function CheatSheetTable() {
 }
 
 export default function BraKet() {
+  const diagnostic = useDiagnostic()
+
   return (
     <ModuleLayout
       moduleId="braket"
@@ -296,52 +300,54 @@ export default function BraKet() {
           <Keyword tone="qubit">qubit</Keyword>, the standard <Keyword tone="basis">basis</Keyword> consists of the two vectors |0⟩ and |1⟩.
         </p>
 
-        <DefinitionBox term="Ket">
-          A <Keyword tone="ket">ket</Keyword> is a state vector written with a right bracket, such as{' '}
-          <InlineMath>{'|\\psi\\rangle'}</InlineMath>. In the single-qubit setting, every ket can be expressed
-          as a linear combination of the <Keyword tone="basis">basis kets</Keyword>{' '}
-          <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>.
-        </DefinitionBox>
-
-        <div className="mt-4">
-          <DefinitionBox term="Computational Basis">
-            The <Keyword tone="basis">computational basis</Keyword> is the default basis used to describe
-            one-qubit states and the default basis associated with standard <Keyword tone="measurement">measurement</Keyword>{' '}
-            outcomes 0 and 1.
+        <ConceptSection conceptIds={['ket-notation']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Ket">
+            A <Keyword tone="ket">ket</Keyword> is a state vector written with a right bracket, such as{' '}
+            <InlineMath>{'|\\psi\\rangle'}</InlineMath>. In the single-qubit setting, every ket can be expressed
+            as a linear combination of the <Keyword tone="basis">basis kets</Keyword>{' '}
+            <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>.
           </DefinitionBox>
-        </div>
 
-        <div className="mt-4">
-          <NotationBox symbol="|ψ⟩ = α|0⟩ + β|1⟩">
-            The coefficients <InlineMath>{'\\alpha'}</InlineMath> and <InlineMath>{'\\beta'}</InlineMath> are
-            {' '}<GlossaryTooltip term="Amplitude">amplitudes</GlossaryTooltip>. They can be complex numbers, and
-            they must satisfy <InlineMath>{'|\\alpha|^2 + |\\beta|^2 = 1'}</InlineMath> so that total probability
-            remains one.
-          </NotationBox>
-        </div>
+          <div className="mt-4">
+            <DefinitionBox term="Computational Basis">
+              The <Keyword tone="basis">computational basis</Keyword> is the default basis used to describe
+              one-qubit states and the default basis associated with standard <Keyword tone="measurement">measurement</Keyword>{' '}
+              outcomes 0 and 1.
+            </DefinitionBox>
+          </div>
 
-        <div className="mt-6">
-          <BasisStatesFigure />
-        </div>
+          <div className="mt-4">
+            <NotationBox symbol="|ψ⟩ = α|0⟩ + β|1⟩">
+              The coefficients <InlineMath>{'\\alpha'}</InlineMath> and <InlineMath>{'\\beta'}</InlineMath> are
+              {' '}<GlossaryTooltip term="Amplitude">amplitudes</GlossaryTooltip>. They can be complex numbers, and
+              they must satisfy <InlineMath>{'|\\alpha|^2 + |\\beta|^2 = 1'}</InlineMath> so that total probability
+              remains one.
+            </NotationBox>
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox>
-            <MathDisplay>{'|\\psi\\rangle = \\tfrac{\\sqrt{3}}{2}|0\\rangle + \\tfrac{1}{2}|1\\rangle'}</MathDisplay>
-            <p>
-              This notation says the qubit has amplitude <InlineMath>{'\\tfrac{\\sqrt{3}}{2}'}</InlineMath> on
-              <InlineMath>{'|0\\rangle'}</InlineMath> and amplitude <InlineMath>{'\\tfrac{1}{2}'}</InlineMath> on
-              <InlineMath>{'|1\\rangle'}</InlineMath>. The measurement probabilities in the computational basis are
-              therefore <InlineMath>{'\\tfrac{3}{4}'}</InlineMath> for 0 and <InlineMath>{'\\tfrac{1}{4}'}</InlineMath> for 1.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <BasisStatesFigure />
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            The amplitudes are not themselves probabilities. Probability appears only after taking the
-            absolute square. That distinction is what later allows phase and interference to matter.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox>
+              <MathDisplay>{'|\\psi\\rangle = \\tfrac{\\sqrt{3}}{2}|0\\rangle + \\tfrac{1}{2}|1\\rangle'}</MathDisplay>
+              <p>
+                This notation says the qubit has amplitude <InlineMath>{'\\tfrac{\\sqrt{3}}{2}'}</InlineMath> on
+                <InlineMath>{'|0\\rangle'}</InlineMath> and amplitude <InlineMath>{'\\tfrac{1}{2}'}</InlineMath> on
+                <InlineMath>{'|1\\rangle'}</InlineMath>. The measurement probabilities in the computational basis are
+                therefore <InlineMath>{'\\tfrac{3}{4}'}</InlineMath> for 0 and <InlineMath>{'\\tfrac{1}{4}'}</InlineMath> for 1.
+              </p>
+            </ExampleBox>
+          </div>
+
+          <div className="mt-6">
+            <RemarkBox>
+              The amplitudes are not themselves probabilities. Probability appears only after taking the
+              absolute square. That distinction is what later allows phase and interference to matter.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="braket-bras" className="mt-12 scroll-mt-28">
@@ -352,32 +358,34 @@ export default function BraKet() {
           vector obtained from the ket by conjugate transpose.
         </p>
 
-        <DefinitionBox term="Bra">
-          Given a ket <InlineMath>{'|\\psi\\rangle'}</InlineMath>, the corresponding bra
-          <InlineMath>{'\\langle \\psi |'}</InlineMath> is formed by transposing the vector and taking complex
-          conjugates of its entries.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['bra-notation']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Bra">
+            Given a ket <InlineMath>{'|\\psi\\rangle'}</InlineMath>, the corresponding bra
+            <InlineMath>{'\\langle \\psi |'}</InlineMath> is formed by transposing the vector and taking complex
+            conjugates of its entries.
+          </DefinitionBox>
 
-        <div className="mt-4">
-          <NotationBox symbol="⟨ψ| = ( α*  β* )">
-            If <InlineMath>{'|\\psi\\rangle = \\begin{pmatrix} \\alpha \\\\ \\beta \\end{pmatrix}'}</InlineMath>,
-            then <InlineMath>{'\\langle \\psi| = \\begin{pmatrix} \\alpha^* & \\beta^* \\end{pmatrix}'}</InlineMath>.
-            For real amplitudes, this looks like “turning the ket sideways,” but complex conjugation is
-            the essential step.
-          </NotationBox>
-        </div>
+          <div className="mt-4">
+            <NotationBox symbol="⟨ψ| = ( α*  β* )">
+              If <InlineMath>{'|\\psi\\rangle = \\begin{pmatrix} \\alpha \\\\ \\beta \\end{pmatrix}'}</InlineMath>,
+              then <InlineMath>{'\\langle \\psi| = \\begin{pmatrix} \\alpha^* & \\beta^* \\end{pmatrix}'}</InlineMath>.
+              For real amplitudes, this looks like “turning the ket sideways,” but complex conjugation is
+              the essential step.
+            </NotationBox>
+          </div>
 
-        <div className="mt-6">
-          <DualVectorFigure />
-        </div>
+          <div className="mt-6">
+            <DualVectorFigure />
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            The complex conjugate is easy to ignore when examples use only real coefficients. Do not
-            build the habit of dropping it. Phase information enters precisely through those complex
-            entries.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              The complex conjugate is easy to ignore when examples use only real coefficients. Do not
+              build the habit of dropping it. Phase information enters precisely through those complex
+              entries.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="braket-inner-products" className="mt-12 scroll-mt-28">
@@ -388,29 +396,31 @@ export default function BraKet() {
           products. This is how we express orthogonality, overlap, and measurement probabilities.
         </p>
 
-        <DefinitionBox term="Inner Product">
-          The inner product <InlineMath>{'\\langle \\phi | \\psi \\rangle'}</InlineMath> combines a bra with a ket
-          to produce a single complex number. Its magnitude measures how much the two states overlap.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['inner-product']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Inner Product">
+            The inner product <InlineMath>{'\\langle \\phi | \\psi \\rangle'}</InlineMath> combines a bra with a ket
+            to produce a single complex number. Its magnitude measures how much the two states overlap.
+          </DefinitionBox>
 
-        <div className="mt-6">
-          <OverlapFigure />
-        </div>
+          <div className="mt-6">
+            <OverlapFigure />
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox title="Worked Example: Orthogonality and Probability">
-            <p>
-              Because <InlineMath>{'\\langle 0|1\\rangle = 0'}</InlineMath>, the states
-              <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath> are orthogonal.
-              A measurement in the computational basis can therefore distinguish them perfectly.
-            </p>
-            <p className="mt-3">
-              More generally, if the system is in the state <InlineMath>{'|\\psi\\rangle'}</InlineMath> and you want
-              the probability of obtaining the outcome <InlineMath>{'|\\phi\\rangle'}</InlineMath>, you compute
-              <InlineMath>{'|\\langle \\phi | \\psi \\rangle|^2'}</InlineMath>.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox title="Worked Example: Orthogonality and Probability">
+              <p>
+                Because <InlineMath>{'\\langle 0|1\\rangle = 0'}</InlineMath>, the states
+                <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath> are orthogonal.
+                A measurement in the computational basis can therefore distinguish them perfectly.
+              </p>
+              <p className="mt-3">
+                More generally, if the system is in the state <InlineMath>{'|\\psi\\rangle'}</InlineMath> and you want
+                the probability of obtaining the outcome <InlineMath>{'|\\phi\\rangle'}</InlineMath>, you compute
+                <InlineMath>{'|\\langle \\phi | \\psi \\rangle|^2'}</InlineMath>.
+              </p>
+            </ExampleBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="braket-reading" className="mt-12 scroll-mt-28">
@@ -422,11 +432,13 @@ export default function BraKet() {
           can reveal.
         </p>
 
-        <StateExplorer />
+        <ConceptSection conceptIds={['notation-reading']} demonstrated={diagnostic.demonstrated}>
+          <StateExplorer />
 
-        <div className="mt-6">
-          <CheatSheetTable />
-        </div>
+          <div className="mt-6">
+            <CheatSheetTable />
+          </div>
+        </ConceptSection>
       </section>
 
       <div className="mt-12">

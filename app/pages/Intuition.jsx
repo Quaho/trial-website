@@ -10,6 +10,8 @@ import Keyword from '../../components/Keyword'
 import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
+import ConceptSection from '../../components/ConceptSection'
+import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const INTUITION_OUTLINE = [
@@ -255,6 +257,8 @@ function ApplicationsGrid() {
 }
 
 export default function Intuition() {
+  const diagnostic = useDiagnostic()
+
   return (
     <ModuleLayout
       moduleId="intuition"
@@ -314,33 +318,35 @@ export default function Intuition() {
           different from a single <Keyword tone="classical">classical bit</Keyword>.
         </p>
 
-        <DefinitionBox term="Qubit">
-          A <Keyword tone="qubit">qubit</Keyword> is the basic unit of quantum information. For an
-          introductory one-qubit system, the state is described as a normalized combination of the
-          {' '}<Keyword tone="basis">basis states</Keyword>{' '}
-          <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['classical-vs-qubit']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Qubit">
+            A <Keyword tone="qubit">qubit</Keyword> is the basic unit of quantum information. For an
+            introductory one-qubit system, the state is described as a normalized combination of the
+            {' '}<Keyword tone="basis">basis states</Keyword>{' '}
+            <InlineMath>{'|0\\rangle'}</InlineMath> and <InlineMath>{'|1\\rangle'}</InlineMath>.
+          </DefinitionBox>
 
-        <div className="mt-4">
-          <NotationBox symbol="|ψ⟩ = α|0⟩ + β|1⟩">
-            The coefficients <InlineMath>{'\\alpha'}</InlineMath> and <InlineMath>{'\\beta'}</InlineMath> are
-            {' '}<Keyword tone="amplitude">amplitudes</Keyword>. Their squared magnitudes determine{' '}
-            <Keyword tone="measurement">measurement probabilities</Keyword>, and they satisfy
-            <InlineMath>{'|\\alpha|^2 + |\\beta|^2 = 1'}</InlineMath>.
-          </NotationBox>
-        </div>
+          <div className="mt-4">
+            <NotationBox symbol="|ψ⟩ = α|0⟩ + β|1⟩">
+              The coefficients <InlineMath>{'\\alpha'}</InlineMath> and <InlineMath>{'\\beta'}</InlineMath> are
+              {' '}<Keyword tone="amplitude">amplitudes</Keyword>. Their squared magnitudes determine{' '}
+              <Keyword tone="measurement">measurement probabilities</Keyword>, and they satisfy
+              <InlineMath>{'|\\alpha|^2 + |\\beta|^2 = 1'}</InlineMath>.
+            </NotationBox>
+          </div>
 
-        <div className="mt-6">
-          <ClassicalVsQuantumFigure />
-        </div>
+          <div className="mt-6">
+            <ClassicalVsQuantumFigure />
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            A <Keyword tone="qubit">qubit</Keyword> should not be understood as "two classical bits packed
-            into one place." The state description is richer, but a single{' '}
-            <Keyword tone="measurement">measurement</Keyword> still returns one classical outcome.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              A <Keyword tone="qubit">qubit</Keyword> should not be understood as "two classical bits packed
+              into one place." The state description is richer, but a single{' '}
+              <Keyword tone="measurement">measurement</Keyword> still returns one classical outcome.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="intuition-superposition" className="mt-12 scroll-mt-28">
@@ -352,37 +358,39 @@ export default function Intuition() {
           description grows exponentially with the number of qubits.
         </p>
 
-        <DefinitionBox term="Superposition">
-          A <Keyword tone="superposition">superposition</Keyword> is a valid quantum state formed by
-          combining <Keyword tone="basis">basis states</Keyword> with <Keyword tone="amplitude">amplitudes</Keyword>.
-          The state is not merely an unknown classical choice between those basis states; it is a new
-          state description that can later participate in <Keyword tone="interference">interference</Keyword>.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['superposition']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Superposition">
+            A <Keyword tone="superposition">superposition</Keyword> is a valid quantum state formed by
+            combining <Keyword tone="basis">basis states</Keyword> with <Keyword tone="amplitude">amplitudes</Keyword>.
+            The state is not merely an unknown classical choice between those basis states; it is a new
+            state description that can later participate in <Keyword tone="interference">interference</Keyword>.
+          </DefinitionBox>
 
-        <div className="mt-6">
-          <StateCountFigure />
-        </div>
+          <div className="mt-6">
+            <StateCountFigure />
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox>
-            <MathDisplay>{'|+\\rangle = \\tfrac{1}{\\sqrt{2}}|0\\rangle + \\tfrac{1}{\\sqrt{2}}|1\\rangle'}</MathDisplay>
-            <p>
-              This equal superposition is one of the most common introductory states. It does not mean
-              "half of a 0 and half of a 1" in a classical sense. It means the state has equal
-              amplitudes relative to the computational basis.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox>
+              <MathDisplay>{'|+\\rangle = \\tfrac{1}{\\sqrt{2}}|0\\rangle + \\tfrac{1}{\\sqrt{2}}|1\\rangle'}</MathDisplay>
+              <p>
+                This equal superposition is one of the most common introductory states. It does not mean
+                "half of a 0 and half of a 1" in a classical sense. It means the state has equal
+                amplitudes relative to the computational basis.
+              </p>
+            </ExampleBox>
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            Exponential growth in the state description does not imply that you can read out all
-            {' '}<InlineMath>{'2^n'}</InlineMath>{' '}<Keyword tone="amplitude">amplitudes</Keyword> in one{' '}
-            <Keyword tone="measurement">measurement</Keyword>. The value of{' '}
-            <Keyword tone="superposition">superposition</Keyword> appears only when an algorithm uses it
-            together with <Keyword tone="interference">interference</Keyword> and basis-sensitive measurement.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              Exponential growth in the state description does not imply that you can read out all
+              {' '}<InlineMath>{'2^n'}</InlineMath>{' '}<Keyword tone="amplitude">amplitudes</Keyword> in one{' '}
+              <Keyword tone="measurement">measurement</Keyword>. The value of{' '}
+              <Keyword tone="superposition">superposition</Keyword> appears only when an algorithm uses it
+              together with <Keyword tone="interference">interference</Keyword> and basis-sensitive measurement.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="intuition-measurement" className="mt-12 scroll-mt-28">
@@ -394,37 +402,39 @@ export default function Intuition() {
           returns one outcome.
         </p>
 
-        <DefinitionBox term="Measurement">
-          <Keyword tone="measurement">Measurement</Keyword> is the process of extracting a classical
-          result from a quantum state. In the computational basis, the outcome is 0 or 1 for a single
-          qubit, with probabilities determined by the state <Keyword tone="amplitude">amplitudes</Keyword>.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['measurement-collapse']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Measurement">
+            <Keyword tone="measurement">Measurement</Keyword> is the process of extracting a classical
+            result from a quantum state. In the computational basis, the outcome is 0 or 1 for a single
+            qubit, with probabilities determined by the state <Keyword tone="amplitude">amplitudes</Keyword>.
+          </DefinitionBox>
 
-        <div className="mt-6">
-          <MeasurementFigure />
-        </div>
+          <div className="mt-6">
+            <MeasurementFigure />
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox title="Worked Example: Equal Superposition">
-            <p>
-              For <InlineMath>{'|\\psi\\rangle = (|0\\rangle + |1\\rangle)/\\sqrt{2}'}</InlineMath>, the
-              amplitudes are both <InlineMath>{'1/\\sqrt{2}'}</InlineMath>. Squaring their magnitudes gives
-              probability <InlineMath>{'1/2'}</InlineMath> for 0 and probability <InlineMath>{'1/2'}</InlineMath> for 1.
-            </p>
-            <p className="mt-3">
-              If you run the same circuit many times, the frequencies approach those probabilities. A
-              single shot, however, still returns only one of the two outcomes.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox title="Worked Example: Equal Superposition">
+              <p>
+                For <InlineMath>{'|\\psi\\rangle = (|0\\rangle + |1\\rangle)/\\sqrt{2}'}</InlineMath>, the
+                amplitudes are both <InlineMath>{'1/\\sqrt{2}'}</InlineMath>. Squaring their magnitudes gives
+                probability <InlineMath>{'1/2'}</InlineMath> for 0 and probability <InlineMath>{'1/2'}</InlineMath> for 1.
+              </p>
+              <p className="mt-3">
+                If you run the same circuit many times, the frequencies approach those probabilities. A
+                single shot, however, still returns only one of the two outcomes.
+              </p>
+            </ExampleBox>
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            Later modules refine this picture by showing that measurement depends on basis. For now, the
-            main point is that <Keyword tone="amplitude">amplitudes</Keyword> control outcome
-            probabilities rather than appearing directly as observable numbers.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              Later modules refine this picture by showing that measurement depends on basis. For now, the
+              main point is that <Keyword tone="amplitude">amplitudes</Keyword> control outcome
+              probabilities rather than appearing directly as observable numbers.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="intuition-interference" className="mt-12 scroll-mt-28">
@@ -436,27 +446,29 @@ export default function Intuition() {
           outcomes are amplified while others are suppressed.
         </p>
 
-        <DefinitionBox term="Interference">
-          <Keyword tone="interference">Interference</Keyword> is the way amplitudes combine. They can
-          reinforce one another constructively or cancel one another destructively, which changes the
-          final <Keyword tone="measurement">measurement</Keyword> probabilities.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['interference']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Interference">
+            <Keyword tone="interference">Interference</Keyword> is the way amplitudes combine. They can
+            reinforce one another constructively or cancel one another destructively, which changes the
+            final <Keyword tone="measurement">measurement</Keyword> probabilities.
+          </DefinitionBox>
 
-        <div className="mt-6">
-          <InterferenceFigure />
-        </div>
+          <div className="mt-6">
+            <InterferenceFigure />
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox title="Worked Example: Algorithmic Use">
-            <p>
-              In introductory quantum algorithms, the design goal is often to route
-              {' '}<Keyword tone="amplitude">amplitude</Keyword> toward a correct answer and away from
-              incorrect answers. When that works, a final{' '}
-              <Keyword tone="measurement">measurement</Keyword> is more likely to return the desired result
-              than a naive classical guess.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox title="Worked Example: Algorithmic Use">
+              <p>
+                In introductory quantum algorithms, the design goal is often to route
+                {' '}<Keyword tone="amplitude">amplitude</Keyword> toward a correct answer and away from
+                incorrect answers. When that works, a final{' '}
+                <Keyword tone="measurement">measurement</Keyword> is more likely to return the desired result
+                than a naive classical guess.
+              </p>
+            </ExampleBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="intuition-limits" className="mt-12 scroll-mt-28">
@@ -468,17 +480,19 @@ export default function Intuition() {
           universally superior.
         </p>
 
-        <ApplicationsGrid />
+        <ConceptSection conceptIds={['quantum-advantage-limits']} demonstrated={diagnostic.demonstrated}>
+          <ApplicationsGrid />
 
-        <div className="mt-6">
-          <RemarkBox>
-            Quantum computing is not a replacement for classical computing. The practical question is
-            always narrower: does a specific problem have structure that an algorithm can exploit using
-            <Keyword tone="superposition">superposition</Keyword>,{' '}
-            <Keyword tone="interference">interference</Keyword>, and{' '}
-            <Keyword tone="measurement">measurement</Keyword>?
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              Quantum computing is not a replacement for classical computing. The practical question is
+              always narrower: does a specific problem have structure that an algorithm can exploit using
+              <Keyword tone="superposition">superposition</Keyword>,{' '}
+              <Keyword tone="interference">interference</Keyword>, and{' '}
+              <Keyword tone="measurement">measurement</Keyword>?
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <div className="mt-12">

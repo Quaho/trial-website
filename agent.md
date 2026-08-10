@@ -73,84 +73,116 @@ aside — those are TASK-024 onward. `Gates.jsx`/`Intuition.jsx`/
 
 ---
 
-## TASK-024: `ConceptSection` + wiring into Intuition/Bra-Ket/Gates
+## TASK-024 — COMPLETE (2026-08-09)
+`ConceptSection` + wiring into Intuition/Bra-Ket/Gates.
+
+### What was built
+- **`components/ConceptSection.jsx`** — exactly the spec below: collapses
+  only when every id in `conceptIds` is in the `demonstrated` Set passed
+  down as a prop (never calls `useDiagnostic()` itself); otherwise renders
+  `children` exactly as-is. Collapsed state uses an emerald-accented
+  `<details>` (visually distinct from `ExpandableAside`'s neutral gray, so
+  "diagnostic says you know this" doesn't read as the same affordance as
+  "optional aside"), labeled *"Your diagnostic suggests you already know
+  this — expand to review,"* with `focus-visible` on the `<summary>`.
+- **Wired into all 3 pilot pages** — one `useDiagnostic()` call per page
+  (`Intuition.jsx`: 5 clusters, `BraKet.jsx`: 4 clusters, `Gates.jsx`: 5
+  clusters), matching the `sectionId`→`conceptIds` mapping in
+  `concepts.js` exactly. Section headings/intro sentences stay outside
+  every wrapper — only the `DefinitionBox`/`NotationBox`/`ExampleBox`/
+  `RemarkBox` cluster underneath is wrapped.
+
+### Verification performed
+- `npm run build` — passes; `useDiagnostic` now code-splits into its own
+  shared chunk across the 4 pages importing it (Diagnostic + the 3 pilot
+  pages), confirming the single-hook-per-page pattern is wired correctly
+  rather than each page bundling its own copy.
+- **Standalone Node script replicating `useDiagnostic`'s exact
+  `conceptStatus` derivation** (not just reading the code) — simulated
+  answering every `math-notation` and `gates` question correctly, left
+  `states` untouched, and confirmed: `ket-notation`/`bra-notation`/
+  `inner-product`/`unitary-gate`/`pauli-x`/`hadamard` → `demonstrated`;
+  `notation-reading`/`pauli-z`/`s-t-gates` → `insufficient-evidence`
+  (correctly capped by the ≥2-question threshold); every untouched-area
+  concept → `insufficient-evidence`. Matches the acceptance criteria
+  exactly.
+- **Not yet visually verified in a browser** — same project convention as
+  every prior task (no Playwright/Chromium here). The logic is verified;
+  actual collapse styling/animation in a real browser is not.
+
+---
+
+## TASK-025: Gates.jsx explicit gate matrices + Intuition.jsx analogy audit
 
 ### Why this task now
-Fifth slice of the Diagnostic Placement pilot (Phase 3a). The diagnostic
-now exists and can be taken, but nothing on the pilot pages reacts to its
-results yet — `useDiagnostic()`'s `demonstrated` Set is unused outside the
-results view. This task is what makes taking the diagnostic actually
-change anything on `/intuition`, `/braket`, `/gates`.
+Sixth slice of the pilot. This is the one confirmed concrete content gap
+from the original review (verified by grep — `Gates.jsx` contains zero
+`pmatrix`/`bmatrix` usage anywhere despite extensively covering unitarity,
+eigenstates, and every named gate's *action* on states). It is a targeted
+fill, not a rewrite — re-reading `Intuition.jsx` and `Gates.jsx` in full
+this session confirmed both are already handbook-quality (formal
+definitions, worked examples, correct caveats). Treat this as an audit
+that may conclude "no change needed" for `Intuition.jsx`, not a mandate to
+rewrite it.
 
-### File to create
-`components/ConceptSection.jsx`
+### Files to modify
+`app/pages/Gates.jsx`, `app/pages/Intuition.jsx`
 
 ### Requirements
 
-**Props:** `conceptIds` (array of concept ids from `concepts.js`),
-`demonstrated` (the `Set` from a page-level `useDiagnostic()` call — this
-component does NOT call the hook itself), `children`.
+**Gates.jsx — add explicit 2×2 matrices, inside the existing
+`ConceptSection` clusters (not outside them):**
+- Pauli-X (`gates-x` cluster): `X = [[0,1],[1,0]]`
+- Pauli-Z (`gates-z` cluster): `Z = [[1,0],[0,-1]]`
+- Hadamard (`gates-h` cluster): `H = (1/√2)[[1,1],[1,-1]]`
+- S and T (`gates-phase` cluster): `S = [[1,0],[0,i]]`,
+  `T = [[1,0],[0,e^{iπ/4}]]`
 
-**Behavior:**
-- If every id in `conceptIds` is present in `demonstrated` → render
-  `children` inside a collapsed `<details>` (closed by default), styled
-  like `ExpandableAside.jsx`, labeled *"Your diagnostic suggests you
-  already know this — expand to review"* (never "mastered").
-- Otherwise (partial or no overlap, or diagnostic never taken) → render
-  `children` exactly as-is, fully expanded. This must be pixel-identical
-  to today's page for any visitor who hasn't taken the diagnostic — no
-  behavior change is the default, not the exception.
+Use `MathDisplay` with `pmatrix`, matching the exact convention
+`BraKet.jsx` already established for showing `|0⟩`/`|1⟩` as column
+vectors (see `BasisStatesFigure` there). Place each matrix in its gate's
+existing `DefinitionBox` or immediately after it — do not add a new
+`ConceptSection` wrapper; these matrices belong inside the cluster
+TASK-024 already wired for that concept. Scope is exactly these 5
+matrices — do not also invent a generic `U = [[u11,u12],[u21,u22]]` form
+for the `gates-unitary` section; that wasn't the confirmed gap and isn't
+required.
 
-**Wraps the box cluster only, never the section heading:** per CLAUDE.md,
-the outer `<section id="...">` heading and intro sentence stay outside
-`ConceptSection` — `Gates.jsx`'s and the other pages' outline nav anchors
-on those ids, and collapsing them would break scroll-to-section and hide
-chapter structure from someone scanning. Only the
-`DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox` cluster underneath
-a heading goes inside `ConceptSection`.
+**Intuition.jsx — audit only:** re-read for any place an analogy
+substitutes for a real definition rather than supplementing one (CLAUDE.md
+flags this failure mode explicitly). On this session's full read, the page
+already seems to actively guard against this (e.g. the existing remark
+"A qubit should not be understood as 'two classical bits packed into one
+place'" is *correcting* a bad analogy, not relying on one). If the audit
+finds a genuine gap, fix it narrowly. If it doesn't, say so in `TASKS.md`
+and change nothing — do not force an edit to justify the task.
 
-### Files to modify
-`app/pages/Intuition.jsx`, `app/pages/BraKet.jsx`, `app/pages/Gates.jsx` —
-add one `const diagnostic = useDiagnostic()` call near the top of each page
-component, then wrap each section's content cluster in `ConceptSection`
-using the `conceptIds`/`sectionId` mapping already defined in
-`lib/data/concepts.js` (match by `sectionId`, e.g. `gates-x` →
-`conceptIds={['pauli-x']}`). Concepts with only 1 tagged question
-(`notation-reading`, `pauli-z`, `s-t-gates`) or 0 (`quantum-advantage-limits`)
-will simply never collapse in this pilot — that's expected, not a bug to
-route around.
-
-### Non-goals for TASK-024
-- No content rewriting — that's TASK-025 (Gates matrix tables, Intuition
-  audit). Wrap existing content as-is.
-- No changes to `concepts.js`, `diagnostic.js`, or `useDiagnostic.js`.
+### Non-goals for TASK-025
+- No changes to `ConceptSection.jsx`, `concepts.js`, `diagnostic.js`, or
+  `useDiagnostic.js`.
+- No changes to `BraKet.jsx` or `MathLanguage.jsx`.
 - No video aside — that's TASK-026.
 
 ### Acceptance criteria
-- [ ] `components/ConceptSection.jsx` exists, matches the behavior above
-- [ ] All 14 concepts from `concepts.js` are wired into their `sectionId`
-      on the correct pilot page
-- [ ] Fresh localStorage: all 3 pilot pages render identically to before
-      this task (nothing collapsed)
-- [ ] After answering all `dq-math-*` questions correctly in the
-      diagnostic: `/braket`'s ket-notation, bra-notation, and
-      inner-product sections render collapsed; `notation-reading` does not
-      (only 1 tagged question, always insufficient-evidence)
-- [ ] Section headings and outline-nav scroll anchors are unaffected in
-      every case
+- [ ] All 5 matrices present in `Gates.jsx`, each inside its existing
+      `ConceptSection` cluster, using `MathDisplay`/`pmatrix`
+- [ ] `Intuition.jsx` audit documented in `TASKS.md` regardless of outcome
+      (edited or left as-is)
 - [ ] `npm run build` passes
+- [ ] Fresh localStorage: both pages still render fully expanded, matrices
+      visible as part of the normal (non-collapsed) reading flow
 
 ### Verification steps
 1. `npm run build` — must pass.
-2. Fresh localStorage, visit all 3 pilot pages — confirm no visual change
-   from before TASK-024.
-3. Take the diagnostic, answer the `dq-gates-*` questions to get
-   `unitary-gate`, `pauli-x`, and `hadamard` all correct (2/2 each) and
-   `pauli-z`/`s-t-gates` however you like — revisit `/gates` and confirm
-   exactly those 3 sections collapse, `gates-z` and `gates-phase` do not.
-4. Confirm outline nav (the "On This Page" rail) still scrolls to the
-   right heading even when that section's content is collapsed.
+2. Visit `/gates` fresh (no diagnostic taken) — confirm all 5 matrices
+   render correctly via KaTeX (no raw LaTeX source visible, no layout
+   overflow) and sit inside the same visual cluster as their gate's
+   existing definition/example/remark.
+3. Take the diagnostic, get `pauli-x`/`hadamard` to `demonstrated` —
+   confirm their matrices are still present once expanded from the
+   collapsed state (i.e., they went inside `ConceptSection`'s children,
+   not accidentally placed outside it).
 
 ### Next task
-TASK-025 — Gates.jsx explicit gate matrices (X/Z/H/S/T via `MathDisplay`
-`pmatrix`) + Intuition.jsx analogy audit.
+TASK-026 — `VideoAside` (+ `ExpandableAside` focus-visible fix) + a full
+accessibility verification pass on everything built across this pilot.
