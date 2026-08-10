@@ -203,9 +203,40 @@ scoped.** Full detail in `TASKS.md`. Highlights:
   explicitly rather than overclaiming a full manual audit.
 - `npm run build` passes.
 
-### What's next
+### What's next after the pilot
 No task currently scoped. Per CLAUDE.md's Phase 3a note: review this
 pilot (concept-graph model, evidence thresholds, the study-chain UX, the
 save/restore code) before deciding whether to roll it out beyond
 Intuition/Bra-Ket/Gates to the remaining 10 modules. That review is a
 product decision for the user, not something to proceed on unprompted.
+
+---
+
+## TASK-017 / TASK-018 — COMPLETE (2026-08-09)
+MP2 (Bell State Explorer) and MP3 (Algorithm Showdown) — the last two
+items in the backlog, unrelated to the diagnostic pilot. Both were
+40-line "under construction" stubs; both now have full content matching
+`FirstCircuit.jsx`'s established `ProjectLayout` pattern (Predict/Reflect
+callouts, `CodeBlock`, `GlossaryTooltip`, step-gated progress via
+`useProgress`'s `project-<id>` key). Full detail in `TASKS.md`.
+
+- **Bell State Explorer** (5 steps): reuses the exact H+CNOT circuit
+  already established in `Circuits.jsx` rather than inventing new
+  notation, then shows how prepending an X gate before the CNOT prepares
+  `|Ψ+⟩` instead of `|Φ+⟩`.
+- **Algorithm Showdown** (6 steps): classical linear search baseline →
+  Grover's oracle/diffuser → a query-count table reusing `Algorithms.jsx`'s
+  existing "~1,000 vs 500,000 at N=1,000,000" numbers rather than
+  inventing new ones → a closing step tying the quadratic-speedup
+  fragility argument to `/noise` and `/usecases`.
+- **Caught two real content bugs before shipping, not after**: two
+  `GlossaryTooltip` wraps in `AlgorithmShowdown.jsx` were checked against
+  `glossary.js`'s actual term list rather than assumed correct —
+  `term="Amplitude"` had been wrapped around the unrelated phrase
+  "Grover's algorithm," and `term="Gate"` was wrapped around "oracle" when
+  a dedicated `"Oracle"` glossary entry actually exists. Both fixed before
+  the build/commit, not left for a later pass.
+
+Backlog is now empty. `npm run build` passes for both. Neither has been
+visually verified in a browser (standing project convention: no
+Playwright/Chromium here).
