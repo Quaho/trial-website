@@ -13,6 +13,7 @@ import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import ConceptSection from '../../components/ConceptSection'
+import VideoAside from '../../components/VideoAside'
 import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
@@ -548,6 +549,14 @@ export default function Gates() {
               Measurement is intentionally separate from this chapter&apos;s core idea. Gates are unitary and
               reversible. Measurement is neither. Confusing the two leads to most beginner mistakes.
             </RemarkBox>
+          </div>
+
+          <div className="mt-6">
+            <VideoAside
+              title="Quantum Gates"
+              description="An IBM Research overview of the gates available on real quantum hardware and how they act on a qubit's state — a visual companion to the unitary-operator definition above."
+              videoId="QXJ96Kyt6TA"
+            />
           </div>
         </ConceptSection>
       </section>

@@ -166,94 +166,46 @@ Gates.jsx explicit gate matrices + Intuition.jsx analogy audit.
 
 ---
 
-## TASK-026: `VideoAside` + `ExpandableAside` focus-visible fix + accessibility pass
+## TASK-026 — COMPLETE (2026-08-09)
+`VideoAside` + `ExpandableAside` focus-visible fix + accessibility pass.
+**This closes out the Diagnostic Placement pilot (Phase 3a) as originally
+scoped.** Full detail in `TASKS.md`. Highlights:
 
-### Why this task now
-Final slice of the Diagnostic Placement pilot (Phase 3a). Everything
-functional is built and verified (data model, hook, diagnostic UI,
-`ConceptSection` collapsing, the study-sequence chain, save/restore
-codes, Gates matrices). This task closes it out: the one deferred optional
-feature (IBM video embeds) plus a real accessibility sweep across
-everything added in TASK-020 through TASK-025, which so far has only had
-build-level and logic-level verification, never a dedicated a11y pass.
+- `components/VideoAside.jsx` built exactly to spec (text always visible
+  outside `<details>`, iframe gated on first-ever-open via `hasLoaded`,
+  `focus-visible` on `<summary>`). `ExpandableAside.jsx`'s missing
+  `focus-visible` fixed too.
+- **Video sourcing was actually verified, not trusted from search result
+  titles**: every candidate was checked via YouTube's oEmbed JSON endpoint
+  for its real `author_name`. Two looked IBM-adjacent from search
+  snippets alone and turned out to be third parties (`Visualmatics`,
+  `sentdex`) — rejected. Landed on 2 confirmed IBM videos (Qiskit channel
+  + IBM Research channel), wired into `Intuition.jsx` and `Gates.jsx`.
+  **No video on `BraKet.jsx`** — no verified-IBM match existed for
+  Dirac/bra-ket notation, and per "max, not required," skipping it was
+  judged better than a wrong attribution. If a future task finds one,
+  adding it is a small, low-risk change.
+- **The accessibility pass found and fixed a real bug**, not just a
+  review: `DiagnosticQuestion.jsx` claimed `role="radiogroup"`/
+  `role="radio"` without the roving-tabindex + arrow-key navigation that
+  pattern requires — fixed with the full ARIA APG keyboard pattern.
+  Everything else (focus-visible presence, color-not-only-signal,
+  `role="alert"`/label association on the restore-code error) was
+  checked and confirmed already correct, not assumed.
+- **Found and documented, deliberately not fixed**: no sitewide CSS-level
+  `prefers-reduced-motion` media query exists anywhere in this codebase —
+  a pre-existing gap, not introduced by this pilot, out of scope to fix
+  broadly in one task. None of this pilot's components use Framer Motion,
+  so at least nothing here makes it worse.
+- This was a rigorous code-level pass (caught a genuine interaction-
+  pattern bug), not a literal screen-reader/browser session — consistent
+  with this project's no-Playwright/Chromium convention. Said so
+  explicitly rather than overclaiming a full manual audit.
+- `npm run build` passes.
 
-### File to create
-`components/VideoAside.jsx`
-
-### Requirements — VideoAside (see CLAUDE.md's "IBM Video Sourcing")
-- Text summary (title + description) is **permanently visible**, outside
-  any `<details>` — not inside `<summary>` either, so a click on the
-  description doesn't toggle playback.
-- The `<details>`/`<summary>` only gates the video embed. Track "has this
-  ever been opened" with React state (`hasLoaded`, set via `onToggle` when
-  `event.currentTarget.open` is true) and render `{hasLoaded && <iframe
-  .../>}` — gate on first-ever-open, not current-open state, so
-  closing/reopening doesn't reload or reset playback.
-- Explicit `focus-visible` styling on the `<summary>` toggle (see next
-  bullet — `ExpandableAside` is missing this today; don't repeat the gap).
-- Source only from IBM Quantum's official YouTube channel. Verify actual
-  video URLs live at implementation time — none are pre-selected. One
-  video per pilot module max (Intuition/Bra-Ket/Gates), placed only inside
-  the fold, never in the main reading flow, never autoplay.
-
-### Also fix: `components/ExpandableAside.jsx`
-Its `<summary>` currently has no `focus-visible` classes at all (confirmed
-by reading the file in an earlier session) — a real, if small, a11y gap.
-Add the same `focus-visible:outline focus-visible:outline-2
-focus-visible:outline-offset-2 focus-visible:outline-indigo-400` pattern
-used everywhere else in this codebase (see `ConceptSection.jsx`'s
-`<summary>` for the exact classes).
-
-### Accessibility verification pass — everything built in this pilot
-Not just VideoAside. Go through and actually check, not just read the
-code:
-- **Keyboard-only navigation**: `/diagnostic`'s choice buttons
-  (`DiagnosticQuestion.jsx`), the intro/results screens' buttons and
-  links, `ConceptSection`'s `<summary>` toggles on all 3 pilot pages, the
-  new save/restore code inputs on the results view, and `VideoAside`'s
-  toggle — all reachable via Tab, all operable via Enter/Space, all show a
-  visible focus ring.
-- **`aria-live` correctness**: `Diagnostic.jsx`'s question-progress
-  announcement — confirm it actually fires on question change and reads
-  sensibly with a screen reader, not just that the markup is present.
-- **Color is not the only signal**: `ConceptSection`'s emerald "already
-  known" styling and `StudyChainView`'s status colors (`start`/`continue`/
-  `skim`) — confirm each also carries a text label, not color alone. (They
-  do today — verify, don't just assume.)
-- **`RestoreCodeSection`'s error state** (`Diagnostic.jsx`) — confirm the
-  error message has `role="alert"` semantics that actually announce, and
-  that the input's label is programmatically associated (it uses
-  `htmlFor`/`id` today — verify it survived).
-- **Reduced motion**: nothing added this pilot should animate beyond the
-  `MotionConfig reducedMotion="user"` already set globally in `App.jsx` —
-  confirm no new component bypasses that.
-
-### Non-goals for TASK-026
-- No new content changes to `Intuition.jsx`/`BraKet.jsx`/`Gates.jsx`
-  beyond adding one `VideoAside` each.
-- No rollout beyond the 3 pilot modules.
-- No changes to `useDiagnostic.js`, `diagnosticCode.js`, `concepts.js`, or
-  `diagnostic.js`.
-
-### Acceptance criteria
-- [ ] `VideoAside.jsx` exists, matches the behavior above
-- [ ] `ExpandableAside.jsx`'s `<summary>` has `focus-visible` styling
-- [ ] One `VideoAside` added to each of the 3 pilot pages, inside a fold,
-      never in the main reading flow
-- [ ] Keyboard-only pass completed and documented in `TASKS.md` — what was
-      checked, not just "passed"
-- [ ] `npm run build` passes
-
-### Verification steps
-1. `npm run build` — must pass.
-2. Keyboard-only walkthrough of `/diagnostic` end to end (intro → all 22
-   questions → results → save/restore) using only Tab/Enter/Space.
-3. Keyboard-only walkthrough of `/intuition`, `/braket`, `/gates`,
-   toggling every `ConceptSection` and `VideoAside` disclosure.
-4. Confirm via network tab that no `VideoAside` iframe loads until its
-   first open, and doesn't reload on close/reopen.
-
-### Next task
-None currently scoped — this closes out the Diagnostic Placement pilot
-(Phase 3a). Per CLAUDE.md, review the pilot before deciding whether to
-roll the concept graph + diagnostic out to the remaining 10 modules.
+### What's next
+No task currently scoped. Per CLAUDE.md's Phase 3a note: review this
+pilot (concept-graph model, evidence thresholds, the study-chain UX, the
+save/restore code) before deciding whether to roll it out beyond
+Intuition/Bra-Ket/Gates to the remaining 10 modules. That review is a
+product decision for the user, not something to proceed on unprompted.

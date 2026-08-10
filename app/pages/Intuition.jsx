@@ -11,6 +11,7 @@ import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import ConceptSection from '../../components/ConceptSection'
+import VideoAside from '../../components/VideoAside'
 import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
@@ -389,6 +390,14 @@ export default function Intuition() {
               <Keyword tone="superposition">superposition</Keyword> appears only when an algorithm uses it
               together with <Keyword tone="interference">interference</Keyword> and basis-sensitive measurement.
             </RemarkBox>
+          </div>
+
+          <div className="mt-6">
+            <VideoAside
+              title="What is Superposition?"
+              description="A short explainer from IBM's Qiskit channel on superposition — one of the two core ideas, alongside measurement, this section introduces."
+              videoId="mAgnIj0UXLY"
+            />
           </div>
         </ConceptSection>
       </section>
