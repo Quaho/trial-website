@@ -112,6 +112,28 @@ aside — those are TASK-024 onward. `Gates.jsx`/`Intuition.jsx`/
 
 ---
 
+## TASK-028 — COMPLETE (2026-08-09) — direct user feedback, inserted ahead of TASK-025
+The user reviewed TASK-023's results view and said it "does not match the
+initial description," specifically asking for (1) something like a linked
+list for study ordering, driven by diagnostic results, and (2) a page to
+save the result as a copyable code and re-enter it. Both were legitimate
+gaps against the original plan (which had specified a Crockford Base32
+save/restore code that never got built, and a flat recommendation instead
+of an actual ordered sequence). Full detail in `TASKS.md`. Key points for
+later tasks:
+- `useDiagnostic()` no longer exposes `recommendedStartModuleId` /
+  `reviewModuleIds` — if you were about to use those, use `studyChain`
+  (array, weakest area first, each node has `.next`) and `studyChainHead`
+  instead.
+- `lib/utils/diagnosticCode.js` is new and self-contained (no dependency
+  on `useDiagnostic.js`) — reusable if `useProgress.js`'s module/lesson
+  progress ever gets the same save/restore treatment later.
+- This did NOT reopen the "diagnostic must not pick a `STUDY_PATH`"
+  decision — `studyChain` still only covers the 3 diagnostic-tested
+  modules and is entirely separate from `STUDY_PATHS`/Roadmap.
+
+---
+
 ## TASK-025: Gates.jsx explicit gate matrices + Intuition.jsx analogy audit
 
 ### Why this task now

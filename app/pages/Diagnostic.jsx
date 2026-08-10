@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ArrowRight, RotateCcw } from 'lucide-react'
+import { ChevronLeft, ArrowRight, RotateCcw, Copy, Check } from 'lucide-react'
 import DiagnosticQuestion from '../../components/DiagnosticQuestion'
 import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { DIAGNOSTIC_AREAS, DIAGNOSTIC_QUESTIONS_BY_AREA } from '../../lib/data/diagnostic'
@@ -8,6 +8,13 @@ import { CONCEPTS_BY_ID } from '../../lib/data/concepts'
 import { MODULES } from '../../lib/data/modules'
 
 const FLAT_QUESTIONS = DIAGNOSTIC_AREAS.flatMap((area) => DIAGNOSTIC_QUESTIONS_BY_AREA[area.id])
+
+const CHAIN_STATUS_LABEL = { start: 'Start here', continue: 'Continue', skim: 'Skim' }
+const CHAIN_STATUS_STYLE = {
+  start: 'border-amber-800/40 bg-amber-950/20 text-amber-300',
+  continue: 'border-indigo-800/40 bg-indigo-950/20 text-indigo-300',
+  skim: 'border-emerald-800/40 bg-emerald-950/20 text-emerald-300',
+}
 
 function findModule(moduleId) {
   return MODULES.find((m) => m.id === moduleId) || null
@@ -30,16 +37,164 @@ function AreaScoreRow({ area, score }) {
   )
 }
 
+/**
+ * Renders `useDiagnostic()`'s `studyChain` as a connected sequence —
+ * weakest area first — with an explicit "next" link between nodes,
+ * mirroring the linked-list shape the data is already in. Covers only
+ * the 3 diagnostic-tested modules; the background-based Study Paths on
+ * /roadmap are a separate, untouched system.
+ */
+function StudyChainView({ studyChain }) {
+  return (
+    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
+      <p className="section-label">Your study sequence</p>
+      <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+        Ordered from your weakest area to your strongest, based only on this diagnostic — it does
+        not choose a Study Path for you.
+      </p>
+      <ol className="mt-4">
+        {studyChain.map((node, i) => {
+          const module = findModule(node.moduleId)
+          if (!module) return null
+          const pct = Math.round(node.scorePct * 100)
+
+          return (
+            <li key={node.moduleId}>
+              <Link
+                to={module.to}
+                className={`flex items-center gap-4 rounded-xl border p-4 transition-colors hover:border-slate-500
+                            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
+                            focus-visible:outline-indigo-400 ${CHAIN_STATUS_STYLE[node.status]}`}
+              >
+                <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-current text-sm font-semibold">
+                  {i + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-semibold text-white">{module.title}</span>
+                    <span className="rounded-full border border-current px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+                      {CHAIN_STATUS_LABEL[node.status]}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-xs text-slate-500">
+                    {node.areaLabel} — {pct}%
+                  </p>
+                </div>
+                <ArrowRight className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+              </Link>
+              {node.next && (
+                <div className="flex justify-center py-1" aria-hidden="true">
+                  <div className="h-4 w-px bg-slate-700" />
+                </div>
+              )}
+            </li>
+          )
+        })}
+      </ol>
+    </div>
+  )
+}
+
+/** Copy-to-clipboard for a completed diagnostic's save code. See CLAUDE.md
+ * and lib/utils/diagnosticCode.js — least data stored, no accounts. */
+function SaveCodeSection({ diagnostic }) {
+  const [copied, setCopied] = useState(false)
+  const code = diagnostic.exportCode()
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(code)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      setCopied(false)
+    }
+  }
+
+  return (
+    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
+      <p className="section-label">Save this result</p>
+      <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+        This code is generated in your browser and stored nowhere else. Copy it to restore this
+        result on another device or after clearing your browser data.
+      </p>
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <code className="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 font-mono text-xs text-slate-200 break-all">
+          {code}
+        </code>
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="btn-secondary flex-shrink-0 justify-center"
+        >
+          {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+          {copied ? 'Copied' : 'Copy code'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+/** Text-entry restore, using the same code format SaveCodeSection produces. */
+function RestoreCodeSection({ diagnostic }) {
+  const [value, setValue] = useState('')
+  const [error, setError] = useState(null)
+
+  function handleRestore() {
+    try {
+      diagnostic.importCode(value)
+      setError(null)
+      setValue('')
+    } catch (err) {
+      setError(err?.message || 'That code could not be read.')
+    }
+  }
+
+  return (
+    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
+      <p className="section-label">Already have a code?</p>
+      <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+        Restore a result saved from another device or a previous session, instead of retaking it.
+      </p>
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <label htmlFor="diagnostic-restore-code" className="sr-only">
+          Diagnostic result code
+        </label>
+        <input
+          id="diagnostic-restore-code"
+          type="text"
+          value={value}
+          onChange={(event) => {
+            setValue(event.target.value)
+            setError(null)
+          }}
+          placeholder="SQD1-XXXX-XXXX-XXXX-X"
+          className="flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm text-slate-200
+                     placeholder:text-slate-600 focus-visible:outline focus-visible:outline-2
+                     focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        />
+        <button
+          type="button"
+          onClick={handleRestore}
+          disabled={!value.trim()}
+          className={`btn-secondary flex-shrink-0 justify-center ${!value.trim() ? 'opacity-40 cursor-not-allowed' : ''}`}
+        >
+          Restore
+        </button>
+      </div>
+      {error && (
+        <p className="mt-2 text-xs text-red-400" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
+  )
+}
+
 function ResultsView({ diagnostic }) {
   const demonstratedConcepts = Array.from(diagnostic.demonstrated)
     .map((id) => CONCEPTS_BY_ID[id])
     .filter(Boolean)
-
-  const recommendedModule = diagnostic.recommendedStartModuleId
-    ? findModule(diagnostic.recommendedStartModuleId)
-    : null
-
-  const reviewModules = diagnostic.reviewModuleIds.map(findModule).filter(Boolean)
 
   return (
     <div className="space-y-6">
@@ -59,39 +214,7 @@ function ResultsView({ diagnostic }) {
         ))}
       </div>
 
-      {recommendedModule && (
-        <div className="rounded-xl border border-indigo-800/40 bg-indigo-950/20 p-5">
-          <p className="section-label text-indigo-400">Suggested starting point</p>
-          <Link
-            to={recommendedModule.to}
-            className="mt-2 inline-flex items-center gap-1.5 text-lg font-semibold text-white hover:text-indigo-300
-                       focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded"
-          >
-            {recommendedModule.title}
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <p className="mt-1 text-sm text-slate-400">{recommendedModule.tagline}</p>
-        </div>
-      )}
-
-      {reviewModules.length > 0 && (
-        <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
-          <p className="section-label">You can probably skim</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {reviewModules.map((module) => (
-              <Link
-                key={module.id}
-                to={module.to}
-                className="rounded-full border border-slate-700/60 bg-slate-900/70 px-3 py-1.5 text-xs font-medium text-slate-300
-                           hover:border-slate-600 hover:text-white transition-colors
-                           focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-              >
-                {module.title}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      {diagnostic.studyChain.length > 0 && <StudyChainView studyChain={diagnostic.studyChain} />}
 
       {demonstratedConcepts.length > 0 && (
         <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
@@ -110,6 +233,9 @@ function ResultsView({ diagnostic }) {
           </p>
         </div>
       )}
+
+      <SaveCodeSection diagnostic={diagnostic} />
+      <RestoreCodeSection diagnostic={diagnostic} />
 
       <div className="flex flex-col gap-3 border-t border-slate-800 pt-6 sm:flex-row sm:items-center">
         <Link to="/roadmap" className="btn-secondary justify-center">
@@ -200,6 +326,7 @@ export default function Diagnostic() {
                 Skip — go to Study Paths
               </Link>
             </div>
+            <RestoreCodeSection diagnostic={diagnostic} />
           </div>
         ) : (
           <div className="space-y-5">
