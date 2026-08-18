@@ -1,5 +1,76 @@
 # agent.md — Current Codex Task
 
+## TASK-037 — COMPLETE (2026-08-17)
+Migrate `UseCases.jsx` (module 14) off the legacy `LESSONS`/`LessonCard`/
+`StepNav` template onto `ModuleLayout` outline+aside, same pattern as
+TASK-032 through 036. Sixth and last of the "Advanced" group (modules
+9-14) — this closes out the full legacy-template migration. Full detail
+in `TASKS.md`.
+
+7-entry outline (`usecases-chemistry`/`-optimization`/`-cryptography`/
+`-ml`/`-limitations`/`-mistakes`/`-next`). All 5 original visuals kept in
+the main flow, reskinned to `border-lime-800/40 bg-lime-950/15`
+(use cases' assigned color).
+
+**This is the final module (`next={null}`), so the closing section was
+written as a genuine close, not a templated "Next Steps" pointing to a
+module 15 that doesn't exist**: "Where To Go From Here" points to
+`/roadmap`, `/glossary`, `/references` instead. The old page's
+celebratory "Course complete! You've finished all 14 modules.
+Congratulations!" banner (with a 🎉) is gone — `ModuleLayout`'s own
+plain "Module complete." checkmark replaces it, same as every other
+migrated module lost its custom banner. This is a deliberate, visible
+behavior change worth calling out explicitly (not hidden in the diff):
+per CLAUDE.md's Motion/Interactivity guidelines ("avoid excessive
+gamification," restrained feedback only), the plain checkmark is more
+consistent with the handbook's tone than a bespoke congratulatory
+banner, but it is a real, user-facing loss of a small celebratory
+moment — flagged here rather than silently dropped.
+
+Heavy cross-module linking added, appropriate for a closing chapter:
+chemistry section links to `/entanglement`, optimization and
+cryptography both link to `/algorithms`, cryptography also links to
+`/noise` for the physical-qubit-overhead math behind its own numbers,
+and the limitations section links back to `/noise` for the physical
+origin of the NISQ-era gap it displays. None of this existed in the
+legacy lesson-stepper version, which had no mechanism for section-level
+cross-links at all.
+
+`GlossaryTooltip` terms (`Entanglement`, `Superposition`) and `Keyword`
+tones (`entanglement`, `superposition`) checked against
+`glossary.js`/`Keyword.jsx`'s real data. Grep confirmed no stale
+"13 modules" or "Course complete" strings remain anywhere in the file.
+
+**Repo-wide consequence of finishing this series, found and flagged, not
+acted on**: `components/LessonCard.jsx`, `StepNav.jsx`, `Quiz.jsx`, and
+`DeepDive.jsx` are now fully orphaned — a repo-wide grep confirms zero
+pages import `LessonCard` or `StepNav` anymore (every page that did has
+now been migrated), and `Quiz`/`DeepDive` are each only imported by
+`LessonCard.jsx` itself. `CLAUDE.md`'s Component Architecture table
+already documents these four as covering "the module pages that still
+use the older lesson-stepper pattern" — that pattern no longer exists on
+any page. Whether to delete these four components (and update that
+CLAUDE.md table row) is a real follow-up decision, deliberately not
+made here — same posture as `/challenges` being flagged rather than
+deleted in TASK-031.
+
+Verified: `npm run build` passes (`UseCases-*.js`, 33.28kB); grep
+confirms all 7 outline ids match section anchors (empty diff), no
+legacy imports remain, exactly one `VideoAside`, and nothing else in
+the repo references `UseCases.jsx` internals. Not yet visually verified
+in a browser (standing project convention).
+
+### What's next
+The "Advanced" group (modules 9-14) migration that started with
+TASK-032 is now fully complete — no legacy `LESSONS`/`LessonCard`
+module page remains anywhere in the handbook. Two follow-ups surfaced
+but not actioned: (1) whether to delete the now-orphaned
+`LessonCard`/`StepNav`/`Quiz`/`DeepDive` components, and (2) the
+still-open `/challenges` question from TASK-031. Both are product
+decisions for the user.
+
+---
+
 ## TASK-036 — COMPLETE (2026-08-17)
 Migrate `Noise.jsx` (module 13) off the legacy `LESSONS`/`LessonCard`/
 `StepNav` template onto `ModuleLayout` outline+aside, same pattern as
@@ -227,8 +298,8 @@ in a browser — standing project convention (no Playwright/Chromium
 here).
 
 ### What's next
-Superseded by TASK-036 above — Noise (module 13) has since been
-migrated.
+Superseded by TASK-037 above — Use Cases (module 14) has since been
+migrated, closing out the full Advanced-group migration.
 
 ---
 

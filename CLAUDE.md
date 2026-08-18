@@ -25,11 +25,12 @@ The site should **not** feel like:
 React 18 + Vite + Tailwind CSS v3 + KaTeX + React Router v6 + Framer Motion + Prism.js.
 
 ### Current State
-The identity shift and structural phases are complete, and Phase 3 content work has substantially progressed. The site is branded **SIGQuantum — Technical Onboarding Handbook**. The handbook now spans **14 sequential modules**, Big-Picture Intuition through Use Cases (see Information Architecture below), each following the section template. `Roadmap.jsx` (Study Paths) is fully implemented: three background-based paths (CS/Python, physics/theory, new to both), a full topic map, and machine-project status, all driven by `useProgress`. Three **Machine Projects** (First Quantum Circuit, Bell State Explorer, Algorithm Showdown) are built end to end with real Qiskit code, predict/reflect checkpoints, and step-gated progress via `ProjectLayout`. The **Diagnostic Placement pilot** (Phase 3a) shipped in full, scoped to Intuition, Bra-Ket, and Gates: a soft/advisory placement quiz, concept-level content collapsing, a linked-list study sequence, and a no-account save/restore code (see Diagnostic Placement & Concept Evidence below). Separately, every one of the 14 modules — not just the 3 pilot modules — now carries one optional, source-verified video aside (see Video Sourcing); that rollout was content-only and did not extend the concept-graph/diagnostic-collapsing system itself beyond the pilot.
+The identity shift and structural phases are complete, and Phase 3 content work is now essentially done. The site is branded **SIGQuantum — Technical Onboarding Handbook**. The handbook now spans **14 sequential modules**, Big-Picture Intuition through Use Cases (see Information Architecture below), each following the section template, and — as of TASK-032 through TASK-037 — every module now uses the same `ModuleLayout` outline+aside page template (`DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox`/`MistakesBox`/`SummaryBox`). No module page uses the older `LESSONS`/`LessonCard`/`StepNav` lesson-stepper pattern anymore. `Roadmap.jsx` (Study Paths) is fully implemented: three background-based paths (CS/Python, physics/theory, new to both), a full topic map, and machine-project status, all driven by `useProgress`. Three **Machine Projects** (First Quantum Circuit, Bell State Explorer, Algorithm Showdown) are built end to end with real Qiskit code, predict/reflect checkpoints, and step-gated progress via `ProjectLayout`. The **Diagnostic Placement pilot** (Phase 3a) shipped in full, scoped to Intuition, Bra-Ket, and Gates: a soft/advisory placement quiz, concept-level content collapsing, a linked-list study sequence, and a no-account save/restore code (see Diagnostic Placement & Concept Evidence below). Separately, every one of the 14 modules — not just the 3 pilot modules — now carries one optional, source-verified video aside (see Video Sourcing); that rollout was content-only and did not extend the concept-graph/diagnostic-collapsing system itself beyond the pilot.
 
 ### What remains
-- Continue Phase 3 rigor/clarity review on modules outside the diagnostic pilot — the concept-graph and evidence-based collapsing stop at Intuition/Bra-Ket/Gates by design, so other modules haven’t had that same line-by-line audit
-- Decide whether to roll the concept graph + diagnostic out beyond the 3 pilot modules (see Phase 3a)
+- Decide whether to roll the concept graph + diagnostic out beyond the 3 pilot modules (see Phase 3a) — the pilot's line-by-line, concept-tagged rigor audit (e.g. Gates.jsx's gate-matrix fix, Intuition.jsx's analogy audit) is a narrower, deeper pass than the template migration above, and still stops at Intuition/Bra-Ket/Gates by design
+- Decide whether to delete the now-unused `LessonCard`/`StepNav`/`Quiz`/`DeepDive` components (surfaced by finishing the lesson-stepper migration, not yet acted on — see Component Architecture)
+- Decide what to do about `/challenges`, a nav-unlinked gamified quiz page left over from before the Phase 1 identity shift (surfaced in TASK-031, still unresolved)
 - Phase 4 polish: accessibility, mobile, and rendering audits
 
 ---
@@ -713,7 +714,7 @@ The references page should help learners continue independently.
 | `ExpandableAside` | Optional mathematical or implementation detail |
 | `DiagramFrame` | Labeled technical diagram wrapper (the built equivalent of the originally-planned `FigureFrame`) |
 
-`CircuitStepper` was planned but never built as a standalone component; `Quiz`/`LessonCard`/`StepNav`/`DeepDive` cover step-by-step circuit walkthroughs on the module pages that still use the older lesson-stepper pattern (see Build Plan — Phase 3).
+`CircuitStepper` was planned but never built as a standalone component. `Quiz`/`LessonCard`/`StepNav`/`DeepDive` were built for the older lesson-stepper pattern; as of the Advanced-group migration (TASK-032 through TASK-037, see Build Plan — Phase 3) no module page uses that pattern anymore, so these four are currently unused by any page. They have not been deleted — that is an open decision, not a completed one — but do not build new pages on this pattern; use `ModuleLayout`'s outline+aside mode instead, per the modules already migrated.
 
 When rewriting Phase 3 pages:
 - Keep the best interactive example in the main reading flow if it materially improves understanding
@@ -885,10 +886,26 @@ Every review should ask:
 - [x] Add glossary and references architecture
 
 ### Phase 3 — Content
-- [ ] Rewrite core pages for rigor and clarity
-- [ ] Add notation support and explicit definitions
-- [ ] Add canonical worked examples
+- [x] Rewrite core pages for rigor and clarity — all 14 modules now use
+      the `ModuleLayout` outline+aside template with
+      `DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox`; the last 6
+      (Circuits through Use Cases) were migrated off the legacy
+      `LESSONS`/`LessonCard`/`StepNav` lesson-stepper pattern one module
+      at a time (TASK-032 through TASK-037)
+- [x] Add notation support and explicit definitions — every migrated
+      page carries at least one `NotationBox` and a `DefinitionBox` per
+      section, per TASK-032 through TASK-037
+- [x] Add canonical worked examples — every migrated page carries an
+      `ExampleBox` per section, reusing the handbook's existing running
+      examples (the Bell state, canonical algorithms) rather than
+      inventing new ones, per CLAUDE.md's content principles
 - [x] Add study paths by background (`Roadmap.jsx` — three paths, full handbook map, machine-project status)
+
+**Consequence of finishing the lesson-stepper migration, not yet
+resolved**: `components/LessonCard.jsx`, `StepNav.jsx`, `Quiz.jsx`, and
+`DeepDive.jsx` are now unused by any page (verified by repo-wide grep).
+Whether to delete them, and update the Component Architecture table
+accordingly, is an open decision — see that table's note below.
 
 ### Phase 3a — Diagnostic Placement Pilot ✓ (completed 2026-08-09)
 Scope: Intuition, Bra-Ket, and Gates only. See “Diagnostic Placement &
