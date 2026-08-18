@@ -1,5 +1,41 @@
 # agent.md — Current Codex Task
 
+## TASK-033 — COMPLETE (2026-08-17)
+Migrate `Measurement.jsx` (module 10) off the legacy `LESSONS`/
+`LessonCard`/`StepNav` template onto `ModuleLayout` outline+aside, same
+pattern as TASK-032's `Circuits.jsx`. Second of the "Advanced" group
+(modules 9-14), one module at a time. Full detail in `TASKS.md`.
+
+7-entry outline (`measurement-basis`/`-bases`/`-why`/`-probability`/
+`-change`/`-mistakes`/`-next`). All 5 of the original page's interactive
+visuals were kept in the main flow, reskinned to
+`rounded-2xl border-amber-800/40 bg-amber-950/15` (measurement's assigned
+module color) — none were redundant enough to demote to
+`ExpandableAside` this time, unlike TASK-032's Bell stepper. Two of the
+original page's `deepDive` asides (BB84 motivation, complex-amplitude
+Born rule) were kept as `ExpandableAside`s rather than dropped, plus one
+new one (arbitrary-basis measurement via a general unitary) covering
+content that was previously part of a `deepDive` too.
+
+Same stale-number bug pattern as TASK-032, fixed the same way: the old
+completion banner said "Module 9 complete" (should have been 10); moot
+now that `ModuleLayout`'s own footer replaces it.
+
+`GlossaryTooltip` terms (`Basis`, `Measurement`) and `Keyword` tones
+(`amplitude`, `basis`, `measurement`, `phase`, `unitary`) checked against
+`glossary.js`/`Keyword.jsx`'s real data, not assumed.
+
+Verified: `npm run build` passes (`Measurement-*.js`, 31.22kB); grep
+confirms all 7 outline ids match section anchors 1:1, no legacy imports
+remain, and nothing else in the repo references `Measurement.jsx`
+internals. Not yet visually verified in a browser (standing project
+convention).
+
+### What's next
+Algorithms (module 11) is next in sequence, not yet scoped.
+
+---
+
 ## TASK-032 — COMPLETE (2026-08-17)
 Migrate `Circuits.jsx` (module 9) off the legacy `LESSONS`/`LessonCard`/
 `StepNav` lesson-stepper template onto the current `ModuleLayout`
@@ -54,8 +90,8 @@ in a browser — standing project convention (no Playwright/Chromium
 here).
 
 ### What's next
-Measurement (module 10) is the next legacy page in sequence, still not
-scoped — do one module at a time, per user direction, not in this task.
+Superseded by TASK-033 above — Measurement (module 10) has since been
+migrated.
 
 ---
 
