@@ -1,4 +1,4 @@
-import{j as e,L as a}from"./react-vendor-6FjpWRqA.js";import{P as c}from"./ProjectLayout-CGCsM_UL.js";import{C as n}from"./CodeBlock-DGfsxeoX.js";import{G as t}from"./GlossaryTooltip-ZD9o8xaO.js";import{P as o}from"./projects-CHFPO2W9.js";import"./useProgress-B75MKZ6u.js";import"./index-6ihlv4dT.js";import"./icons-BneFMNrk.js";import"./motion-D_ReD4rz.js";import"./code-Ce8FX6f4.js";import"./glossary-wOOCM0Kt.js";const d=`from qiskit import QuantumCircuit
+import{j as e,L as a}from"./react-vendor-6FjpWRqA.js";import{P as c}from"./ProjectLayout-BCuAc70h.js";import{C as n}from"./CodeBlock-DGfsxeoX.js";import{G as t}from"./GlossaryTooltip-ZD9o8xaO.js";import{P as o}from"./projects-CHFPO2W9.js";import"./useProgress-BP2ErawJ.js";import"./index-C0qPRBAd.js";import"./icons-BneFMNrk.js";import"./motion-D_ReD4rz.js";import"./code-Ce8FX6f4.js";import"./glossary-wOOCM0Kt.js";const d=`from qiskit import QuantumCircuit
 
 qc = QuantumCircuit(1, 1)  # 1 qubit, 1 classical bit`,h=`qc.h(0)   # Hadamard -> creates |+> superposition
 qc.s(0)   # S gate -> adds 90° phase to |1> component`,u=`qc.measure(0, 0)
