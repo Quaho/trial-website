@@ -683,6 +683,14 @@ presentation must not compound that by adding scoring or progression on
 top of it. One exercise per module, embedded inline next to the relevant
 content — no new route, no nav entry.
 
+### Keep the prose short; lead with the visual
+Each exercise pairs a one-line prompt with a compact `StateTransition`
+before → after visual (e.g. `|+⟩ → |-⟩`) rather than a paragraph of
+setup, and the post-check explanation stays to one or two short
+sentences. This was a direct correction after initial user feedback
+that the first version of these boxes was too text-heavy — do not
+regress toward long explanatory paragraphs when adding more of these.
+
 ### Two modules kept off this track
 `noise` and `usecases` (modules 13–14) are sequentially "after Qiskit,"
 but neither page shows any Qiskit code — a genuine gap, not an oversight
@@ -879,6 +887,7 @@ positioned and sorted by learner goal.
 | `StuckPath` | Advisory recovery redirect keyed to blocker type (math/notation/circuit-reading/implementation) — see Mentor Notes, Stuck Recovery & Continuation Resources. Built in Phase 3b (TASK-038); one instance per blocker type, placed on `braket`, `phase`, `entanglement`, and `algorithms`. |
 | `CodeFillBlank` | Checkable Qiskit fill-in-the-blank exercise (select-based, real pass/fail + retry) — see Qiskit Practice Challenges. Built in TASK-039; one per module on `qiskit`, `gates`, `multiqubit`, `measurement`, `algorithms`. |
 | `CodeOrdering` | Checkable Qiskit step-ordering exercise (keyboard-accessible reorder, real pass/fail + retry) — see Qiskit Practice Challenges. Built in TASK-039; one per module on `entanglement`, `circuits`, `labs`. |
+| `StateTransition` | Compact before → after ket/outcome pair, passed as `CodeFillBlank`/`CodeOrdering`'s `visual` prop so a glance replaces a sentence of setup — see Qiskit Practice Challenges. Added after user feedback that the initial prose-only exercises were too text-heavy; used in all 8 Qiskit Practice Challenge instances. |
 
 `PathCard`, `ReferenceList`, and `FigureFrame` were planned but never built as named; their roles are covered instead by `Roadmap.jsx`’s own path cards, the References page’s plain list, and `DiagramFrame` respectively. Update this table rather than reintroducing the unused names if that ever changes.
 

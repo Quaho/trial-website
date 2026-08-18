@@ -25,11 +25,13 @@ function shuffled(lines) {
  *
  * Props:
  *   title, prompt – heading and short instruction
+ *   visual        – optional compact ReactNode (e.g. StateTransition) shown
+ *                    between the prompt and the reorderable lines
  *   lines         – array of code-line strings in their CORRECT order;
  *                   the component shuffles them for display
  *   explanation   – shown after checking, correct or not
  */
-export default function CodeOrdering({ title, prompt, lines, explanation }) {
+export default function CodeOrdering({ title, prompt, visual, lines, explanation }) {
   const [order, setOrder] = useState(() => shuffled(lines))
   const [checked, setChecked] = useState(false)
 
@@ -56,6 +58,7 @@ export default function CodeOrdering({ title, prompt, lines, explanation }) {
       <p className="text-xs uppercase tracking-widest text-teal-400 mb-1">Qiskit Practice</p>
       <h3 className="text-lg font-semibold text-white">{title}</h3>
       {prompt && <p className="mt-2 text-sm text-slate-400 leading-relaxed">{prompt}</p>}
+      {visual && <div className="mt-3">{visual}</div>}
 
       <ol aria-label="Reorder these lines of code" className="mt-4 space-y-1.5 rounded-xl border border-slate-800 bg-slate-950 p-4">
         {order.map((line, index) => (

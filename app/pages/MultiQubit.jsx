@@ -15,6 +15,7 @@ import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import MentorNote from '../../components/MentorNote'
 import CodeFillBlank from '../../components/CodeFillBlank'
+import StateTransition from '../../components/StateTransition'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const MULTIQUBIT_OUTLINE = [
@@ -655,11 +656,12 @@ export default function MultiQubit() {
       <div className="mt-10">
         <CodeFillBlank
           title="Build the State |10⟩"
-          prompt="Using this page's own convention — first qubit is 1, second qubit is 0 — which line prepares |10⟩ starting from the default |00⟩?"
+          prompt="First qubit is 1, second is 0. Which line gets there from |00⟩?"
+          visual={<StateTransition from="|00⟩" to="|10⟩" />}
           before={['qc = QuantumCircuit(2)']}
           choices={['qc.x(0)', 'qc.x(1)', 'qc.h(0)', 'qc.cx(0, 1)']}
           correctIndex={0}
-          explanation="qc.x(0) flips the first qubit (qubit 0) from |0⟩ to |1⟩, leaving the second qubit (qubit 1) at |0⟩ — exactly |10⟩. qc.x(1) flips the wrong qubit, producing |01⟩ instead. qc.h(0) creates a superposition rather than the definite state |1⟩. qc.cx(0, 1) does nothing here, since its control qubit starts at |0⟩."
+          explanation="qc.x(0) flips only the first qubit. x(1) flips the wrong one, giving |01⟩; h(0) gives a superposition, not |1⟩; cx(0, 1) does nothing since its control starts at |0⟩."
         />
       </div>
 

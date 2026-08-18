@@ -1,5 +1,33 @@
 # agent.md — Current Codex Task
 
+## TASK-040 — COMPLETE (2026-08-18)
+Direct user feedback on TASK-039's output, caught immediately after
+deploy: "too much text right now" on the 8 Qiskit Practice Challenge
+boxes. Two rounds of `AskUserQuestion` narrowed scope (those boxes
+specifically, not module pages generally) and approach (add a small
+visual AND trim text, not either alone).
+
+New `components/StateTransition.jsx` — a compact before → after
+ket/outcome pair (e.g. `|+⟩ → |-⟩`), passed as `CodeFillBlank`/
+`CodeOrdering`'s new optional `visual` prop, rendered between the prompt
+and the code. All 8 Track B instances (`qiskit`, `gates`, `multiqubit`,
+`entanglement`, `circuits`, `measurement`, `algorithms`, `labs`) got one,
+plus a real prose trim — prompts down to one short sentence, post-check
+explanations down to one or two, cutting the per-distractor "here's why
+each wrong answer is wrong" style from the original TASK-039 copy.
+
+CLAUDE.md's "Qiskit Practice Challenges" section gained a "Keep the
+prose short; lead with the visual" subsection so this doesn't regress
+next time someone adds to this pattern, plus a `StateTransition`
+Component Architecture row.
+
+Verified: `npm run build` passes (bundle sizes actually shrank slightly
+— trimmed text outweighed the new component); grep confirms all 8
+Track B pages import `StateTransition`. Not visually verified in a
+browser — standing project convention, though this whole task exists
+because the user *did* look at the live deploy and reported back, which
+is exactly the loop this convention relies on the user to close.
+
 ## TASK-039 — COMPLETE (2026-08-18)
 Resolves the last item before Phase 4: whether to roll the Phase 3a
 diagnostic pilot (Intuition/Bra-Ket/Gates) out to the rest of the

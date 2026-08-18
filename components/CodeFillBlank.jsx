@@ -11,12 +11,14 @@ import { Check, X, RotateCcw } from 'lucide-react'
  *
  * Props:
  *   title, prompt   – heading and short instruction
+ *   visual          – optional compact ReactNode (e.g. StateTransition) shown
+ *                      between the prompt and the code, before/after state at a glance
  *   before, after   – arrays of non-editable code lines shown around the blank
  *   choices         – array of full statement strings, one is correct
  *   correctIndex    – index into `choices`
  *   explanation     – shown after checking, correct or not
  */
-export default function CodeFillBlank({ title, prompt, before = [], choices, correctIndex, after = [], explanation }) {
+export default function CodeFillBlank({ title, prompt, visual, before = [], choices, correctIndex, after = [], explanation }) {
   const [selected, setSelected] = useState('')
   const [checked, setChecked] = useState(false)
 
@@ -42,6 +44,7 @@ export default function CodeFillBlank({ title, prompt, before = [], choices, cor
       <p className="text-xs uppercase tracking-widest text-teal-400 mb-1">Qiskit Practice</p>
       <h3 className="text-lg font-semibold text-white">{title}</h3>
       {prompt && <p className="mt-2 text-sm text-slate-400 leading-relaxed">{prompt}</p>}
+      {visual && <div className="mt-3">{visual}</div>}
 
       <div className="mt-4 space-y-1 rounded-xl border border-slate-800 bg-slate-950 p-4 font-mono text-sm leading-relaxed">
         {before.map((line, i) => (
