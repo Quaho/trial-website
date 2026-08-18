@@ -13,6 +13,7 @@ import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
+import MentorNote from '../../components/MentorNote'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const MULTIQUBIT_OUTLINE = [
@@ -449,6 +450,15 @@ export default function MultiQubit() {
               <InlineMath>{'|0\\rangle'}</InlineMath>. The ordering is positional, not alphabetical or interchangeable.
             </p>
           </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            This module's ket labels are positional, but that is not the same convention Qiskit prints.
+            When Qiskit returns counts like <code className="text-slate-200">{'{"01": 512, ...}'}</code>, the
+            bitstring lists qubits in reverse order — the rightmost character is qubit 0. A key of "01"
+            means qubit 1 = 0 and qubit 0 = 1, the opposite of a naive left-to-right reading.
+          </MentorNote>
         </div>
 
         <div className="mt-6">

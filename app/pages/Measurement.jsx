@@ -14,6 +14,7 @@ import MistakesBox from '../../components/MistakesBox'
 import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
+import MentorNote from '../../components/MentorNote'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const MEASUREMENT_OUTLINE = [
@@ -37,7 +38,7 @@ function MeasurementSupport() {
         </ul>
       </RailCard>
 
-      <RailCard label="Reading Lens" title="What To Keep Straight">
+      <RailCard label="Reading Lens" title="Basis-Dependence Traps">
         <ul className="space-y-2">
           <li>A basis is a question you choose to ask, not a property fixed by the qubit itself.</li>
           <li>Relative phase is invisible in a basis that cannot distinguish it &mdash; that does not mean the phase is absent.</li>
@@ -303,6 +304,37 @@ function ProbabilityVisual() {
       <p className="text-xs text-slate-500 text-center mt-3">
         Sum: {(parseFloat(p0) + parseFloat(p1)).toFixed(1)}% (always 100%)
       </p>
+    </div>
+  )
+}
+
+function NegativeAmplitudePredictReveal() {
+  const [revealed, setRevealed] = useState(false)
+
+  return (
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Predict Before You Reveal</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">A Negative Amplitude</h3>
+      <p className="mt-2 text-sm leading-relaxed text-slate-400">
+        A qubit is in the state <InlineMath>{'|\\psi\\rangle = -\\tfrac{3}{5}|0\\rangle + \\tfrac{4}{5}|1\\rangle'}</InlineMath>{' '}
+        (a valid, normalized state, since <InlineMath>{'(-3/5)^2 + (4/5)^2 = 1'}</InlineMath>). Before
+        revealing, predict P(0) and P(1).
+      </p>
+      {!revealed ? (
+        <button
+          onClick={() => setRevealed(true)}
+          className="btn-secondary mt-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        >
+          Reveal Probabilities
+        </button>
+      ) : (
+        <div className="mt-4 rounded-xl border border-amber-800/40 bg-amber-950/20 p-4 text-sm text-slate-300 leading-relaxed">
+          <InlineMath>{'P(0) = (-3/5)^2 = 9/25 = 0.36'}</InlineMath>, and{' '}
+          <InlineMath>{'P(1) = (4/5)^2 = 16/25 = 0.64'}</InlineMath>. The negative sign on the first
+          amplitude does not carry over — it disappears entirely once you square, and the result is never
+          negative.
+        </div>
+      )}
     </div>
   )
 }
@@ -675,6 +707,18 @@ export default function Measurement() {
             Negative or complex amplitudes are not themselves probabilities and never need to be interpreted as
             one. Only the squared magnitude, after normalization, plays the role of a probability.
           </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            A negative amplitude does not mean a negative probability — probabilities can never be
+            negative. Squaring late is the usual failure mode: writing down "P(0) = -0.6" is always wrong,
+            because no valid probability is negative, regardless of what the amplitude looked like.
+          </MentorNote>
+        </div>
+
+        <div className="mt-6">
+          <NegativeAmplitudePredictReveal />
         </div>
       </section>
 

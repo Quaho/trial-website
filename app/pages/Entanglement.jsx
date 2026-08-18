@@ -12,6 +12,8 @@ import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
+import MentorNote from '../../components/MentorNote'
+import StuckPath from '../../components/StuckPath'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const ENTANGLEMENT_OUTLINE = [
@@ -34,7 +36,7 @@ function EntanglementSupport() {
         </ul>
       </RailCard>
 
-      <RailCard label="Reading Lens" title="What To Keep Straight">
+      <RailCard label="Reading Lens" title="What Entanglement Isn't">
         <ul className="space-y-2">
           <li>Perfect matching by itself does not prove entanglement; basis changes matter.</li>
           <li>Entanglement is about a joint state that cannot be factorized into independent local states.</li>
@@ -440,6 +442,20 @@ export default function Entanglement() {
             not entangled unless the joint state fails to factor.
           </RemarkBox>
         </div>
+
+        <div className="mt-6">
+          <StuckPath type="circuit-reading">
+            <p>
+              If the H-then-CNOT diagram above is the part that's not landing, the blocker is circuit
+              notation itself, not entanglement.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <Link to="/gates" className="btn-secondary">Review Gates</Link>
+              <Link to="/multiqubit" className="btn-secondary">Review Multi-Qubit Systems</Link>
+              <Link to="/circuits" className="btn-secondary">Review Circuits</Link>
+            </div>
+          </StuckPath>
+        </div>
       </section>
 
       <section id="entanglement-factor" className="mt-12 scroll-mt-28">
@@ -479,6 +495,15 @@ export default function Entanglement() {
           <ExpandableAside title="Optional: Coefficient-matching proof" label="Algebraic Aside">
             <FactoringProofVisual />
           </ExpandableAside>
+        </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            It's tempting to think any state written with several nonzero basis terms must be entangled.
+            It doesn't follow: <InlineMath>{'|+\\rangle \\otimes |+\\rangle = (|00\\rangle + |01\\rangle + |10\\rangle + |11\\rangle)/2'}</InlineMath>{' '}
+            has all four terms populated, but <InlineMath>{'\\alpha_{00}\\alpha_{11} = 1/4 = \\alpha_{01}\\alpha_{10}'}</InlineMath>,
+            so the separability test above passes — this is a product state, not an entangled one.
+          </MentorNote>
         </div>
 
         <div className="mt-6">

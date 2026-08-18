@@ -15,6 +15,7 @@ import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import CodeBlock from '../../components/CodeBlock'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
+import MentorNote from '../../components/MentorNote'
 
 const LABS_OUTLINE = [
   { id: 'labs-create', label: 'Create a circuit' },
@@ -37,7 +38,7 @@ function LabsSupport() {
         </ul>
       </RailCard>
 
-      <RailCard label="Reading Lens" title="What To Keep Straight">
+      <RailCard label="Reading Lens" title="Before You Trust the Output">
         <ul className="space-y-2">
           <li>The simulator is noise-free by default — real hardware is not.</li>
           <li>Exact shot-by-shot counts vary; the underlying probabilities do not.</li>
@@ -699,6 +700,16 @@ export default function Labs() {
             shots only make the sampled counts converge more closely to those fixed probabilities.
           </RemarkBox>
         </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            The Bell-pair example above hides a real gotcha because <code className="text-rose-300">'00'</code>{' '}
+            and <code className="text-rose-300">'11'</code> read the same forward or backward. In general,
+            recall from Multi-Qubit Systems that Qiskit's counts keys list qubits in reverse order &mdash; for
+            a two-qubit circuit, a key of <code className="text-rose-300">'01'</code> means qubit 1 = 0 and
+            qubit 0 = 1, not the other way around.
+          </MentorNote>
+        </div>
       </section>
 
       <section id="labs-bell" className="mt-12 scroll-mt-28">
@@ -822,7 +833,7 @@ export default function Labs() {
       </div>
 
       <section id="labs-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <p className="section-label">Next Steps</p>
+        <p className="section-label">Where This Appears in Projects</p>
         <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">From ideal simulation to real hardware</h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
           Every circuit in this chapter ran on a noise-free simulator. The next module covers what changes when

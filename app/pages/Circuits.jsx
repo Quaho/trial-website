@@ -15,6 +15,7 @@ import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import CodeBlock from '../../components/CodeBlock'
+import MentorNote from '../../components/MentorNote'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const CIRCUITS_OUTLINE = [
@@ -39,7 +40,7 @@ function CircuitsSupport() {
         </ul>
       </RailCard>
 
-      <RailCard label="Reading Lens" title="What To Keep Straight">
+      <RailCard label="Reading Lens" title="Diagram-Reading Traps">
         <ul className="space-y-2">
           <li>Left-to-right position is chronological order, not spatial layout.</li>
           <li>Gates stacked in the same time column act simultaneously, not in sequence.</li>
@@ -822,6 +823,16 @@ export default function Circuits() {
         </div>
 
         <div className="mt-6">
+          <MentorNote>
+            This handbook draws q0 as the top wire, and that is the common convention — but it is a
+            convention, not a law. Before reading someone else's diagram, check the wire labels directly
+            rather than assuming top-to-bottom always means q0, q1, q2. In Qiskit output specifically,
+            recall from Multi-Qubit Systems that the printed bitstring order is reversed from this: the
+            rightmost character is qubit 0.
+          </MentorNote>
+        </div>
+
+        <div className="mt-6">
           <VideoAside
             title="Lecture 1.2 — Introduction to Quantum Circuits"
             description="A Qiskit lecture on reading and building quantum circuits — a more formal companion to this section's diagram."
@@ -1030,7 +1041,7 @@ export default function Circuits() {
       </div>
 
       <section id="circuits-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <p className="section-label">Next Steps</p>
+        <p className="section-label">Reading Checklist</p>
         <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">From circuit structure to measurement outcomes</h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
           The next module looks closely at what a measurement symbol actually computes, and why the same state

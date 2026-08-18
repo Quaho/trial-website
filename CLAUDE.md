@@ -25,13 +25,11 @@ The site should **not** feel like:
 React 18 + Vite + Tailwind CSS v3 + KaTeX + React Router v6 + Framer Motion + Prism.js.
 
 ### Current State
-The identity shift and structural phases are complete, and Phase 3 content work is now essentially done. The site is branded **SIGQuantum — Technical Onboarding Handbook**. The handbook now spans **14 sequential modules**, Big-Picture Intuition through Use Cases (see Information Architecture below), each following the section template, and — as of TASK-032 through TASK-037 — every module now uses the same `ModuleLayout` outline+aside page template (`DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox`/`MistakesBox`/`SummaryBox`). No module page uses the older `LESSONS`/`LessonCard`/`StepNav` lesson-stepper pattern anymore. `Roadmap.jsx` (Study Paths) is fully implemented: three background-based paths (CS/Python, physics/theory, new to both), a full topic map, and machine-project status, all driven by `useProgress`. Three **Machine Projects** (First Quantum Circuit, Bell State Explorer, Algorithm Showdown) are built end to end with real Qiskit code, predict/reflect checkpoints, and step-gated progress via `ProjectLayout`. The **Diagnostic Placement pilot** (Phase 3a) shipped in full, scoped to Intuition, Bra-Ket, and Gates: a soft/advisory placement quiz, concept-level content collapsing, a linked-list study sequence, and a no-account save/restore code (see Diagnostic Placement & Concept Evidence below). Separately, every one of the 14 modules — not just the 3 pilot modules — now carries one optional, source-verified video aside (see Video Sourcing); that rollout was content-only and did not extend the concept-graph/diagnostic-collapsing system itself beyond the pilot.
+The identity shift and structural phases are complete, and Phase 3 content work is now essentially done. The site is branded **SIGQuantum — Technical Onboarding Handbook**. The handbook now spans **14 sequential modules**, Big-Picture Intuition through Use Cases (see Information Architecture below), each following the section template, and — as of TASK-032 through TASK-037 — every module now uses the same `ModuleLayout` outline+aside page template (`DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox`/`MistakesBox`/`SummaryBox`). No module page uses the older `LESSONS`/`LessonCard`/`StepNav` lesson-stepper pattern anymore. `Roadmap.jsx` (Study Paths) is fully implemented: three background-based paths (CS/Python, physics/theory, new to both), a full topic map, and machine-project status, all driven by `useProgress`. Three **Machine Projects** (First Quantum Circuit, Bell State Explorer, Algorithm Showdown) are built end to end with real Qiskit code, predict/reflect checkpoints, and step-gated progress via `ProjectLayout`. The **Diagnostic Placement pilot** (Phase 3a) shipped in full, scoped to Intuition, Bra-Ket, and Gates: a soft/advisory placement quiz, concept-level content collapsing, a linked-list study sequence, and a no-account save/restore code (see Diagnostic Placement & Concept Evidence below). Separately, every one of the 14 modules — not just the 3 pilot modules — now carries one optional, source-verified video aside (see Video Sourcing); that rollout was content-only and did not extend the concept-graph/diagnostic-collapsing system itself beyond the pilot. Phase 3b, scoped 2026-08-17 from an external beginner-usefulness assessment (`LLM_ASSIGNMENT.md`), shipped 2026-08-18 as TASK-038: `MentorNote` and `StuckPath` are built and in use (14 `MentorNote` instances, one per module; 4 `StuckPath` instances, one per blocker type, on `braket`/`phase`/`entanglement`/`algorithms`), the six CLAUDE.md-named difficult modules (`intuition`, `braket`, `phase`, `gates`, `measurement`, `algorithms`) each carry a new predict-before-reveal moment, `References.jsx` no longer mislabels IBM Quantum Learning as the old Qiskit Textbook and now carries a goal-sorted chooser plus Microsoft Quantum Katas/MIT OCW/Quantum Country, and the orphaned `LessonCard`/`StepNav`/`Quiz`/`DeepDive` components and the nav-linked (not actually unlinked — corrected from an earlier inaccurate note) `/challenges` page have been deleted. See "Mentor Notes, Stuck Recovery & Continuation Resources" below for the governing rules this task executed against.
 
 ### What remains
-- Decide whether to roll the concept graph + diagnostic out beyond the 3 pilot modules (see Phase 3a) — the pilot's line-by-line, concept-tagged rigor audit (e.g. Gates.jsx's gate-matrix fix, Intuition.jsx's analogy audit) is a narrower, deeper pass than the template migration above, and still stops at Intuition/Bra-Ket/Gates by design
-- Decide whether to delete the now-unused `LessonCard`/`StepNav`/`Quiz`/`DeepDive` components (surfaced by finishing the lesson-stepper migration, not yet acted on — see Component Architecture)
-- Decide what to do about `/challenges`, a nav-unlinked gamified quiz page left over from before the Phase 1 identity shift (surfaced in TASK-031, still unresolved)
-- Phase 4 polish: accessibility, mobile, and rendering audits
+- Decide whether to roll the concept graph + diagnostic out beyond the 3 pilot modules (see Phase 3a) — the pilot's line-by-line, concept-tagged rigor audit (e.g. Gates.jsx's gate-matrix fix, Intuition.jsx's analogy audit) is a narrower, deeper pass than the template migration above, and still stops at Intuition/Bra-Ket/Gates by design; a separate concern from Phase 3b's mentor-note texture, which is now shipped
+- Phase 4 polish: accessibility, mobile, and rendering audits — sequenced after Phase 3b, not started
 
 ---
 
@@ -628,6 +626,108 @@ personally identifying information — only the raw answer set.
 
 ---
 
+## Mentor Notes, Stuck Recovery & Continuation Resources
+
+The handbook may add short, targeted texture aimed at exactly where a
+beginner is likely to get stuck — a specific misconception, a specific
+recovery redirect, a specific "predict before you're told" moment. This
+extends the existing content principles above; it is not a tone reset.
+Source: an external beginner-usefulness assessment (`LLM_ASSIGNMENT.md`)
+found the handbook technically sound but structurally uniform enough to
+read as machine-generated, and light on concrete, mentor-authored detail.
+This section is the governing spec for addressing that, the same way
+"Diagnostic Placement & Concept Evidence" governs the diagnostic pilot.
+Scoped as Phase 3b in the Build Plan below; not yet started.
+
+### Tone contract: direct, not chatty
+"Mentor voice" here means concrete and specific, not warmer or more
+casual. It must still obey Tone and Voice above — no theatrics, no
+excessive friendliness markers, no fabricated warmth. A mentor note
+names the exact wrong answer a beginner tends to give ("the probability
+is not 0.8, it is 0.64") rather than offering encouragement. A draft
+that reads as reassurance instead of a specific, checkable claim about
+what commonly goes wrong should be rejected.
+
+### No fabricated specifics
+Mentor notes and SIGQuantum-context call-outs may reference general
+SIGQuantum onboarding situations (reading a circuit diagram with
+teammates, predicting Qiskit output before running it) but must not
+invent specific events, people, dates, or internal facts that are not
+already documented elsewhere in this repository. When in doubt, phrase
+generally ("in SIGQuantum projects, this shows up when...") rather than
+specifically.
+
+### `MentorNote`
+A short, visually distinct callout for a single, concrete stumble point,
+placed immediately next to the content that triggers it — not collected
+into a generic list at the end of a page. Used sparingly, on sections
+where beginners demonstrably get something specific wrong (squaring
+amplitudes late, conflating global and relative phase, misreading a
+circuit's qubit order), not on every section of every module.
+
+### `StuckPath`
+A compact recovery box for harder sections, offering a practical
+redirect keyed to what kind of blocker the reader has, not a generic
+"review the basics" line:
+- Math blocker → Mathematical Language module, then Khan Academy Linear
+  Algebra
+- Notation blocker → Bra-Ket Notation, then the Glossary
+- Circuit-reading blocker → Gates, Multi-Qubit Systems, or Circuits
+- Implementation blocker → Qiskit, Labs, or IBM Quantum Learning
+
+Like the diagnostic, `StuckPath` is advisory only — it never gates
+content, and pages remain fully readable with it ignored, per
+Interactivity Guidelines' "the site should remain useful even when read
+statically."
+
+### Practice and prediction
+Each module identified as difficult (bra-ket notation, phase, gates,
+measurement, algorithms — i.e., the modules already carrying a
+`ConceptSection` or an amplitude/probability calculation) should carry
+at least one predict-before-reveal moment: predict a measurement
+probability, translate a ket into a vector, identify an applied gate, or
+predict a Qiskit snippet's output distribution before the answer is
+shown. Reuse the existing `ExampleBox` predict/reveal pattern where it
+already fits rather than introducing a new interaction model; add a
+prediction moment only where a module currently has none.
+
+### Continuation resources are goal-sorted, not a flat bibliography
+The References page (and/or Roadmap, per the existing References Page
+guidance) must sort continuation resources by what the learner wants
+next, not list them as an undifferentiated bibliography. Each resource
+is positioned for a specific need:
+
+- **IBM Quantum Learning** (`https://quantum.cloud.ibm.com/learning/en`)
+  — the primary, maintained continuation for Qiskit and IBM Quantum
+  tools, from introductory through algorithms/error-correction/utility-
+  scale topics, and the route from simulation to real hardware.
+- **Qiskit Textbook**
+  (`https://github.com/qiskit-community/qiskit-textbook`) — historical/
+  supplemental only. The old community repository is archived/read-only
+  and `qiskit.org/textbook` now redirects into IBM Quantum Learning; do
+  not present it as the maintained path, and do not label an IBM Quantum
+  Learning link as "Qiskit Textbook" (the current `References.jsx` does
+  this and needs correcting — see Phase 3b).
+- **Microsoft Quantum Katas**
+  (`https://learn.microsoft.com/en-us/azure/quantum/katas-qdk-learning`)
+  — the best continuation for hands-on coding drills with checked
+  exercises. Different ecosystem (Q#, not Qiskit) — say so explicitly.
+- **MIT OpenCourseWare** (18.435J, 8.370x) — the rigorous theory
+  continuation, not the easiest next step; warn that it may feel abrupt
+  before bra-ket notation and linear algebra are comfortable.
+- **Quantum Country** (`https://quantum.country/qcvc`) — a spaced-
+  repetition companion for retention, for a learner who understands a
+  topic while reading but forgets it a week later.
+- **Khan Academy Linear Algebra**
+  (`https://www.khanacademy.org/math/linear-algebra`) — prerequisite
+  repair only, never presented as a quantum computing continuation.
+
+A goal-sorted chooser (e.g. "I want to build circuits in Python" → ...,
+"I am stuck on the math" → ...) should sit above or alongside the plain
+list so a learner can self-select without reading every entry.
+
+---
+
 ## Glossary Requirements
 
 The glossary is essential.
@@ -676,7 +776,11 @@ The site should include a curated references page.
 - excessive quantity
 - sources with no clear onboarding value
 
-The references page should help learners continue independently.
+The references page should help learners continue independently. See
+"Mentor Notes, Stuck Recovery & Continuation Resources" below for how
+specific external resources (IBM Quantum Learning, the Qiskit Textbook,
+Microsoft Quantum Katas, MIT OCW, Quantum Country, Khan Academy) are
+positioned and sorted by learner goal.
 
 ---
 
@@ -704,6 +808,8 @@ The references page should help learners continue independently.
 | `VideoAside` | Optional sourced video embed, deferred load — see Video Sourcing |
 | `DiagnosticQuestion` | Placement-quiz choice UI (records and moves on; no reveal/retry, unlike `Quiz`) |
 | `ProjectLayout` | Machine Project page shell — step list, progress bar, predict/reflect pattern |
+| `MentorNote` | Concrete, single-point beginner-stumble callout — see Mentor Notes, Stuck Recovery & Continuation Resources. Built in Phase 3b (TASK-038); one instance per module across all 14. |
+| `StuckPath` | Advisory recovery redirect keyed to blocker type (math/notation/circuit-reading/implementation) — see Mentor Notes, Stuck Recovery & Continuation Resources. Built in Phase 3b (TASK-038); one instance per blocker type, placed on `braket`, `phase`, `entanglement`, and `algorithms`. |
 
 `PathCard`, `ReferenceList`, and `FigureFrame` were planned but never built as named; their roles are covered instead by `Roadmap.jsx`’s own path cards, the References page’s plain list, and `DiagramFrame` respectively. Update this table rather than reintroducing the unused names if that ever changes.
 
@@ -714,7 +820,7 @@ The references page should help learners continue independently.
 | `ExpandableAside` | Optional mathematical or implementation detail |
 | `DiagramFrame` | Labeled technical diagram wrapper (the built equivalent of the originally-planned `FigureFrame`) |
 
-`CircuitStepper` was planned but never built as a standalone component. `Quiz`/`LessonCard`/`StepNav`/`DeepDive` were built for the older lesson-stepper pattern; as of the Advanced-group migration (TASK-032 through TASK-037, see Build Plan — Phase 3) no module page uses that pattern anymore, so these four are currently unused by any page. They have not been deleted — that is an open decision, not a completed one — but do not build new pages on this pattern; use `ModuleLayout`'s outline+aside mode instead, per the modules already migrated.
+`CircuitStepper` was planned but never built as a standalone component. `Quiz`/`LessonCard`/`StepNav`/`DeepDive` were built for the older lesson-stepper pattern; as of the Advanced-group migration (TASK-032 through TASK-037, see Build Plan — Phase 3) no module page used that pattern anymore, and as of TASK-038 (Phase 3b) all four have been deleted, along with the `/challenges` page and its route (that page was reachable from the mobile Navbar's "Explore" menu, contrary to an earlier inaccurate "nav-unlinked" note — that link was removed too) — do not build new pages on the lesson-stepper pattern; use `ModuleLayout`'s outline+aside mode instead, per every module already migrated.
 
 When rewriting Phase 3 pages:
 - Keep the best interactive example in the main reading flow if it materially improves understanding
@@ -901,11 +1007,11 @@ Every review should ask:
       inventing new ones, per CLAUDE.md's content principles
 - [x] Add study paths by background (`Roadmap.jsx` — three paths, full handbook map, machine-project status)
 
-**Consequence of finishing the lesson-stepper migration, not yet
-resolved**: `components/LessonCard.jsx`, `StepNav.jsx`, `Quiz.jsx`, and
-`DeepDive.jsx` are now unused by any page (verified by repo-wide grep).
-Whether to delete them, and update the Component Architecture table
-accordingly, is an open decision — see that table's note below.
+**Consequence of finishing the lesson-stepper migration, resolved in
+Phase 3b (TASK-038)**: `components/LessonCard.jsx`, `StepNav.jsx`,
+`Quiz.jsx`, and `DeepDive.jsx` became unused by any page at this point
+(verified by repo-wide grep). They have since been deleted — see Phase 3b
+below and the Component Architecture table.
 
 ### Phase 3a — Diagnostic Placement Pilot ✓ (completed 2026-08-09)
 Scope: Intuition, Bra-Ket, and Gates only. See “Diagnostic Placement &
@@ -940,6 +1046,41 @@ not roll out further without reviewing this pilot first.
 - [x] Both remaining Machine Projects (Bell State Explorer, Algorithm
       Showdown) — full content (TASK-017/018)
 - [x] Home hero primary CTA rewired to `/diagnostic` (TASK-030)
+
+### Phase 3b — Beginner Usefulness & Continuation Resources ✓ (completed 2026-08-18)
+Scope defined by `LLM_ASSIGNMENT.md`: make the handbook read as though a
+SIGQuantum mentor built it after watching beginners struggle, without
+loosening rigor or drifting toward casual/marketing tone. See "Mentor
+Notes, Stuck Recovery & Continuation Resources" above for the governing
+rules. Shipped as TASK-038; full detail in `agent.md`/`TASKS.md`.
+- [x] Fix `References.jsx` positioning (correct the entry formerly
+      mislabeled "IBM Qiskit Textbook" that actually links to IBM
+      Quantum Learning; added Microsoft Quantum Katas, MIT OCW's two
+      specific courses, and Quantum Country; added a goal-sorted chooser
+      above the categorized list)
+- [x] Build `MentorNote` and `StuckPath` components
+- [x] Roll out `MentorNote`/`StuckPath` module by module — one `MentorNote`
+      per module across all 14, each anchored to a specific concrete
+      stumble point; `StuckPath` on `braket` (math), `phase` (notation),
+      `entanglement` (circuit-reading), and `algorithms` (implementation)
+- [x] Audit the 14 modules for missing predict-before-reveal moments —
+      added one each to `intuition`, `braket`, `phase`, `gates`,
+      `measurement`, and `algorithms` (the six CLAUDE.md names as
+      carrying a `ConceptSection` or amplitude/probability calculation);
+      `labs` already had one and was left as-is
+- [x] Light section-title variation pass: fixed all 7 verbatim repeats of
+      the RailCard title "What To Keep Straight" (Noise, Algorithms,
+      Entanglement, Measurement, Circuits, Labs, UseCases) and PhaseAngle's
+      copy of the same phrase; varied the closing-section label away from
+      "Next Steps" on 7 of 13 modules (Intuition, Qiskit, Labs, Noise,
+      Algorithms, Gates, Circuits) to reduce monotony without forcing
+      uniformity in the other direction
+- [x] Deleted `LessonCard`/`StepNav`/`Quiz`/`DeepDive` (orphaned since
+      TASK-037) and `/challenges` — user-approved deletion, not a "keep
+      unlinked" outcome. Correction to a standing inaccuracy: `/challenges`
+      was **not** actually nav-unlinked as earlier notes claimed — it was
+      reachable from the mobile "Explore" menu in `Navbar.jsx`; that link
+      was removed along with the route and the page file.
 
 ### Phase 4 — Polish
 - [ ] Accessibility audit

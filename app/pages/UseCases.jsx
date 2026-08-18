@@ -13,6 +13,7 @@ import MistakesBox from '../../components/MistakesBox'
 import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
+import MentorNote from '../../components/MentorNote'
 
 const USECASES_OUTLINE = [
   { id: 'usecases-chemistry', label: 'Chemistry & materials' },
@@ -35,7 +36,7 @@ function UseCasesSupport() {
         </ul>
       </RailCard>
 
-      <RailCard label="Reading Lens" title="What To Keep Straight">
+      <RailCard label="Reading Lens" title="Reading Advantage Claims Critically">
         <ul className="space-y-2">
           <li>Every claim in this chapter is qualified by a timeline — "promising" is not the same as "available now."</li>
           <li>Quantum advantage is problem-specific, not a blanket property of quantum computers.</li>
@@ -841,6 +842,15 @@ export default function UseCases() {
             hardware constraint, applied to four specific application areas.
           </RemarkBox>
         </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            If you write up a SIGQuantum project claiming a "quantum speedup," name which of the four
+            categories above you mean and what classical baseline you compared against. "We used a quantum
+            algorithm" is not itself a speedup claim — Grover's algorithm on 4 qubits is not evidence of
+            anything faster than a laptop `for` loop until you say what it beat and by how much.
+          </MentorNote>
+        </div>
       </section>
 
       <section id="usecases-mistakes" className="mt-12 scroll-mt-28">
@@ -894,7 +904,9 @@ export default function UseCases() {
         <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">You've reached the end of the sequential handbook</h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
           This module closes the 14-module sequence, from big-picture intuition through today's honest limitations.
-          From here, the most useful next steps are review and practice, not more new material.
+          From here, the most useful next steps are review and practice, not more new material — and, when you're
+          ready to go beyond this handbook, a resource sorted by what you're trying to do next rather than a flat
+          reading list.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Link to="/roadmap" className="btn-primary">
@@ -904,7 +916,7 @@ export default function UseCases() {
             Open Glossary
           </Link>
           <Link to="/references" className="btn-secondary">
-            Open References
+            Choose Your Next Resource
           </Link>
         </div>
       </section>

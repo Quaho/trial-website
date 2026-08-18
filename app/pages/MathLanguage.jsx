@@ -11,6 +11,7 @@ import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import VideoAside from '../../components/VideoAside'
+import MentorNote from '../../components/MentorNote'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const MATH_LANGUAGE_OUTLINE = [
@@ -328,6 +329,17 @@ export default function MathLanguage() {
               The squared moduli of the two entries sum to 1, so this vector is normalized.
             </p>
           </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            A common repair attempt: given <InlineMath>{'v = (3, 4)'}</InlineMath>, students sometimes
+            "normalize" by dividing each entry by the sum <InlineMath>{'3 + 4 = 7'}</InlineMath>, giving{' '}
+            <InlineMath>{'(3/7, 4/7)'}</InlineMath> — but <InlineMath>{'(3/7)^2 + (4/7)^2 \\approx 0.51'}</InlineMath>,
+            not 1. The correct divisor is the modulus itself, <InlineMath>{'\\sqrt{3^2+4^2} = 5'}</InlineMath>,
+            giving <InlineMath>{'(3/5, 4/5)'}</InlineMath>, and indeed{' '}
+            <InlineMath>{'(3/5)^2 + (4/5)^2 = 1'}</InlineMath>.
+          </MentorNote>
         </div>
 
         <div className="mt-6">

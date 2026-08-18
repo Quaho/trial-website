@@ -14,6 +14,8 @@ import MistakesBox from '../../components/MistakesBox'
 import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
+import MentorNote from '../../components/MentorNote'
+import StuckPath from '../../components/StuckPath'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const ALGORITHMS_OUTLINE = [
@@ -37,7 +39,7 @@ function AlgorithmsSupport() {
         </ul>
       </RailCard>
 
-      <RailCard label="Reading Lens" title="What To Keep Straight">
+      <RailCard label="Reading Lens" title="Where the Speedup Actually Lives">
         <ul className="space-y-2">
           <li>Speedup type varies by algorithm: exponential (Shor), quadratic (Grover), none (most everyday tasks).</li>
           <li>Every algorithm in this chapter relies on interference and phase kickback, not brute-force parallel evaluation.</li>
@@ -248,6 +250,38 @@ function GroverVisual() {
           </div>
         </motion.div>
       </AnimatePresence>
+    </div>
+  )
+}
+
+function GroverQueryPredictReveal() {
+  const [revealed, setRevealed] = useState(false)
+
+  return (
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Predict Before You Reveal</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">A Smaller Database</h3>
+      <p className="mt-2 text-sm leading-relaxed text-slate-400">
+        The example above used <InlineMath>{'N = 1{,}000{,}000'}</InlineMath> entries. Using the same{' '}
+        <InlineMath>{'\\sqrt{N}'}</InlineMath> relationship, predict roughly how many queries Grover's
+        algorithm needs for a database of <InlineMath>{'N = 10{,}000'}</InlineMath> entries &mdash; and how
+        many a classical worst-case search would need.
+      </p>
+      {!revealed ? (
+        <button
+          onClick={() => setRevealed(true)}
+          className="btn-secondary mt-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        >
+          Reveal Answer
+        </button>
+      ) : (
+        <div className="mt-4 rounded-xl border border-orange-800/40 bg-orange-950/20 p-4 text-sm text-slate-300 leading-relaxed">
+          Classical worst case is up to 10,000 lookups. Grover needs about{' '}
+          <InlineMath>{'\\sqrt{10{,}000} = 100'}</InlineMath> queries &mdash; a hundredfold improvement,
+          smaller than the thousandfold improvement at <InlineMath>{'N = 1{,}000{,}000'}</InlineMath>{' '}
+          because the quadratic speedup scales with the square root, not with a fixed multiplier.
+        </div>
+      )}
     </div>
   )
 }
@@ -558,6 +592,10 @@ export default function Algorithms() {
         </div>
 
         <div className="mt-6">
+          <GroverQueryPredictReveal />
+        </div>
+
+        <div className="mt-6">
           <ExpandableAside title="Optional: why Grover's algorithm is provably optimal" label="Theoretical Aside">
             <p>
               Bennett, Bernstein, Brassard, and Vazirani proved in 1997 that no quantum algorithm can search an
@@ -642,6 +680,37 @@ export default function Algorithms() {
             Once phase kickback is recognizable, Deutsch&ndash;Jozsa's oracle and Grover's oracle stop looking like
             two unrelated tricks &mdash; both are the same mechanism, applied to different problems.
           </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            It's tempting to expect the target register to end up storing the function's output somewhere
+            you can read it off directly. It doesn't — after kickback, measuring the target gives back
+            exactly the state you prepared it in, with no directly readable trace of{' '}
+            <InlineMath>{'f(x)'}</InlineMath>. All the new information moved into the relative phase of the
+            control register instead.
+          </MentorNote>
+        </div>
+
+        <div className="mt-6">
+          <StuckPath type="implementation">
+            <p>
+              If the algebra of kickback makes sense but you can't picture how any of this becomes runnable
+              code, that's an implementation gap, not an algorithms gap.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <Link to="/qiskit" className="btn-secondary">Review Qiskit</Link>
+              <Link to="/labs" className="btn-secondary">Open Qiskit Labs</Link>
+              <a
+                href="https://quantum.cloud.ibm.com/learning/en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost"
+              >
+                IBM Quantum Learning
+              </a>
+            </div>
+          </StuckPath>
         </div>
       </section>
 
@@ -804,7 +873,7 @@ export default function Algorithms() {
       </div>
 
       <section id="algorithms-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <p className="section-label">Next Steps</p>
+        <p className="section-label">Before You Implement</p>
         <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">From theory to running code</h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
           The next module moves from algorithm structure to hands-on Qiskit practice: building, running, and

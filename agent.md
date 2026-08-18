@@ -1,5 +1,104 @@
 # agent.md — Current Codex Task
 
+## TASK-038 — COMPLETE (2026-08-18)
+Phase 3b in full: "Beginner Usefulness & Continuation Resources," scoped
+from an external assessment (`LLM_ASSIGNMENT.md`) and governed by
+CLAUDE.md's "Mentor Notes, Stuck Recovery & Continuation Resources"
+section. Done directly (not through the usual one-Codex-task-at-a-time
+flow) at the user's explicit request to "do phase 3b" as a single pass,
+after a plan-mode proposal and two user decisions up front. Full detail
+in `TASKS.md`.
+
+**Two decisions resolved before implementation, both previously flagged
+as open in CLAUDE.md**: delete `LessonCard.jsx`/`StepNav.jsx`/`Quiz.jsx`/
+`DeepDive.jsx` (orphaned since TASK-037), and delete `/challenges`
+(flagged since TASK-031). Both were user-approved via `AskUserQuestion`
+before any files were touched. **Correction to a standing inaccuracy
+found in the process**: `/challenges` was described in CLAUDE.md and
+TASK-031 as "nav-unlinked," but it was actually reachable from the
+mobile `Navbar.jsx`'s "Explore" menu ("Mini Challenges"). That link was
+removed along with the route (`App.jsx`) and the page file itself.
+
+**New components**: `components/MentorNote.jsx` (cyan, `border-l-4`
+family styling matching `DefinitionBox`/`NotationBox`/`RemarkBox`, single
+concrete stumble point, `role="note"`) and `components/StuckPath.jsx`
+(rose, `type` prop keyed to CLAUDE.md's four blocker categories —
+`math`/`notation`/`circuit-reading`/`implementation` — each with its own
+icon reused from `lib/data/modules.js`'s existing icon choices for
+visual continuity, `role="region"`).
+
+**`References.jsx` rewrite**: split the entry that mislabeled
+`quantum.cloud.ibm.com/learning/en` as "IBM Qiskit Textbook" into two
+accurate entries — IBM Quantum Learning (primary, maintained) and Qiskit
+Textbook (archived, github.com/qiskit-community/qiskit-textbook,
+historical/supplemental framing). Added Microsoft Quantum Katas, MIT
+18.435J and 8.370x as two distinct links with the "may feel abrupt"
+rigor warning, and Quantum Country. Added a goal-sorted chooser (six
+rows) above the existing categorized sections, which were kept rather
+than replaced. Tightened the Khan Academy entry's wording to read as
+prerequisite repair only. Added a short "Where To Go Next" enhancement
+to `UseCases.jsx`'s existing closing section (it already linked to
+`/references`; the intro sentence and button label were adjusted to
+preview the new goal-sorted framing rather than duplicating content).
+
+**Per-module rollout, all 14 modules in `app/pages/`**: one `MentorNote`
+per module, each anchored to a specific concrete stumble point next to
+the triggering content (e.g. BraKet's "the probability is not 0.8, it is
+0.64" — the LLM_ASSIGNMENT's own example; MultiQubit/Labs on Qiskit's
+little-endian counts-key ordering; Algorithms on phase kickback leaving
+no readable trace on the target register). Each MentorNote was checked
+against content already present on its page to avoid restating a nearby
+RemarkBox/MistakesBox item verbatim — several planned MentorNotes were
+redirected to a different angle mid-implementation for exactly this
+reason (e.g. Gates' Z-gate note, Entanglement's factoring note, Noise's
+calibration-drift note, all picked *because* the obvious angle was
+already covered elsewhere on the same page).
+
+`StuckPath` placed once per blocker type, not on every module: `type="math"`
+on BraKet (→ Mathematical Language, Khan Academy), `type="notation"` on
+PhaseAngle (→ Bra-Ket, Glossary), `type="circuit-reading"` on
+Entanglement (→ Gates, Multi-Qubit, Circuits), `type="implementation"`
+on Algorithms (→ Qiskit, Labs, IBM Quantum Learning).
+
+Predict-before-reveal added to the six modules CLAUDE.md names as
+carrying a `ConceptSection` or amplitude/probability calculation —
+Intuition, BraKet, PhaseAngle, Gates, Measurement, Algorithms — each a
+local `useState('predict'/'reveal')` toggle mirroring `Labs.jsx`'s
+existing `SimulateVisual` pattern (the only page that already had one).
+BraKet's converts an existing passive-answer `ExampleBox` into an active
+one rather than adding a redundant second copy of the same numbers.
+Algorithms' reuses the page's own established N=1,000,000 → ~1,000-query
+Grover numbers as the worked example, then asks the reader to predict a
+*new* N=10,000 case rather than restating the given answer. Labs.jsx
+already had a predict/reveal moment and was left alone.
+
+**Section-title variation**: grepped for CLAUDE.md's named repeated
+phrases; found the RailCard title "What To Keep Straight" verbatim in 8
+modules (Noise, Algorithms, Entanglement, Measurement, Circuits, Labs,
+UseCases, PhaseAngle) and gave each a module-specific title instead.
+Varied the closing-section label away from "Next Steps" on 7 of 13
+modules that had it (Intuition → "Before You Continue", Qiskit/Labs →
+"Where This Appears in Projects", Noise → "Before You Claim It Works",
+Algorithms → "Before You Implement", Gates → "Before You Continue",
+Circuits → "Reading Checklist"), leaving the rest unchanged — CLAUDE.md
+asked for *some* pages to vary, not a second uniform relabeling.
+
+**Docs updated in the same pass**: CLAUDE.md's Current State, What
+Remains, Component Architecture table, and Phase 3b checklist (now
+checked off, dated); two stale historical notes corrected in the same
+file (the TASK-037-era "not yet resolved" orphaned-components note, and
+the Component Architecture table's own "not yet built" MentorNote/
+StuckPath rows).
+
+Verified: `npm run build` passes after every batch of edits, not just at
+the end. `grep -c "<MentorNote"` totals 14 across `app/pages` (one per
+module); `grep -c "<StuckPath"` totals 4. `grep -rln "challenges\|LessonCard\|StepNav\|DeepDive\|<Quiz"`
+across `app`/`components`/`lib` returns nothing. Predict/reveal numeric
+answers (BraKet's 3/4 and 1/4, Measurement's 0.36 and 0.64, Gates' S²=Z
+identity, Algorithms' √10,000=100) hand-checked against the stated
+formulas. Not visually verified in a browser — standing project
+convention (no Playwright/Chromium here).
+
 ## TASK-037 — COMPLETE (2026-08-17)
 Migrate `UseCases.jsx` (module 14) off the legacy `LESSONS`/`LessonCard`/
 `StepNav` template onto `ModuleLayout` outline+aside, same pattern as

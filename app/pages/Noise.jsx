@@ -13,6 +13,7 @@ import MistakesBox from '../../components/MistakesBox'
 import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
+import MentorNote from '../../components/MentorNote'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const NOISE_OUTLINE = [
@@ -36,7 +37,7 @@ function NoiseSupport() {
         </ul>
       </RailCard>
 
-      <RailCard label="Reading Lens" title="What To Keep Straight">
+      <RailCard label="Reading Lens" title="Reading Real Hardware Output">
         <ul className="space-y-2">
           <li>Noise is continuous, not just a measurement-time event — it accumulates as a circuit runs.</li>
           <li>No-cloning is a mathematical fact, not a hardware limitation that better engineering removes.</li>
@@ -577,6 +578,15 @@ export default function Noise() {
             videoId="Dv5cqB87nqk"
           />
         </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            If a SIGQuantum project's circuit ran cleanly on hardware last week and looks noisier today with
+            no code changes, that is not automatically a sign something broke. Real devices are recalibrated
+            regularly, and which specific qubits and gate pairs are noisiest can shift between calibration
+            cycles — check the backend's current calibration data before assuming a regression in your code.
+          </MentorNote>
+        </div>
       </section>
 
       <section id="noise-decoherence" className="mt-12 scroll-mt-28">
@@ -831,7 +841,7 @@ export default function Noise() {
       </div>
 
       <section id="noise-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <p className="section-label">Next Steps</p>
+        <p className="section-label">Before You Claim It Works</p>
         <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">From hardware limits to real applications</h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
           The final module surveys where quantum computing offers genuine promise given today's noisy,

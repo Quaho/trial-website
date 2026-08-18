@@ -14,6 +14,7 @@ import MistakesBox from '../../components/MistakesBox'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import ConceptSection from '../../components/ConceptSection'
 import VideoAside from '../../components/VideoAside'
+import MentorNote from '../../components/MentorNote'
 import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
@@ -413,6 +414,39 @@ function PhaseGatesVisual() {
   )
 }
 
+function PhaseGatePredictReveal() {
+  const [revealed, setRevealed] = useState(false)
+
+  return (
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Predict Before You Reveal</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Which Gate Was Applied?</h3>
+      <p className="mt-2 text-sm leading-relaxed text-slate-400">
+        You've seen that <InlineMath>{'S^2 = Z'}</InlineMath> and, from Section 3, that{' '}
+        <InlineMath>{'Z|+\\rangle = |-\\rangle'}</InlineMath>. Predict: if you apply{' '}
+        <InlineMath>{'S'}</InlineMath> to <InlineMath>{'|+\\rangle'}</InlineMath> twice in a row, do you end
+        up at <InlineMath>{'|-\\rangle'}</InlineMath>? What about applying <InlineMath>{'S'}</InlineMath> only once?
+      </p>
+      {!revealed ? (
+        <button
+          onClick={() => setRevealed(true)}
+          className="btn-secondary mt-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        >
+          Reveal Answer
+        </button>
+      ) : (
+        <div className="mt-4 rounded-xl border border-sky-800/40 bg-sky-950/20 p-4 text-sm text-slate-300 leading-relaxed">
+          Twice, yes: <InlineMath>{'S^2 = Z'}</InlineMath> exactly, so <InlineMath>{'S^2|+\\rangle = Z|+\\rangle = |-\\rangle'}</InlineMath>.
+          Once, no — a single <InlineMath>{'S'}</InlineMath> only introduces a factor of{' '}
+          <InlineMath>{'i'}</InlineMath>, not <InlineMath>{'-1'}</InlineMath>, giving{' '}
+          <InlineMath>{'S|+\\rangle = (|0\\rangle + i|1\\rangle)/\\sqrt{2}'}</InlineMath> — a different state
+          from both <InlineMath>{'|+\\rangle'}</InlineMath> and <InlineMath>{'|-\\rangle'}</InlineMath>.
+        </div>
+      )}
+    </div>
+  )
+}
+
 function GateSummaryVisual() {
   const gates = [
     { symbol: 'X', name: 'Bit flip', action: '|0⟩ ↔ |1⟩', axis: '180° around X' },
@@ -643,6 +677,16 @@ export default function Gates() {
             </ExampleBox>
           </div>
 
+          <div className="mt-4">
+            <MentorNote>
+              It's tempting to conclude Z "does nothing," since <InlineMath>{'Z|0\\rangle = |0\\rangle'}</InlineMath>{' '}
+              and <InlineMath>{'Z|1\\rangle = -|1\\rangle'}</InlineMath> leave computational-basis
+              probabilities at 100%/0%, unchanged either way. That's true only for those two states. For{' '}
+              <InlineMath>{'|+\\rangle'}</InlineMath>, Z produces <InlineMath>{'|-\\rangle'}</InlineMath> — a
+              physically different, measurably distinguishable state once you change basis.
+            </MentorNote>
+          </div>
+
           <div className="mt-6">
             <ZGateVisual />
           </div>
@@ -738,6 +782,10 @@ export default function Gates() {
           </div>
 
           <div className="mt-6">
+            <PhaseGatePredictReveal />
+          </div>
+
+          <div className="mt-6">
             <ExampleBox title="Worked Example: Explicit Phase Factors">
               <MathDisplay>{'S|1\\rangle = i|1\\rangle \\qquad T|1\\rangle = e^{i\\pi/4}|1\\rangle'}</MathDisplay>
               <p>
@@ -797,7 +845,7 @@ export default function Gates() {
       </div>
 
       <section id="gates-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <p className="section-label">Next Steps</p>
+        <p className="section-label">Before You Continue</p>
         <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">Move from one wire to many</h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
           The next chapter extends this gate vocabulary to multi-qubit systems, where tensor products,

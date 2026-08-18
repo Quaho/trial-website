@@ -12,6 +12,7 @@ import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import VideoAside from '../../components/VideoAside'
+import MentorNote from '../../components/MentorNote'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const SETUP_CODE = `# Install Qiskit and the Aer simulator
@@ -612,6 +613,15 @@ export default function Qiskit() {
             suspects are transpilation details, noise, calibration, or insufficient sampling.
           </RemarkBox>
         </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            On a fair 50/50 circuit run for 1000 shots, seeing 512 zeros and 488 ones is normal sampling
+            variation, not a bug — do not re-check your code because the split wasn't exactly 500/500. A
+            genuine red flag looks more like 850 zeros and 150 ones, which 1000 fair-coin shots would
+            almost never produce.
+          </MentorNote>
+        </div>
       </section>
 
       <div className="mt-12">
@@ -648,11 +658,12 @@ export default function Qiskit() {
       </div>
 
       <section id="qiskit-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <p className="section-label">Next Steps</p>
+        <p className="section-label">Where This Appears in Projects</p>
         <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">Continue from syntax into circuit reasoning</h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
-          The next module returns to the mathematics of single-qubit gates. If the code examples here
-          made the abstractions more concrete, keep that mapping active as you move back into theory.
+          The First Circuit project below is a good place to check that this workflow actually stuck before
+          moving on. From there, the next module returns to the mathematics of single-qubit gates — keep the
+          syntax-to-math mapping from this chapter active as you move back into theory.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Link to="/gates" className="btn-primary">
