@@ -1,13 +1,55 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import ModuleLayout from '../../components/ModuleLayout'
-import LessonCard from '../../components/LessonCard'
-import StepNav from '../../components/StepNav'
+import DefinitionBox from '../../components/DefinitionBox'
+import NotationBox from '../../components/NotationBox'
+import ExampleBox from '../../components/ExampleBox'
+import RemarkBox from '../../components/RemarkBox'
+import PrereqList from '../../components/PrereqList'
+import Keyword from '../../components/Keyword'
+import RailCard from '../../components/RailCard'
+import SummaryBox from '../../components/SummaryBox'
+import MistakesBox from '../../components/MistakesBox'
+import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
-import { useProgress } from '../../lib/hooks/useProgress'
-import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
+
+const NOISE_OUTLINE = [
+  { id: 'noise-ideal-vs-real', label: 'Ideal simulators vs. real hardware' },
+  { id: 'noise-decoherence', label: 'Noise and decoherence' },
+  { id: 'noise-nocloning', label: 'The no-cloning theorem' },
+  { id: 'noise-repetition', label: 'Repetition-code intuition' },
+  { id: 'noise-overhead', label: 'Why error correction is hard' },
+  { id: 'noise-mistakes', label: 'Common mistakes' },
+  { id: 'noise-next', label: 'Next steps' },
+]
+
+function NoiseSupport() {
+  return (
+    <>
+      <RailCard label="Key Formulas" title="What To Recognize">
+        <ul className="space-y-2">
+          <li><span className="font-mono text-slate-300">F(t) = e<sup>&minus;t/T</sup></span>: exponential fidelity decay over time T (T1 or T2).</li>
+          <li><span className="font-mono text-slate-300">p<sub>threshold</sub> &asymp; 1%</span>: the fault-tolerance threshold for surface codes.</li>
+          <li><span className="font-mono text-slate-300">~1,000 : 1</span>: today's typical physical-to-logical qubit ratio.</li>
+        </ul>
+      </RailCard>
+
+      <RailCard label="Reading Lens" title="What To Keep Straight">
+        <ul className="space-y-2">
+          <li>Noise is continuous, not just a measurement-time event — it accumulates as a circuit runs.</li>
+          <li>No-cloning is a mathematical fact, not a hardware limitation that better engineering removes.</li>
+          <li>Error correction protects a state without ever reading it directly.</li>
+        </ul>
+        <div className="mt-4 flex flex-col gap-2">
+          <Link to="/labs" className="btn-secondary justify-center">Review Qiskit Labs</Link>
+          <Link to="/usecases" className="btn-ghost justify-center">Preview Use Cases</Link>
+        </div>
+      </RailCard>
+    </>
+  )
+}
 
 /* ── Visuals ──────────────────────────────────────────────────────────────── */
 
@@ -27,59 +69,62 @@ function IdealVsRealVisual() {
   ]
 
   return (
-    <div className="grid sm:grid-cols-2 gap-4 my-6">
-      {/* Ideal simulator */}
-      <div className="card border-slate-700/30">
-        <p className="text-xs text-slate-400 uppercase tracking-wider mb-4 text-center font-medium">
-          Ideal Simulator
-        </p>
-        <div className="space-y-2.5">
-          {idealData.map(d => (
-            <div key={d.label}>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-slate-300 font-mono">{d.label}</span>
-                <span className="text-slate-400">{d.count}</span>
-              </div>
-              <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-green-500/70 rounded-full transition-all duration-300"
-                  style={{ width: `${d.pct}%` }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-        <p className="text-xs text-green-400 mt-3 text-center">
-          Perfect 50/50 &mdash; no errors
-        </p>
-      </div>
+    <div className="rounded-2xl border border-slate-700/40 bg-slate-900/40 p-5">
+      <p className="section-label text-slate-400">Comparison</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Ideal Simulator vs. Real Hardware</h3>
 
-      {/* Real hardware */}
-      <div className="card border-slate-700/30">
-        <p className="text-xs text-slate-400 uppercase tracking-wider mb-4 text-center font-medium">
-          Real Hardware
-        </p>
-        <div className="space-y-2.5">
-          {realData.map(d => (
-            <div key={d.label}>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-slate-300 font-mono">{d.label}</span>
-                <span className="text-slate-400">{d.count}</span>
+      <div className="mt-4 grid sm:grid-cols-2 gap-4">
+        <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+          <p className="text-xs text-slate-400 uppercase tracking-wider mb-4 text-center font-medium">
+            Ideal Simulator
+          </p>
+          <div className="space-y-2.5">
+            {idealData.map(d => (
+              <div key={d.label}>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-slate-300 font-mono">{d.label}</span>
+                  <span className="text-slate-400">{d.count}</span>
+                </div>
+                <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-green-500/70 rounded-full transition-all duration-300"
+                    style={{ width: `${d.pct}%` }}
+                  />
+                </div>
               </div>
-              <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-300 ${
-                    d.pct > 10 ? 'bg-amber-500/70' : 'bg-red-500/70'
-                  }`}
-                  style={{ width: `${d.pct}%` }}
-                />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <p className="text-xs text-green-400 mt-3 text-center">
+            Perfect 50/50 — no errors
+          </p>
         </div>
-        <p className="text-xs text-red-400 mt-3 text-center">
-          Noise creates &ldquo;impossible&rdquo; outcomes
-        </p>
+
+        <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+          <p className="text-xs text-slate-400 uppercase tracking-wider mb-4 text-center font-medium">
+            Real Hardware
+          </p>
+          <div className="space-y-2.5">
+            {realData.map(d => (
+              <div key={d.label}>
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-slate-300 font-mono">{d.label}</span>
+                  <span className="text-slate-400">{d.count}</span>
+                </div>
+                <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${
+                      d.pct > 10 ? 'bg-amber-500/70' : 'bg-red-500/70'
+                    }`}
+                    style={{ width: `${d.pct}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-red-400 mt-3 text-center">
+            Noise creates "impossible" outcomes
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -88,21 +133,19 @@ function IdealVsRealVisual() {
 function DecoherenceVisual() {
   const [time, setTime] = useState(0)
 
-  const t1 = 100 // μs
-  const t2 = 60  // μs
+  const t1 = 100
+  const t2 = 60
 
   const fidelityT1 = Math.exp(-time / t1) * 100
   const fidelityT2 = Math.exp(-time / t2) * 100
   const combinedFidelity = Math.min(fidelityT1, fidelityT2)
 
   return (
-    <div className="card border-slate-700/30 my-6">
-      <p className="text-xs text-slate-400 uppercase tracking-wider mb-4 text-center">
-        Decoherence over time
-      </p>
+    <div className="rounded-2xl border border-slate-700/40 bg-slate-900/40 p-5">
+      <p className="section-label text-slate-400">Interactive Diagram</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Decoherence Over Time</h3>
 
-      {/* Slider */}
-      <div className="mb-5">
+      <div className="mt-4">
         <div className="flex justify-between text-xs text-slate-500 mb-2">
           <span>0 &mu;s</span>
           <span className="text-slate-300 font-medium">
@@ -122,10 +165,8 @@ function DecoherenceVisual() {
         />
       </div>
 
-      {/* Fidelity bars */}
-      <div className="space-y-4">
-        {/* T1 */}
-        <div className="bg-slate-900/60 rounded-xl p-4">
+      <div className="mt-5 space-y-4">
+        <div className="bg-slate-950/70 rounded-xl p-4">
           <div className="flex justify-between items-baseline mb-2">
             <div>
               <span className="text-sm font-semibold text-amber-400">T1</span>
@@ -146,8 +187,7 @@ function DecoherenceVisual() {
           </p>
         </div>
 
-        {/* T2 */}
-        <div className="bg-slate-900/60 rounded-xl p-4">
+        <div className="bg-slate-950/70 rounded-xl p-4">
           <div className="flex justify-between items-baseline mb-2">
             <div>
               <span className="text-sm font-semibold text-violet-400">T2</span>
@@ -168,7 +208,6 @@ function DecoherenceVisual() {
           </p>
         </div>
 
-        {/* Combined */}
         <div className="bg-slate-800/40 rounded-xl p-4 border border-slate-700/40">
           <div className="flex justify-between items-baseline mb-2">
             <span className="text-sm font-semibold text-slate-300">Combined fidelity</span>
@@ -196,86 +235,89 @@ function DecoherenceVisual() {
 
 function NoCloningVisual() {
   return (
-    <div className="grid sm:grid-cols-2 gap-4 my-6">
-      {/* Known state — works */}
-      <div className="card border-green-800/30">
-        <p className="text-xs text-green-400 uppercase tracking-wider mb-3 font-medium text-center">
-          Known basis state &mdash; works
-        </p>
-        <div className="bg-slate-900/60 rounded-xl p-4 mb-3">
-          <div className="flex items-center justify-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-green-900/30 border border-green-700/50
-                            flex items-center justify-center font-mono text-green-300 text-sm">
-              |0&#x27E9;
-            </div>
-            <div className="text-slate-500 text-lg">&rarr;</div>
-            <div className="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-slate-300 font-mono">
-              CNOT
-            </div>
-            <div className="text-slate-500 text-lg">&rarr;</div>
-            <div className="flex flex-col gap-1">
-              <div className="w-12 h-10 rounded-lg bg-green-900/30 border border-green-700/50
-                              flex items-center justify-center font-mono text-green-300 text-xs">
-                |0&#x27E9;
-              </div>
-              <div className="w-12 h-10 rounded-lg bg-green-900/30 border border-green-700/50
-                              flex items-center justify-center font-mono text-green-300 text-xs">
-                |0&#x27E9;
-              </div>
-            </div>
-          </div>
-        </div>
-        <ul className="space-y-1.5">
-          <li className="flex items-start gap-2 text-xs text-green-300">
-            <span className="text-green-500 mt-0.5">&#x2713;</span>
-            CNOT copies |0&#x27E9; &rarr; |00&#x27E9;
-          </li>
-          <li className="flex items-start gap-2 text-xs text-green-300">
-            <span className="text-green-500 mt-0.5">&#x2713;</span>
-            CNOT copies |1&#x27E9; &rarr; |11&#x27E9;
-          </li>
-        </ul>
-      </div>
+    <div className="rounded-2xl border border-slate-700/40 bg-slate-900/40 p-5">
+      <p className="section-label text-slate-400">Comparison</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">What CNOT Can and Cannot Copy</h3>
 
-      {/* Unknown state — impossible */}
-      <div className="card border-red-800/30">
-        <p className="text-xs text-red-400 uppercase tracking-wider mb-3 font-medium text-center">
-          Unknown superposition &mdash; impossible
-        </p>
-        <div className="bg-slate-900/60 rounded-xl p-4 mb-3">
-          <div className="flex items-center justify-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-violet-900/30 border border-violet-700/50
-                            flex items-center justify-center font-mono text-violet-300 text-xs">
-              |&psi;&#x27E9;
-            </div>
-            <div className="text-slate-500 text-lg">&rarr;</div>
-            <div className="px-3 py-1.5 rounded-lg bg-slate-800 border border-red-700/50 text-xs text-red-300 font-mono">
-              Clone?
-            </div>
-            <div className="text-slate-500 text-lg">&rarr;</div>
-            <div className="w-14 h-14 rounded-xl bg-red-950/30 border-2 border-dashed border-red-700/50
-                            flex items-center justify-center text-red-400 text-xl font-bold">
-              &#x2717;
+      <div className="mt-4 grid sm:grid-cols-2 gap-4">
+        <div className="rounded-xl border border-green-800/30 bg-slate-950/70 p-4">
+          <p className="text-xs text-green-400 uppercase tracking-wider mb-3 font-medium text-center">
+            Known basis state — works
+          </p>
+          <div className="bg-slate-900/60 rounded-xl p-4 mb-3">
+            <div className="flex items-center justify-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-green-900/30 border border-green-700/50
+                              flex items-center justify-center font-mono text-green-300 text-sm">
+                |0&#x27E9;
+              </div>
+              <div className="text-slate-500 text-lg">&rarr;</div>
+              <div className="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-slate-300 font-mono">
+                CNOT
+              </div>
+              <div className="text-slate-500 text-lg">&rarr;</div>
+              <div className="flex flex-col gap-1">
+                <div className="w-12 h-10 rounded-lg bg-green-900/30 border border-green-700/50
+                                flex items-center justify-center font-mono text-green-300 text-xs">
+                  |0&#x27E9;
+                </div>
+                <div className="w-12 h-10 rounded-lg bg-green-900/30 border border-green-700/50
+                                flex items-center justify-center font-mono text-green-300 text-xs">
+                  |0&#x27E9;
+                </div>
+              </div>
             </div>
           </div>
+          <ul className="space-y-1.5">
+            <li className="flex items-start gap-2 text-xs text-green-300">
+              <span className="text-green-500 mt-0.5">&#x2713;</span>
+              CNOT copies |0&#x27E9; &rarr; |00&#x27E9;
+            </li>
+            <li className="flex items-start gap-2 text-xs text-green-300">
+              <span className="text-green-500 mt-0.5">&#x2713;</span>
+              CNOT copies |1&#x27E9; &rarr; |11&#x27E9;
+            </li>
+          </ul>
         </div>
-        <ul className="space-y-1.5">
-          <li className="flex items-start gap-2 text-xs text-red-300">
-            <span className="text-red-500 mt-0.5">&#x2717;</span>
-            Superpositions cannot be cloned
-          </li>
-          <li className="flex items-start gap-2 text-xs text-red-300">
-            <span className="text-red-500 mt-0.5">&#x2717;</span>
-            Proved mathematically impossible
-          </li>
-        </ul>
+
+        <div className="rounded-xl border border-red-800/30 bg-slate-950/70 p-4">
+          <p className="text-xs text-red-400 uppercase tracking-wider mb-3 font-medium text-center">
+            Unknown superposition — impossible
+          </p>
+          <div className="bg-slate-900/60 rounded-xl p-4 mb-3">
+            <div className="flex items-center justify-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-violet-900/30 border border-violet-700/50
+                              flex items-center justify-center font-mono text-violet-300 text-xs">
+                |&psi;&#x27E9;
+              </div>
+              <div className="text-slate-500 text-lg">&rarr;</div>
+              <div className="px-3 py-1.5 rounded-lg bg-slate-800 border border-red-700/50 text-xs text-red-300 font-mono">
+                Clone?
+              </div>
+              <div className="text-slate-500 text-lg">&rarr;</div>
+              <div className="w-14 h-14 rounded-xl bg-red-950/30 border-2 border-dashed border-red-700/50
+                              flex items-center justify-center text-red-400 text-xl font-bold">
+                &#x2717;
+              </div>
+            </div>
+          </div>
+          <ul className="space-y-1.5">
+            <li className="flex items-start gap-2 text-xs text-red-300">
+              <span className="text-red-500 mt-0.5">&#x2717;</span>
+              Superpositions cannot be cloned
+            </li>
+            <li className="flex items-start gap-2 text-xs text-red-300">
+              <span className="text-red-500 mt-0.5">&#x2717;</span>
+              Proved mathematically impossible
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   )
 }
 
 function RepetitionCodeVisual() {
-  const [flipped, setFlipped] = useState(null) // index of flipped qubit
+  const [flipped, setFlipped] = useState(null)
   const [showVote, setShowVote] = useState(false)
 
   const logicalValue = 0
@@ -305,17 +347,14 @@ function RepetitionCodeVisual() {
   }
 
   return (
-    <div className="card border-slate-700/30 my-6 text-center">
-      <p className="text-xs text-slate-400 uppercase tracking-wider mb-4">
-        Repetition code &mdash; click a qubit to flip it
-      </p>
+    <div className="rounded-2xl border border-slate-700/40 bg-slate-900/40 p-5 text-center">
+      <p className="section-label text-slate-400">Interactive Diagram</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Repetition Code — Click a Qubit to Flip It</h3>
 
-      {/* Encoding label */}
-      <p className="text-xs text-slate-500 mb-3">
+      <p className="text-xs text-slate-500 mt-3 mb-3">
         Logical |0&#x27E9; encoded as |000&#x27E9;
       </p>
 
-      {/* Qubit display */}
       <div className="flex items-center justify-center gap-3 sm:gap-4 mb-5">
         {displayed.map((q, i) => (
           <button
@@ -335,7 +374,6 @@ function RepetitionCodeVisual() {
         ))}
       </div>
 
-      {/* Status */}
       {flipped !== null && (
         <div className="mb-4">
           <p className="text-sm text-red-400 mb-3">
@@ -374,7 +412,6 @@ function RepetitionCodeVisual() {
         </p>
       )}
 
-      {/* Reset */}
       {flipped !== null && (
         <button
           onClick={handleReset}
@@ -396,14 +433,13 @@ function ErrorCorrectionVisual() {
   ]
 
   return (
-    <div className="card border-slate-700/30 my-6">
-      <p className="text-xs text-slate-400 uppercase tracking-wider mb-4 text-center">
-        Physical-to-logical qubit overhead
-      </p>
+    <div className="rounded-2xl border border-slate-700/40 bg-slate-900/40 p-5">
+      <p className="section-label text-slate-400">Reference Table</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Physical-to-Logical Qubit Overhead</h3>
 
-      <div className="space-y-5">
-        {ratios.map((r, i) => (
-          <div key={i} className="bg-slate-900/60 rounded-xl p-4">
+      <div className="mt-4 space-y-5">
+        {ratios.map((r) => (
+          <div key={r.label} className="bg-slate-950/70 rounded-xl p-4">
             <div className="flex justify-between items-baseline mb-2">
               <span className="text-sm text-slate-300 font-medium">{r.label}</span>
               <span className="text-xs font-mono text-slate-400">
@@ -411,13 +447,9 @@ function ErrorCorrectionVisual() {
               </span>
             </div>
 
-            {/* Ratio visualization */}
             <div className="flex gap-1 mb-2 flex-wrap">
               {Array.from({ length: Math.min(r.physical, 50) }).map((_, j) => (
-                <div
-                  key={j}
-                  className={`w-2 h-2 rounded-sm ${r.color}`}
-                />
+                <div key={j} className={`w-2 h-2 rounded-sm ${r.color}`} />
               ))}
               {r.physical > 50 && (
                 <span className="text-xs text-slate-500 self-center ml-1">
@@ -426,289 +458,397 @@ function ErrorCorrectionVisual() {
               )}
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="flex gap-0.5">
-                {Array.from({ length: Math.min(r.physical, 50) }).map((_, j) => (
-                  <div key={j} className={`w-1.5 h-1.5 rounded-sm ${r.color} opacity-50`} />
-                )).slice(0, 0)}
-              </div>
-              <span className="text-xs text-slate-500">
-                {r.physical} physical qubits &rarr; 1 logical qubit
-              </span>
-            </div>
+            <p className="text-xs text-slate-500">
+              {r.physical} physical qubits &rarr; 1 logical qubit
+            </p>
           </div>
         ))}
       </div>
 
-      {/* Summary */}
       <div className="mt-4 p-4 rounded-xl bg-slate-800/40 border border-slate-700/40 text-center">
         <p className="text-sm text-slate-300">
           A useful quantum computer needs <strong className="text-white">millions</strong> of
           physical qubits to get <strong className="text-white">thousands</strong> of logical qubits.
         </p>
         <p className="text-xs text-slate-500 mt-1">
-          Today&apos;s largest machines have ~1,000 physical qubits.
+          Today's largest machines have ~1,000 physical qubits.
         </p>
       </div>
     </div>
   )
 }
 
-/* ── Lessons ──────────────────────────────────────────────────────────────── */
-
-const LESSONS = [
-  {
-    title: 'Ideal vs Real Hardware',
-    hook: 'Simulators Lie — Real Qubits Make Mistakes',
-    hookSub: 'A perfect simulator always gives the right answer. Real quantum hardware does not.',
-    visual: <IdealVsRealVisual />,
-    bullets: [
-      'Simulators give perfect results \u2014 real quantum computers don\u2019t.',
-      'Real hardware has noise: unwanted bit flips, phase errors, and measurement mistakes.',
-      'Today\u2019s quantum computers have 50\u20131000+ qubits, but noise limits useful circuit depth.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Bell state comparison:</strong> On a simulator:
-        {' '}<span className="font-mono text-green-300">{'{"00": 500, "11": 500}'}</span>.
-        On real hardware: <span className="font-mono text-amber-300">{'{"00": 472, "11": 481, "01": 28, "10": 19}'}</span>.
-        The noise creates outcomes that should be impossible.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'Why does real hardware produce outcomes like |01\u27E9 from a Bell state?',
-      choices: [
-        'The simulator is wrong',
-        'Bell states always produce all outcomes',
-        'Noise introduces errors during the computation',
-        'The circuit was built incorrectly',
-      ],
-      correct: 2,
-    },
-  },
-  {
-    title: 'Noise and Decoherence',
-    hook: 'Qubits Have an Expiration Date',
-    hookSub: 'Every qubit is a ticking clock \u2014 its quantum information leaks away into the environment.',
-    visual: <DecoherenceVisual />,
-    bullets: [
-      <>
-        T1 (relaxation): the <GlossaryTooltip term="Qubit">qubit</GlossaryTooltip> loses energy and falls
-        to |0\u27E9, like a ball rolling downhill.
-      </>,
-      'T2 (dephasing): the qubit\u2019s phase information scrambles, like a spinning coin wobbling.',
-      <>
-        Both happen spontaneously \u2014 together they drive{' '}
-        <GlossaryTooltip term="Decoherence">decoherence</GlossaryTooltip> as your circuit runs.
-      </>,
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Concrete numbers:</strong> If T1 = 100&mu;s and your
-        circuit takes 10&mu;s, you lose about 10% fidelity to relaxation alone.
-        Deeper circuits = more noise.</p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>T2 &le; 2&middot;T1 always. Dephasing is usually the dominant error source.
-        Current superconducting qubits have T1 ~ 50&ndash;300&mu;s. Gate times are ~20&ndash;50ns,
-        so you can run ~1,000&ndash;5,000 gates before coherence is lost.</p>
-        <p>The fidelity decay follows an exponential:
-        <InlineMath>{'F(t) = e^{-t/T}'}</InlineMath> where T is either T1 or T2.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'What happens to a qubit as T2 time passes?',
-      choices: [
-        'It gains energy',
-        'It splits into two qubits',
-        'Its phase information scrambles',
-        'It becomes entangled with nearby qubits',
-      ],
-      correct: 2,
-    },
-  },
-  {
-    title: 'No-Cloning Theorem',
-    hook: 'You Cannot Copy a Qubit',
-    hookSub: 'This isn\u2019t a technology limitation \u2014 it\u2019s a fundamental law of quantum mechanics.',
-    visual: <NoCloningVisual />,
-    bullets: [
-      'You cannot copy an unknown quantum state \u2014 this is a fundamental law of physics.',
-      'Cloning |0\u27E9 or |1\u27E9 works fine (just use CNOT). But cloning a superposition fails.',
-      'This isn\u2019t a technology limitation \u2014 it\u2019s mathematically impossible, proven from linearity of quantum mechanics.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Why it matters:</strong> If you could clone qubits,
-        you could break entanglement-based cryptography and violate the uncertainty principle.
-        Nature prevents it.</p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>Proof sketch &mdash; suppose a unitary U clones:</p>
-        <MathDisplay>{'U|\\psi\\rangle|0\\rangle = |\\psi\\rangle|\\psi\\rangle'}</MathDisplay>
-        <p>For two states <InlineMath>{'|\\psi\\rangle'}</InlineMath> and <InlineMath>{'|\\phi\\rangle'}</InlineMath>,
-        taking inner products gives:</p>
-        <MathDisplay>{'\\langle\\psi|\\phi\\rangle = (\\langle\\psi|\\phi\\rangle)^2'}</MathDisplay>
-        <p>This only holds if <InlineMath>{'\\langle\\psi|\\phi\\rangle = 0'}</InlineMath> or{' '}
-        <InlineMath>{'\\langle\\psi|\\phi\\rangle = 1'}</InlineMath>.
-        So only orthogonal or identical states can be cloned.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'Why can\u2019t you copy an arbitrary qubit state?',
-      choices: [
-        'Linearity of quantum mechanics makes it mathematically impossible',
-        'We haven\u2019t built good enough hardware yet',
-        'Qubits are too small to measure',
-        'Entanglement prevents copying',
-      ],
-      correct: 0,
-    },
-  },
-  {
-    title: 'Repetition-Code Intuition',
-    hook: 'Outvote the Noise',
-    hookSub: 'The simplest error correction idea: store your bit three times and let majority rule.',
-    visual: <RepetitionCodeVisual />,
-    bullets: [
-      'Classical repetition: store 0 as 000, store 1 as 111. If one bit flips, majority vote fixes it.',
-      'Quantum version: encode |0\u27E9 as |000\u27E9 and |1\u27E9 as |111\u27E9 using CNOT gates.',
-      'Can\u2019t just \u201Clook\u201D at qubits (measurement destroys superposition), so use ancilla qubits to detect errors without reading the data.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white"><GlossaryTooltip term="Error Correction">Error correction</GlossaryTooltip> in action:</strong> Encode |0&#x27E9;
-        &rarr; |000&#x27E9;. If noise flips qubit 2: |010&#x27E9;. Syndrome measurement detects
-        &ldquo;qubit 2 differs&rdquo; and flips it back, without ever reading the actual value.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'Why can\u2019t you just measure all qubits to check for errors?',
-      choices: [
-        'It takes too long',
-        'The hardware can\u2019t measure individual qubits',
-        'Measurement would collapse the superposition you\u2019re protecting',
-        'The qubits are entangled',
-      ],
-      correct: 2,
-    },
-  },
-  {
-    title: 'Why Error Correction Is Hard',
-    hook: 'One Logical Qubit Costs a Thousand',
-    hookSub: 'The overhead of quantum error correction is staggering \u2014 and it\u2019s the biggest barrier to useful quantum computing.',
-    visual: <ErrorCorrectionVisual />,
-    bullets: [
-      'Current error rates (~0.1\u20131%) require massive redundancy \u2014 roughly 1,000 physical qubits per logical qubit.',
-      'Surface codes are the leading approach: qubits arranged in a 2D grid with syndrome measurements.',
-      '\u201CFault-tolerant quantum computing\u201D means enough error correction to run arbitrarily long circuits. We\u2019re not there yet.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">A real milestone:</strong> Google&apos;s 2023 result showed
-        that a distance-5 surface code (using 49 qubits) performed better than distance-3 (17 qubits)
-        &mdash; the first time adding more qubits actually helped. This is a key milestone.</p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>The <strong className="text-white">threshold theorem</strong> says if individual gate
-        error rates are below a threshold (~1%), you can do arbitrarily long computations by adding
-        more qubits.</p>
-        <p>Current best 2-qubit gate error rates are ~0.1&ndash;0.5%, tantalizingly close but
-        still requiring huge overhead. The surface code threshold is approximately:</p>
-        <MathDisplay>{'p_{\\text{threshold}} \\approx 1\\%'}</MathDisplay>
-        <p>Below this threshold, increasing the code distance d exponentially suppresses the
-        logical error rate: <InlineMath>{'p_L \\sim (p/p_{\\text{th}})^{d/2}'}</InlineMath>.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'Approximately how many physical qubits are needed for one logical qubit with current error rates?',
-      choices: [
-        '2',
-        '10',
-        '~1,000',
-        '1 million',
-      ],
-      correct: 2,
-    },
-  },
-]
-
 /* ── Module Page ──────────────────────────────────────────────────────────── */
 
 export default function Noise() {
-  const [step, setStep] = useState(0)
-  const { markDone, markLessonPassed, getLessonPassed, completed } = useProgress()
-  const passed = getLessonPassed('noise', LESSONS.length)
-  const allPassed = passed.every(Boolean)
-  const lesson = LESSONS[step]
-
-  useEffect(() => {
-    if (allPassed && !completed['noise']) markDone('noise')
-  }, [allPassed])
-
-  function handleQuizPass() {
-    markLessonPassed('noise', step)
-  }
-
   return (
     <ModuleLayout
       moduleId="noise"
       title="Noise & Hardware"
-      subtitle="Why real qubits are hard."
-      stepInfo={{ current: step, total: LESSONS.length, passed }}
+      subtitle="Why real qubits are hard — how noise, decoherence, and the no-cloning theorem shape what current hardware can and cannot do."
       prev={{ to: '/labs', label: 'Module 12: Qiskit Labs' }}
       next={{ to: '/usecases', label: 'Module 14: Use Cases' }}
+      outline={NOISE_OUTLINE}
+      aside={<NoiseSupport />}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.2 }}
+      <div className="prose-quantum max-w-none">
+        <p>
+          Every circuit in the previous module ran on a noise-free simulator. Real hardware does not offer that
+          guarantee: physical qubits lose energy, lose phase coherence, and produce measurement outcomes that an
+          ideal circuit would never produce.
+        </p>
+        <p>
+          This chapter quantifies that gap, states the{' '}
+          <Keyword tone="unitary">no-cloning theorem</Keyword> that limits how errors can even be detected, and
+          introduces the repetition-code idea behind quantum error correction &mdash; along with why its overhead
+          is the central obstacle to useful, large-scale quantum computing today.
+        </p>
+      </div>
+
+      <div className="mt-8 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <PrereqList
+          items={[
+            'Comfort simulating a circuit and reading measurement counts from Qiskit Labs.',
+            'The Bell state and its ideal 50/50 measurement statistics.',
+            'Basic familiarity with superposition and why measurement destroys it.',
+          ]}
         >
-          <LessonCard
-            lesson={lesson}
-            lessonIndex={step}
-            totalLessons={LESSONS.length}
-            isPassed={passed[step]}
-            onPass={handleQuizPass}
-            bulletStyle={MODULE_LAYOUT_STYLES.noise.bullet}
+          If simulated measurement statistics still feel unfamiliar, review{' '}
+          <Link to="/labs" className="text-slate-300 transition-colors hover:text-white">
+            Qiskit Labs
+          </Link>{' '}
+          before comparing them against the noisier statistics real hardware actually produces.
+        </PrereqList>
+
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+          <p className="section-label">Learning Objectives</p>
+          <ul className="chapter-list mt-3 space-y-2">
+            <li>Explain why real hardware measurement statistics differ from ideal simulator output.</li>
+            <li>Define T1 and T2 and estimate a fidelity loss from a given decoherence time.</li>
+            <li>State the no-cloning theorem and its consequence for detecting errors.</li>
+            <li>Explain why current physical-to-logical qubit overhead is so large.</li>
+          </ul>
+        </div>
+      </div>
+
+      <section id="noise-ideal-vs-real" className="mt-10 scroll-mt-28">
+        <p className="section-label">Section 1</p>
+        <h2 className="section-heading">Ideal simulators vs. real hardware</h2>
+        <p className="section-sub">
+          A perfect simulator always returns the outcomes an ideal circuit predicts. Real quantum hardware
+          introduces error at every step, and that error shows up directly in the measurement statistics.
+        </p>
+
+        <DefinitionBox term="Hardware Noise">
+          <Keyword tone="qubit">Hardware noise</Keyword> refers to unwanted physical effects — stray bit flips,
+          phase errors, and measurement mistakes — that cause a real device's output distribution to diverge from
+          the distribution an ideal, noise-free circuit predicts.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <IdealVsRealVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: The Same Bell Circuit, Two Outputs">
+            <p>
+              On a simulator: <span className="font-mono text-green-300">{'{"00": 500, "11": 500}'}</span>. On real
+              hardware: <span className="font-mono text-amber-300">{'{"00": 472, "11": 481, "01": 28, "10": 19}'}</span>.
+              The circuit is identical in both cases — the noise itself creates the outcomes that an ideal Bell
+              state should never produce.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            Seeing <span className="font-mono">|01&#x27E9;</span> or{' '}
+            <span className="font-mono">|10&#x27E9;</span> from a Bell circuit on real hardware does not mean the
+            circuit was built incorrectly. It is ordinary evidence of hardware noise, and it grows worse as
+            circuits get deeper.
+          </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <VideoAside
+            title="Mitigating Noise in Quantum Hardware — Part 1"
+            description="A Qiskit Seminar Series talk on where noise comes from on real quantum hardware and how to work around it — a deeper companion to this section's introduction."
+            source="Qiskit"
+            videoId="Dv5cqB87nqk"
           />
+        </div>
+      </section>
 
-          {step === LESSONS.length - 1 && allPassed && (
-            <div className="mt-6 p-5 rounded-2xl bg-green-950/30 border border-green-800/40 text-center">
-              <div className="text-2xl mb-2">&#127881;</div>
-              <p className="text-green-300 font-semibold">Module 12 complete.</p>
-              <p className="text-slate-400 text-sm mt-1">One module left &mdash; where quantum actually matters.</p>
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+      <section id="noise-decoherence" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 2</p>
+        <h2 className="section-heading">Noise and decoherence</h2>
+        <p className="section-sub">
+          Two characteristic timescales, T1 and T2, describe how quickly a qubit's quantum information leaks into
+          its environment even when no gate is being applied.
+        </p>
 
-      <div className="mt-6">
-        <VideoAside
-          title="Mitigating Noise in Quantum Hardware — Part 1"
-          description="A Qiskit Seminar Series talk on where noise comes from on real quantum hardware and how to work around it — a deeper companion to this module's introduction."
-          source="Qiskit"
-          videoId="Dv5cqB87nqk"
+        <DefinitionBox term="T1 and T2">
+          T1 (relaxation) measures how quickly a qubit loses energy and falls toward{' '}
+          <InlineMath>{'|0\\rangle'}</InlineMath>. T2 (dephasing) measures how quickly its relative phase
+          information scrambles. Both processes drive{' '}
+          <GlossaryTooltip term="Decoherence"><Keyword tone="unitary">decoherence</Keyword></GlossaryTooltip> as a
+          circuit runs, whether or not a gate is actively applied.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <NotationBox symbol="F(t) = e^(−t/T)">
+            Fidelity decays exponentially with elapsed time <InlineMath>{'t'}</InlineMath>, where{' '}
+            <InlineMath>{'T'}</InlineMath> is either T1 or T2. Longer circuits accumulate more decay before
+            measurement.
+          </NotationBox>
+        </div>
+
+        <div className="mt-6">
+          <DecoherenceVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: Estimating Fidelity Loss">
+            <p>
+              If T1 = 100&mu;s and a circuit takes 10&mu;s to run,{' '}
+              <InlineMath>{'F = e^{-10/100} \\approx 0.90'}</InlineMath> — about 10% fidelity lost to relaxation
+              alone, before accounting for T2 or gate errors. Deeper circuits lose proportionally more.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <ExpandableAside title="Optional: how many gates fit before coherence is lost" label="Technical Aside">
+            <p>
+              T2 is always at most <InlineMath>{'2 \\cdot T1'}</InlineMath>, and dephasing is usually the dominant
+              error source in practice. Current superconducting qubits typically have{' '}
+              <InlineMath>{'T1 \\sim 50\\text{–}300\\,\\mu s'}</InlineMath>. With gate times around 20&ndash;50
+              nanoseconds, that allows roughly 1,000&ndash;5,000 gates before coherence is effectively lost.
+            </p>
+          </ExpandableAside>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            Decoherence is continuous, not something that only happens during measurement. A qubit sitting idle
+            mid-circuit is still losing fidelity the entire time.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="noise-nocloning" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 3</p>
+        <h2 className="section-heading">The no-cloning theorem</h2>
+        <p className="section-sub">
+          Before error correction can be discussed, one constraint has to be stated precisely: an unknown quantum
+          state cannot be copied, by any device, ever.
+        </p>
+
+        <DefinitionBox term="No-Cloning Theorem">
+          No unitary operation can map an arbitrary, unknown state{' '}
+          <InlineMath>{'|\\psi\\rangle'}</InlineMath> to two copies of itself,{' '}
+          <InlineMath>{'|\\psi\\rangle|\\psi\\rangle'}</InlineMath>, for every possible{' '}
+          <InlineMath>{'|\\psi\\rangle'}</InlineMath>. This is a proven mathematical consequence of the linearity
+          of quantum mechanics, not a limitation of current technology.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <NoCloningVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Why This Matters">
+            <p>
+              If arbitrary qubits could be cloned, entanglement-based protocols such as quantum key distribution
+              could be broken by an eavesdropper silently copying transmitted qubits, and the uncertainty principle
+              could be circumvented by measuring many copies of the same unknown state in different bases. Nature
+              rules both out.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <ExpandableAside title="Optional: proof sketch" label="Proof Sketch">
+            <p>Suppose a unitary <InlineMath>{'U'}</InlineMath> could clone an arbitrary state:</p>
+            <MathDisplay>{'U|\\psi\\rangle|0\\rangle = |\\psi\\rangle|\\psi\\rangle'}</MathDisplay>
+            <p>
+              For two states <InlineMath>{'|\\psi\\rangle'}</InlineMath> and{' '}
+              <InlineMath>{'|\\phi\\rangle'}</InlineMath>, applying this to both and taking the inner product of the
+              results gives:
+            </p>
+            <MathDisplay>{'\\langle\\psi|\\phi\\rangle = (\\langle\\psi|\\phi\\rangle)^2'}</MathDisplay>
+            <p>
+              This equation only holds when <InlineMath>{'\\langle\\psi|\\phi\\rangle = 0'}</InlineMath> (orthogonal
+              states) or <InlineMath>{'\\langle\\psi|\\phi\\rangle = 1'}</InlineMath> (identical states). A general
+              unitary cloning machine that works for every pair of states cannot exist.
+            </p>
+          </ExpandableAside>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            This is the same limit behind the teleportation clarification in{' '}
+            <Link to="/labs" className="text-slate-300 transition-colors hover:text-white">
+              Qiskit Labs
+            </Link>
+            : teleportation can move a state to a new qubit, but it destroys the original in the process — it
+            never produces a second, independent copy.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="noise-repetition" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 4</p>
+        <h2 className="section-heading">Repetition-code intuition</h2>
+        <p className="section-sub">
+          Classical error correction has a simple answer to noise: redundancy and majority vote. The quantum
+          version reuses that idea, with one essential modification forced by measurement.
+        </p>
+
+        <DefinitionBox term="Repetition Code">
+          A classical <Keyword tone="unitary">repetition code</Keyword> stores a bit redundantly — 0 as 000, 1 as
+          111 — so a single flipped bit can be identified and corrected by majority vote. The quantum version
+          encodes <InlineMath>{'|0\\rangle'}</InlineMath> as <InlineMath>{'|000\\rangle'}</InlineMath> and{' '}
+          <InlineMath>{'|1\\rangle'}</InlineMath> as <InlineMath>{'|111\\rangle'}</InlineMath> using CNOT gates.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <RepetitionCodeVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: Correcting a Single Flip">
+            <p>
+              Encode <InlineMath>{'|0\\rangle \\to |000\\rangle'}</InlineMath>. If noise flips qubit 2, the state
+              becomes <InlineMath>{'|010\\rangle'}</InlineMath>. A{' '}
+              <GlossaryTooltip term="Error Correction"><Keyword tone="unitary">syndrome measurement</Keyword></GlossaryTooltip>{' '}
+              can detect "qubit 2 differs" and flip it back — without ever directly reading the logical value being
+              protected.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            The data qubits cannot simply be measured to check for errors, since measurement collapses the
+            superposition being protected. Ancilla qubits carry out syndrome measurement instead, extracting only
+            "which qubit disagrees," never the encoded value itself.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="noise-overhead" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 5</p>
+        <h2 className="section-heading">Why error correction is hard</h2>
+        <p className="section-sub">
+          Real error-correcting codes need far more redundancy than three qubits, and that overhead — not
+          algorithm design — is the single biggest barrier to large-scale, fault-tolerant quantum computing today.
+        </p>
+
+        <DefinitionBox term="Fault Tolerance">
+          A quantum computer is <Keyword tone="unitary">fault-tolerant</Keyword> once its error correction is
+          strong enough to run arbitrarily long computations reliably. The threshold theorem states that below a
+          critical physical error rate, adding more physical qubits per logical qubit suppresses the logical error
+          rate arbitrarily far.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <NotationBox symbol="p_threshold ≈ 1%     p_L ~ (p / p_threshold)^(d/2)">
+            Below the surface-code threshold of roughly 1%, increasing the code distance{' '}
+            <InlineMath>{'d'}</InlineMath> exponentially suppresses the logical error rate{' '}
+            <InlineMath>{'p_L'}</InlineMath>. Current best two-qubit gate error rates, around 0.1&ndash;0.5%, are
+            close to this threshold but still require substantial overhead.
+          </NotationBox>
+        </div>
+
+        <div className="mt-6">
+          <ErrorCorrectionVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="A Real Milestone">
+            <p>
+              Google's 2023 result showed a distance-5 surface code (49 physical qubits) outperforming a
+              distance-3 code (17 physical qubits) — the first experimental demonstration that adding more qubits
+              to a code actually reduces its logical error rate, rather than just adding overhead.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            "Fault-tolerant" and "useful today" are not the same claim. Current devices operate in the
+            noisy, non-error-corrected regime — a constraint the next module takes as a given when surveying where
+            quantum computing is and is not useful right now.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="noise-mistakes" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 6</p>
+        <h2 className="section-heading">Common mistakes</h2>
+        <p className="section-sub">
+          Most confusion in this chapter comes from underestimating how fundamental these limits are, or from
+          misreading noisy output as a sign of a broken circuit.
+        </p>
+
+        <MistakesBox
+          items={[
+            {
+              mistake: 'Assuming a Bell circuit producing |01⟩ or |10⟩ on hardware means the circuit was built incorrectly.',
+              clarification:
+                'An ideal Bell circuit is identical whether run on a simulator or real hardware. The unexpected outcomes come from noise, not from a logic error in the circuit itself.',
+            },
+            {
+              mistake: 'Treating decoherence as something that only happens during measurement.',
+              clarification:
+                'T1 and T2 decay happen continuously while a qubit exists, including while it sits idle mid-circuit — not only at the moment it is read out.',
+            },
+            {
+              mistake: 'Believing quantum error correction reads the data qubits directly to check for mistakes.',
+              clarification:
+                'Doing so would collapse the superposition being protected. Ancilla-based syndrome measurement extracts only which qubit disagrees, never the encoded value.',
+            },
+            {
+              mistake: 'Treating the no-cloning theorem as a hardware gap that better engineering will eventually close.',
+              clarification:
+                'No-cloning is a proven mathematical consequence of the linearity of quantum mechanics. It cannot be engineered around, on any hardware, ever.',
+            },
+          ]}
+        />
+      </section>
+
+      <div className="mt-10">
+        <SummaryBox
+          points={[
+            'Real hardware departs from ideal simulator statistics because of noise: unwanted bit flips, phase errors, and measurement mistakes.',
+            "T1 (relaxation) and T2 (dephasing) characterize how quickly a qubit's fidelity decays, and both are finite — a practical limit on circuit depth.",
+            'The no-cloning theorem proves an unknown quantum state cannot be copied — a mathematical fact, not an engineering limitation.',
+            'Quantum error correction adapts the classical repetition-code idea using ancilla qubits, since directly measuring the data would destroy the superposition it protects.',
+            'Below the fault-tolerance threshold, more physical qubits can suppress the logical error rate — but current overhead is roughly 1,000 physical qubits per logical qubit.',
+          ]}
         />
       </div>
 
-      <StepNav
-        steps={LESSONS.length}
-        current={step}
-        passed={passed}
-        onNext={() => setStep(s => s + 1)}
-        onPrev={() => setStep(s => s - 1)}
-        onGoto={setStep}
-      />
+      <section id="noise-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p className="section-label">Next Steps</p>
+        <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">From hardware limits to real applications</h2>
+        <p className="mt-3 text-sm leading-relaxed text-slate-400">
+          The final module surveys where quantum computing offers genuine promise given today's noisy,
+          non-fault-tolerant hardware — and where the honest answer is still "not yet, and possibly not soon."
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link to="/usecases" className="btn-primary">
+            Continue to Use Cases
+          </Link>
+          <Link to="/projects/bell-explorer" className="btn-secondary">
+            Try Bell Explorer
+          </Link>
+          <Link to="/references" className="btn-secondary">
+            Open References
+          </Link>
+        </div>
+      </section>
     </ModuleLayout>
   )
 }

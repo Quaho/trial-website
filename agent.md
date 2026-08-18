@@ -1,5 +1,50 @@
 # agent.md — Current Codex Task
 
+## TASK-036 — COMPLETE (2026-08-17)
+Migrate `Noise.jsx` (module 13) off the legacy `LESSONS`/`LessonCard`/
+`StepNav` template onto `ModuleLayout` outline+aside, same pattern as
+TASK-032 through 035. Fifth of the "Advanced" group (modules 9-14). Full
+detail in `TASKS.md`.
+
+7-entry outline (`noise-ideal-vs-real`/`-decoherence`/`-nocloning`/
+`-repetition`/`-overhead`/`-mistakes`/`-next`). All 5 original visuals
+kept in the main flow, reskinned to a neutral
+`border-slate-700/40 bg-slate-900/40` treatment matching noise's
+assigned slate module color (rather than a saturated accent, since slate
+*is* the module color here).
+
+**Cleaned up a real dead-code bug found while migrating**:
+`ErrorCorrectionVisual` had a second dot-grid block whose map result was
+immediately `.slice(0, 0)`'d, so it always rendered nothing — pure dead
+code, removed rather than ported forward.
+
+Genuine connective content added: Section 3 (no-cloning) now links
+directly to `Labs.jsx`'s teleportation clarification (TASK-035) — both
+describe the same underlying limit, move-not-copy, from two different
+angles. Section 5 (error-correction overhead) closes with a remark
+framing "fault-tolerant" versus "useful today" as distinct claims,
+setting up the next module's premise (current hardware is noisy and
+non-error-corrected) explicitly rather than leaving it implicit.
+
+Same stale-completion-banner pattern as every prior task in this series
+("Module 12 complete" on the module-13 page), resolved the same way.
+
+`GlossaryTooltip` terms (`Decoherence`, `Error Correction`) and
+`Keyword` tones (`qubit`, `unitary`) checked against
+`glossary.js`/`Keyword.jsx`'s real data.
+
+Verified: `npm run build` passes (`Noise-*.js`, 31.76kB); grep confirms
+all 7 outline ids match section anchors (empty diff), no legacy imports
+remain, exactly one `VideoAside`, and nothing else in the repo
+references `Noise.jsx` internals. Not yet visually verified in a browser
+(standing project convention).
+
+### What's next
+Use Cases (module 14) is next — the last module in the "Advanced" group
+and the last one on the legacy template overall. Not yet scoped.
+
+---
+
 ## TASK-035 — COMPLETE (2026-08-17)
 Migrate `Labs.jsx` (module 12) off the legacy `LESSONS`/`LessonCard`/
 `StepNav` template onto `ModuleLayout` outline+aside, same pattern as
@@ -182,7 +227,7 @@ in a browser — standing project convention (no Playwright/Chromium
 here).
 
 ### What's next
-Superseded by TASK-035 above — Labs (module 12) has since been
+Superseded by TASK-036 above — Noise (module 13) has since been
 migrated.
 
 ---
