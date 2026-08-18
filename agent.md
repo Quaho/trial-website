@@ -1,5 +1,64 @@
 # agent.md — Current Codex Task
 
+## TASK-032 — COMPLETE (2026-08-17)
+Migrate `Circuits.jsx` (module 9) off the legacy `LESSONS`/`LessonCard`/
+`StepNav` lesson-stepper template onto the current `ModuleLayout`
+outline+aside handbook template — the first of the "Advanced" group
+(modules 9-14, all still legacy) to be migrated, one module at a time per
+user direction. Full detail in `TASKS.md`.
+
+Rewritten to match `Entanglement.jsx`'s established shape: intro
+paragraph, `PrereqList` + Learning Objectives, 7-entry outline
+(`circuits-reading`/`-elements`/`-stepping`/`-bell`/`-code`/`-mistakes`/
+`-next`), `DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox` per
+section, a `MistakesBox` section, `SummaryBox`, and a Next Steps section
+with real `Link`s (`/measurement`, `/projects/first-circuit`,
+`/references`). No `ConceptSection` — circuits is outside the diagnostic
+pilot's 3-module scope, unchanged by this task.
+
+**All 4 of the original page's SVG-diagram interactives were kept, not
+discarded** — CLAUDE.md says keep the best interactive if it materially
+helps, and these do real work. Reskinned to the modern card convention
+(`rounded-2xl border-emerald-800/40 bg-emerald-950/15`, matching
+`circuits`'s assigned module color) but logic untouched:
+`CircuitAnatomyVisual`, `CircuitElementsVisual`, and
+`CircuitStepperVisual` stayed in the main reading flow (sections 1-3);
+`CircuitToCodeVisual` stayed in section 5. **`BellStepperVisual` was
+moved into an `ExpandableAside`** in section 4 rather than kept expanded
+— it substantially overlaps `CircuitStepperVisual` (same H+CNOT circuit)
+and section 4's main flow already has a `MathDisplay` worked example, so
+per CLAUDE.md's "keep only the most important one expanded, move
+supplementary interactives into `ExpandableAside`" this was the one to
+fold, not delete.
+
+**Fixed in passing**: the old page's completion banner read "Module 8
+complete" (stale since TASK-027 renumbered circuits to module 9) — moot
+now, since `ModuleLayout`'s built-in "Mark as Complete" footer replaces
+that custom banner entirely; the stale string no longer exists anywhere
+in this file.
+
+**GlossaryTooltip/Keyword usage checked against real data, not
+assumed**: `GlossaryTooltip` terms used (`Circuit`, `Gate`,
+`Measurement`) all exist verbatim in `glossary.js`; `Keyword` tones used
+(`circuit`, `qubit`, `gate`, `measurement`, `bell`) all exist in
+`Keyword.jsx`'s `KEYWORD_STYLES` map.
+
+Verified: `npm run build` passes (`Circuits-*.js` chunk, 42.01kB, up from
+the legacy version — consistent with real content added, not lost); grep
+confirms all 7 outline `id`s have exactly one matching `id="..."`
+section anchor each; grep confirms no `useProgress`/`LessonCard`/
+`StepNav`/`MODULE_LAYOUT_STYLES` imports remain; grep confirms nothing
+else in the repo imports from `Circuits.jsx`'s internals (only `App.jsx`
+imports it as a route component, unchanged). Not yet visually verified
+in a browser — standing project convention (no Playwright/Chromium
+here).
+
+### What's next
+Measurement (module 10) is the next legacy page in sequence, still not
+scoped — do one module at a time, per user direction, not in this task.
+
+---
+
 ## TASK-019 — COMPLETE (reconciled 2026-08-09)
 Phase 2 structure work. See `TASKS.md`.
 
