@@ -17,6 +17,7 @@ import CodeBlock from '../../components/CodeBlock'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import MentorNote from '../../components/MentorNote'
 import CodeOrdering from '../../components/CodeOrdering'
+import StateTransition from '../../components/StateTransition'
 
 const LABS_OUTLINE = [
   { id: 'labs-create', label: 'Create a circuit' },
@@ -824,9 +825,10 @@ export default function Labs() {
       <div className="mt-10">
         <CodeOrdering
           title="Order the Full Create-Run Recipe"
-          prompt="Arrange these four lines into a working recipe. One of them can only make sense after the circuit is completely built."
+          prompt="One of these four lines only makes sense once the circuit is fully built."
+          visual={<StateTransition from="|00⟩" to="counts ≈ {'00':512,'11':512}" />}
           lines={['qc.h(0)', 'qc.cx(0, 1)', 'qc.measure_all()', 'result = simulator.run(qc).result()']}
-          explanation="The circuit has to be fully described — every gate and the measurement — before you submit it to run(). This is the same 'description first, execution second' idea from the Qiskit module: simulator.run(qc) belongs last because it's not part of the circuit at all, it's the step that executes the circuit you already built."
+          explanation="run() executes what's already built, so it belongs last — same 'description first, execution second' idea as the Qiskit module."
         />
       </div>
 

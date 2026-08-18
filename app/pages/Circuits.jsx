@@ -17,6 +17,7 @@ import GlossaryTooltip from '../../components/GlossaryTooltip'
 import CodeBlock from '../../components/CodeBlock'
 import MentorNote from '../../components/MentorNote'
 import CodeOrdering from '../../components/CodeOrdering'
+import StateTransition from '../../components/StateTransition'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const CIRCUITS_OUTLINE = [
@@ -1032,9 +1033,10 @@ export default function Circuits() {
       <div className="mt-10">
         <CodeOrdering
           title="Order a Bell-Circuit-and-Measure Sequence"
-          prompt="Arrange these three lines into the order a circuit diagram — read left to right — would require."
+          prompt="Left to right, like the diagram itself — arrange these three lines."
+          visual={<StateTransition from="|00⟩" to="00 or 11" />}
           lines={['qc.h(0)', 'qc.cx(0, 1)', 'qc.measure_all()']}
-          explanation="A circuit diagram's left-to-right position is chronological order, and measurement collapses the state — so it has to come after every gate that's supposed to affect the outcome, not before. Putting measure_all() earlier would collapse the qubits to a definite, unentangled value before the Hadamard or CNOT ever ran."
+          explanation="Measurement collapses the state, so it has to come last — after every gate that's supposed to affect the outcome, not before."
         />
       </div>
 
