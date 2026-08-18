@@ -1,5 +1,45 @@
 # agent.md — Current Codex Task
 
+## TASK-035 — COMPLETE (2026-08-17)
+Migrate `Labs.jsx` (module 12) off the legacy `LESSONS`/`LessonCard`/
+`StepNav` template onto `ModuleLayout` outline+aside, same pattern as
+TASK-032/033/034. Fourth of the "Advanced" group (modules 9-14). Full
+detail in `TASKS.md`.
+
+7-entry outline (`labs-create`/`-gates`/`-simulate`/`-bell`/
+`-experiments`/`-mistakes`/`-next`). All 5 original visuals kept in the
+main flow (circuit-setup stepper, gate-by-gate Bell builder, predict/
+reveal simulate visual, end-to-end Bell recipe, mini-experiments
+selector), reskinned to `border-rose-800/40 bg-rose-950/15` (labs'
+assigned color).
+
+**Added one genuine rigor fix, not just a straight port**: the original
+page's "Quantum Teleportation" mini experiment gave code and an outcome
+with zero explanation of the mechanism — exactly the kind of unexplained
+formalism CLAUDE.md warns against. Added an `ExpandableAside` clarifying
+that teleportation moves a state via a Bell pair plus classical
+communication, does not send information faster than light, and
+destroys the original qubit's state per no-cloning — with a forward
+link to `/noise` where no-cloning is covered properly.
+
+Same stale-completion-banner pattern as TASK-032/033/034 ("Module 11
+complete" on the module-12 page), resolved the same way.
+
+`GlossaryTooltip` terms (`Bell State`, `Circuit`, `Gate`) and `Keyword`
+tones (`bell`, `circuit`, `gate`, `qubit`) checked against
+`glossary.js`/`Keyword.jsx`'s real data.
+
+Verified: `npm run build` passes (`Labs-*.js`, 28.96kB); grep confirms
+all 7 outline ids match section anchors (empty diff), no legacy imports
+remain, exactly one `VideoAside`, and nothing else in the repo
+references `Labs.jsx` internals. Not yet visually verified in a browser
+(standing project convention).
+
+### What's next
+Noise (module 13) is next in sequence, not yet scoped.
+
+---
+
 ## TASK-034 — COMPLETE (2026-08-17)
 Migrate `Algorithms.jsx` (module 11) off the legacy `LESSONS`/
 `LessonCard`/`StepNav` template onto `ModuleLayout` outline+aside, same
@@ -142,7 +182,7 @@ in a browser — standing project convention (no Playwright/Chromium
 here).
 
 ### What's next
-Superseded by TASK-034 above — Algorithms (module 11) has since been
+Superseded by TASK-035 above — Labs (module 12) has since been
 migrated.
 
 ---
