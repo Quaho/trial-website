@@ -1,4 +1,4 @@
-import{j as e,L as s}from"./react-vendor-6FjpWRqA.js";import{P as d}from"./ProjectLayout-DU-GcAdX.js";import{C as r}from"./CodeBlock-lpUKH2uE.js";import{G as i}from"./GlossaryTooltip-ZD9o8xaO.js";import{P as n}from"./projects-j8nZ25iw.js";import"./useProgress-bLTNrBuA.js";import"./index-DHQe3dWM.js";import"./icons-C8ehK0sA.js";import"./motion-D_ReD4rz.js";import"./code-Ce8FX6f4.js";import"./glossary-wOOCM0Kt.js";const h=`def classical_search(items, target):
+import{j as e,L as s}from"./react-vendor-6FjpWRqA.js";import{P as d}from"./ProjectLayout-CCvdQS2G.js";import{C as r}from"./CodeBlock-lpUKH2uE.js";import{G as i}from"./GlossaryTooltip-ZD9o8xaO.js";import{P as n}from"./projects-j8nZ25iw.js";import"./useProgress-BHcxIrNe.js";import"./index-B3sOIDW-.js";import"./icons-C8ehK0sA.js";import"./motion-D_ReD4rz.js";import"./code-Ce8FX6f4.js";import"./glossary-wOOCM0Kt.js";const h=`def classical_search(items, target):
     for i, value in enumerate(items):
         if value == target:
             return i

@@ -1,4 +1,4 @@
-import{j as e,L as l}from"./react-vendor-6FjpWRqA.js";import{P as h}from"./ProjectLayout-DU-GcAdX.js";import{C as n}from"./CodeBlock-lpUKH2uE.js";import{G as a}from"./GlossaryTooltip-ZD9o8xaO.js";import{P as r}from"./projects-j8nZ25iw.js";import"./useProgress-bLTNrBuA.js";import"./index-DHQe3dWM.js";import"./icons-C8ehK0sA.js";import"./motion-D_ReD4rz.js";import"./code-Ce8FX6f4.js";import"./glossary-wOOCM0Kt.js";const u=`from qiskit import QuantumCircuit
+import{j as e,L as l}from"./react-vendor-6FjpWRqA.js";import{P as h}from"./ProjectLayout-CCvdQS2G.js";import{C as n}from"./CodeBlock-lpUKH2uE.js";import{G as a}from"./GlossaryTooltip-ZD9o8xaO.js";import{P as r}from"./projects-j8nZ25iw.js";import"./useProgress-BHcxIrNe.js";import"./index-B3sOIDW-.js";import"./icons-C8ehK0sA.js";import"./motion-D_ReD4rz.js";import"./code-Ce8FX6f4.js";import"./glossary-wOOCM0Kt.js";const u=`from qiskit import QuantumCircuit
 
 qc = QuantumCircuit(2, 2)  # 2 qubits, 2 classical bits`,p=`qc.h(0)        # Hadamard -> q0 becomes |+>
 qc.cx(0, 1)    # CNOT: q0 controls q1 -> entangles them`,m=`qc.measure([0, 1], [0, 1])
