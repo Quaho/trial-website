@@ -1,12 +1,55 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
-import LessonCard from '../../components/LessonCard'
-import StepNav from '../../components/StepNav'
+import DefinitionBox from '../../components/DefinitionBox'
+import ExampleBox from '../../components/ExampleBox'
+import RemarkBox from '../../components/RemarkBox'
+import PrereqList from '../../components/PrereqList'
+import Keyword from '../../components/Keyword'
+import RailCard from '../../components/RailCard'
+import SummaryBox from '../../components/SummaryBox'
+import MistakesBox from '../../components/MistakesBox'
+import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
-import { useProgress } from '../../lib/hooks/useProgress'
-import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
+import MentorNote from '../../components/MentorNote'
+
+const USECASES_OUTLINE = [
+  { id: 'usecases-chemistry', label: 'Chemistry & materials' },
+  { id: 'usecases-optimization', label: 'Optimization' },
+  { id: 'usecases-cryptography', label: 'Cryptography' },
+  { id: 'usecases-ml', label: 'Machine learning: promise vs. reality' },
+  { id: 'usecases-limitations', label: 'Current limitations' },
+  { id: 'usecases-mistakes', label: 'Common mistakes' },
+  { id: 'usecases-next', label: 'Where to go from here' },
+]
+
+function UseCasesSupport() {
+  return (
+    <>
+      <RailCard label="Key Numbers" title="What To Recognize">
+        <ul className="space-y-2">
+          <li><span className="font-mono text-lime-300">~2,000</span> logical qubits: estimated cost of simulating FeMoCo.</li>
+          <li><span className="font-mono text-lime-300">~4,000</span> logical qubits (~4M physical): estimated cost of breaking RSA-2048.</li>
+          <li><span className="font-mono text-lime-300">~1,000x / ~100x</span>: today's gap in qubit count / error rate versus fault-tolerant hardware.</li>
+        </ul>
+      </RailCard>
+
+      <RailCard label="Reading Lens" title="Reading Advantage Claims Critically">
+        <ul className="space-y-2">
+          <li>Every claim in this chapter is qualified by a timeline — "promising" is not the same as "available now."</li>
+          <li>Quantum advantage is problem-specific, not a blanket property of quantum computers.</li>
+          <li>The honest picture is more useful than the exciting one.</li>
+        </ul>
+        <div className="mt-4 flex flex-col gap-2">
+          <Link to="/roadmap" className="btn-secondary justify-center">Review Study Paths</Link>
+          <Link to="/glossary" className="btn-ghost justify-center">Open Glossary</Link>
+        </div>
+      </RailCard>
+    </>
+  )
+}
 
 /* ── Visuals ──────────────────────────────────────────────────────────────── */
 
@@ -15,7 +58,7 @@ function ChemistryVisual() {
 
   const molecules = [
     {
-      name: 'H\u2082',
+      name: 'H₂',
       formula: 'Hydrogen',
       qubits: 2,
       difficulty: 'easy',
@@ -26,7 +69,7 @@ function ChemistryVisual() {
     },
     {
       name: 'Caffeine',
-      formula: 'C\u2088H\u2081\u2080N\u2084O\u2082',
+      formula: 'C₈H₁₀N₄O₂',
       qubits: 160,
       difficulty: 'hard',
       color: 'bg-amber-500/70',
@@ -36,23 +79,22 @@ function ChemistryVisual() {
     },
     {
       name: 'FeMoCo',
-      formula: 'Fe\u2087MoS\u2089C',
+      formula: 'Fe₇MoS₉C',
       qubits: 2000,
       difficulty: 'impossible',
       color: 'bg-red-500/70',
       barWidth: '100%',
       classical: 'Classically impossible',
-      desc: '~2,000 logical qubits. Would need ~10\u2074\u2078 classical bits. Key to nitrogen fixation.',
+      desc: '~2,000 logical qubits. Would need ~10⁴⁸ classical bits. Key to nitrogen fixation.',
     },
   ]
 
   return (
-    <div className="card border-lime-800/30 my-6">
-      <p className="text-xs text-lime-400 uppercase tracking-wider mb-4 text-center">
-        Molecular simulation — complexity vs qubits
-      </p>
+    <div className="rounded-2xl border border-lime-800/40 bg-lime-950/15 p-5">
+      <p className="section-label text-lime-400">Interactive Diagram</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Molecular Simulation — Complexity vs. Qubits</h3>
 
-      <div className="space-y-3 mb-4">
+      <div className="mt-4 space-y-3">
         {molecules.map((mol, i) => (
           <button
             key={mol.name}
@@ -109,7 +151,7 @@ function ChemistryVisual() {
         ))}
       </div>
 
-      <p className="text-xs text-slate-500 text-center">
+      <p className="text-xs text-slate-500 text-center mt-4">
         Click a molecule to learn more. Every electron roughly doubles the classical cost.
       </p>
     </div>
@@ -121,18 +163,17 @@ function OptimizationVisual() {
 
   const landscapePoints = [3, 5, 2, 7, 4, 8, 3, 6, 2, 9, 5, 4, 6, 3, 7, 4]
 
-  const classicalPos = 7 // stuck at local minimum index 6 (value 3)
-  const quantumPos = 9  // found global maximum index 9 (value 9)
+  const classicalPos = 7
+  const quantumPos = 9
 
   const currentPos = approach === 'classical' ? classicalPos : quantumPos
 
   return (
-    <div className="card border-lime-800/30 my-6">
-      <p className="text-xs text-lime-400 uppercase tracking-wider mb-4 text-center">
-        Optimization landscape — classical vs quantum search
-      </p>
+    <div className="rounded-2xl border border-lime-800/40 bg-lime-950/15 p-5">
+      <p className="section-label text-lime-400">Interactive Diagram</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Optimization Landscape — Classical vs. Quantum Search</h3>
 
-      <div className="flex gap-2 justify-center mb-5">
+      <div className="mt-4 flex gap-2 justify-center">
         {[
           { key: 'classical', label: 'Classical' },
           { key: 'quantum', label: 'Quantum' },
@@ -152,8 +193,7 @@ function OptimizationVisual() {
         ))}
       </div>
 
-      {/* Landscape visualization */}
-      <div className="relative bg-slate-900/60 rounded-xl p-4 mb-4">
+      <div className="relative bg-slate-900/60 rounded-xl p-4 mt-4">
         <div className="flex items-end gap-[2px] h-32 justify-center">
           {landscapePoints.map((val, i) => (
             <div key={i} className="relative flex flex-col items-center">
@@ -163,7 +203,7 @@ function OptimizationVisual() {
                   animate={{ y: 0, opacity: 1 }}
                   className={`text-xs mb-1 ${approach === 'classical' ? 'text-amber-400' : 'text-lime-400'}`}
                 >
-                  {approach === 'classical' ? '\u25BC stuck' : '\u25BC best'}
+                  {approach === 'classical' ? '▼ stuck' : '▼ best'}
                 </motion.div>
               )}
               <motion.div
@@ -188,20 +228,20 @@ function OptimizationVisual() {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
-          className="text-center"
+          className="text-center mt-4"
         >
           {approach === 'classical' ? (
             <div>
               <p className="text-sm text-amber-400 font-medium">Classical: stuck in a local minimum</p>
               <p className="text-xs text-slate-500 mt-1">
-                Gradient descent gets trapped. Can't "see" past the surrounding hills.
+                Gradient descent gets trapped. It cannot "see" past the surrounding hills.
               </p>
             </div>
           ) : (
             <div>
               <p className="text-sm text-lime-400 font-medium">Quantum: can tunnel through barriers</p>
               <p className="text-xs text-slate-500 mt-1">
-                Quantum tunneling and superposition help explore more broadly — but speedup is modest, not exponential.
+                Quantum tunneling and superposition help explore more broadly — but the speedup is modest, not exponential.
               </p>
             </div>
           )}
@@ -215,16 +255,15 @@ function CryptographyVisual() {
   const [panel, setPanel] = useState('threat')
 
   return (
-    <div className="card border-lime-800/30 my-6">
-      <p className="text-xs text-lime-400 uppercase tracking-wider mb-4 text-center">
-        Quantum cryptography — threat and opportunity
-      </p>
+    <div className="rounded-2xl border border-lime-800/40 bg-lime-950/15 p-5">
+      <p className="section-label text-lime-400">Interactive Diagram</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Quantum Cryptography — Threat and Opportunity</h3>
 
-      <div className="flex gap-2 justify-center mb-5">
+      <div className="mt-4 flex gap-2 justify-center">
         {[
-          { key: 'threat', label: 'Threat', icon: '\u26A0\uFE0F' },
-          { key: 'opportunity', label: 'Opportunity', icon: '\uD83D\uDD12' },
-        ].map(({ key, label, icon }) => (
+          { key: 'threat', label: 'Threat' },
+          { key: 'opportunity', label: 'Opportunity' },
+        ].map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setPanel(key)}
@@ -237,7 +276,7 @@ function CryptographyVisual() {
                 : 'bg-slate-800 border-slate-700/50 text-slate-400 hover:text-white focus-visible:outline-slate-400'}`}
             aria-label={`View ${label} panel`}
           >
-            <span className="mr-1">{icon}</span> {label}
+            {label}
           </button>
         ))}
       </div>
@@ -248,6 +287,7 @@ function CryptographyVisual() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
+          className="mt-4"
         >
           {panel === 'threat' ? (
             <div className="bg-red-950/20 rounded-xl border border-red-800/30 p-5">
@@ -280,7 +320,7 @@ function CryptographyVisual() {
                 </div>
 
                 <p className="text-xs text-slate-500 text-center">
-                  Timeline: 10-30+ years. Current machines: ~1,000 noisy qubits.
+                  Timeline: 10&ndash;30+ years. Current machines: ~1,000 noisy qubits.
                 </p>
               </div>
             </div>
@@ -318,7 +358,7 @@ function CryptographyVisual() {
                 </div>
 
                 <p className="text-xs text-slate-500 text-center">
-                  Post-quantum cryptography (classical, quantum-resistant) is also being standardized by NIST.
+                  Post-quantum cryptography (classical, quantum-resistant algorithms) is also being standardized by NIST.
                 </p>
               </div>
             </div>
@@ -345,7 +385,7 @@ function MLRealityVisual() {
       label: 'Theoretical Only',
       color: 'bg-amber-500/70',
       textColor: 'text-amber-400',
-      desc: 'Quantum kernels exist but haven\'t beaten classical ML on real-world tasks.',
+      desc: "Quantum kernels exist but haven't beaten classical ML on real-world tasks.",
     },
     {
       name: 'QML Training',
@@ -368,13 +408,11 @@ function MLRealityVisual() {
   const [expanded, setExpanded] = useState(null)
 
   return (
-    <div className="card border-lime-800/30 my-6">
-      <p className="text-xs text-lime-400 uppercase tracking-wider mb-4 text-center">
-        Quantum ML realism meter
-      </p>
+    <div className="rounded-2xl border border-lime-800/40 bg-lime-950/15 p-5">
+      <p className="section-label text-lime-400">Interactive Diagram</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Quantum ML Realism Meter</h3>
 
-      {/* Legend */}
-      <div className="flex items-center justify-center gap-4 mb-5 text-xs text-slate-500">
+      <div className="mt-4 flex items-center justify-center gap-4 mb-1 text-xs text-slate-500">
         <span className="flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-red-500/70" /> Overhyped
         </span>
@@ -386,7 +424,7 @@ function MLRealityVisual() {
         </span>
       </div>
 
-      <div className="space-y-3">
+      <div className="mt-4 space-y-3">
         {categories.map((cat, i) => (
           <button
             key={cat.name}
@@ -438,56 +476,34 @@ function LimitationsVisual() {
       label: 'Qubits Available',
       value: '1,000+',
       sub: 'Noisy, physical qubits',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <circle cx="12" cy="12" r="3" />
-          <path d="M12 2v4m0 12v4m-10-10h4m12 0h4m-3.5-7.5-2.8 2.8m-5.4 5.4-2.8 2.8m0-11.2 2.8 2.8m5.4 5.4 2.8 2.8" />
-        </svg>
-      ),
       color: 'text-lime-400 border-lime-700/40 bg-lime-900/20',
     },
     {
       label: 'Gate Error Rate',
-      value: '~0.1-1%',
+      value: '~0.1–1%',
       sub: 'Per two-qubit gate',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-        </svg>
-      ),
       color: 'text-amber-400 border-amber-700/40 bg-amber-900/20',
     },
     {
       label: 'Useful Depth',
       value: '~100',
       sub: 'Gate layers before noise dominates',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-        </svg>
-      ),
       color: 'text-sky-400 border-sky-700/40 bg-sky-900/20',
     },
     {
       label: 'Fault-Tolerant',
-      value: '10-20+ yr',
+      value: '10–20+ yr',
       sub: 'Estimated timeline',
-      icon: (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-        </svg>
-      ),
       color: 'text-violet-400 border-violet-700/40 bg-violet-900/20',
     },
   ]
 
   return (
-    <div className="card border-lime-800/30 my-6">
-      <p className="text-xs text-lime-400 uppercase tracking-wider mb-4 text-center">
-        Current state of quantum computing — key metrics
-      </p>
+    <div className="rounded-2xl border border-lime-800/40 bg-lime-950/15 p-5">
+      <p className="section-label text-lime-400">Reference Table</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Current State of Quantum Computing — Key Metrics</h3>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="mt-4 grid grid-cols-2 gap-3">
         {metrics.map((m, i) => (
           <motion.div
             key={m.label}
@@ -496,7 +512,6 @@ function LimitationsVisual() {
             transition={{ duration: 0.3, delay: i * 0.1 }}
             className={`rounded-xl border p-4 text-center ${m.color}`}
           >
-            <div className="flex justify-center mb-2 opacity-70">{m.icon}</div>
             <p className="text-xl font-bold font-mono">{m.value}</p>
             <p className="text-xs text-white/80 font-medium mt-1">{m.label}</p>
             <p className="text-xs text-slate-500 mt-1">{m.sub}</p>
@@ -519,279 +534,392 @@ function LimitationsVisual() {
           <div className="absolute top-1/2 -translate-y-1/2 left-[18%] w-2 h-2 rounded-full bg-lime-400 border-2 border-slate-900" />
         </div>
         <p className="text-xs text-slate-500 text-center mt-2">
-          We are here. The gap is ~1,000x in qubits and ~100x in error reduction.
+          We are here. The gap is roughly 1,000x in qubits and 100x in error reduction.
         </p>
       </div>
     </div>
   )
 }
 
-/* ── Lessons ──────────────────────────────────────────────────────────────── */
-
-const LESSONS = [
-  {
-    title: 'Chemistry & Materials',
-    hook: 'Simulating nature is what quantum was born to do.',
-    hookSub: 'Molecules are quantum systems. Only a quantum computer can simulate them efficiently.',
-    visual: <ChemistryVisual />,
-    bullets: [
-      'Simulating molecules is exponentially hard for classical computers \u2014 every electron doubles the complexity.',
-      <>
-        Quantum computers can simulate quantum systems naturally \u2014 including{' '}
-        <GlossaryTooltip term="Entanglement">entanglement</GlossaryTooltip>, which is what makes many
-        molecules hard to model classically.
-      </>,
-      'Drug discovery, battery design, and fertilizer production could all benefit from better molecular simulation.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p>
-          <strong className="text-white">FeMoCo catalyst:</strong> Simulating the FeMoCo molecule
-          (used in nitrogen fixation for fertilizer) would require ~10<sup>48</sup> classical bits
-          but only ~2,000 logical qubits. This single molecule could revolutionize fertilizer
-          production and reduce ~2% of global energy consumption.
-        </p>
-      </div>
-    ),
-    quiz: {
-      question: 'Why are quantum computers naturally good at simulating molecules?',
-      choices: [
-        'They\'re faster at all calculations',
-        'Molecules are quantum systems, so quantum computers simulate them naturally',
-        'They have more memory',
-        'Classical computers can\'t do chemistry at all',
-      ],
-      correct: 1,
-    },
-  },
-  {
-    title: 'Optimization',
-    hook: 'Finding the best solution among billions of possibilities.',
-    hookSub: 'Quantum approaches explore solution spaces differently \u2014 but advantage is limited.',
-    visual: <OptimizationVisual />,
-    bullets: [
-      'Many real-world problems are about finding the best solution among astronomically many options.',
-      <>
-        Quantum approaches like QAOA and quantum annealing explore solution spaces differently using
-        effects such as <GlossaryTooltip term="Superposition">superposition</GlossaryTooltip> \u2014 but
-        proven advantage is limited.
-      </>,
-      'Logistics, finance, and scheduling are the most-hyped applications, but classical algorithms are strong competitors.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p>
-          <strong className="text-white">Traveling salesman:</strong> Find the shortest route visiting
-          N cities. For 20 cities, there are ~10<sup>18</sup> possible routes. Quantum won't solve
-          this exponentially faster \u2014 but may offer modest speedups for structured variants.
-        </p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>
-          QAOA (Quantum Approximate Optimization Algorithm) is a hybrid classical-quantum
-          approach: a quantum circuit proposes solutions, a classical optimizer tunes the circuit.
-          Results so far show that QAOA struggles to beat highly-optimized classical solvers.
-        </p>
-        <p>
-          Quantum annealing (D-Wave) has a larger qubit count but limited connectivity and unclear
-          advantage. For most practical optimization problems, classical heuristics like simulated
-          annealing remain competitive.
-        </p>
-      </div>
-    ),
-    quiz: {
-      question: 'Does quantum computing solve all optimization problems exponentially faster?',
-      choices: [
-        'Yes, all optimization is exponentially faster',
-        'Yes, but only for NP-hard problems',
-        'No \u2014 advantage is limited and problem-dependent',
-        'No, quantum computers can\'t do optimization',
-      ],
-      correct: 2,
-    },
-  },
-  {
-    title: 'Cryptography',
-    hook: 'Quantum breaks some encryption \u2014 and offers new security.',
-    hookSub: 'Shor\u2019s algorithm threatens RSA, but quantum key distribution provides physics-based protection.',
-    visual: <CryptographyVisual />,
-    bullets: [
-      'Shor\u2019s algorithm can factor large numbers exponentially faster \u2014 this breaks RSA and ECC encryption.',
-      'But you\u2019d need thousands of error-corrected logical qubits. Current machines are far from this.',
-      'Post-quantum cryptography (classical algorithms resistant to quantum attacks) is already being standardized by NIST.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p>
-          <strong className="text-white">RSA-2048:</strong> Estimated to need ~4,000 logical qubits
-          (~4 million physical qubits) to break. Current largest quantum computers have ~1,000 noisy
-          qubits. The timeline for a cryptographic threat is debated: estimates range from 10-30+ years.
-        </p>
-      </div>
-    ),
-    quiz: {
-      question: 'What\'s the main quantum threat to current encryption?',
-      choices: [
-        'Shor\'s algorithm can break RSA by factoring large numbers efficiently',
-        'Quantum computers are faster at guessing passwords',
-        'Grover\'s algorithm breaks all encryption',
-        'Quantum computers can read encrypted data directly',
-      ],
-      correct: 0,
-    },
-  },
-  {
-    title: 'ML: Promise vs Reality',
-    hook: 'Quantum ML is the most overhyped application area.',
-    hookSub: 'The bottleneck is getting classical data into a quantum state \u2014 and it\u2019s fundamental.',
-    visual: <MLRealityVisual />,
-    bullets: [
-      'Quantum ML is the most overhyped application area \u2014 the bottleneck is getting classical data into a quantum state.',
-      '"Quantum kernel methods" and "variational quantum classifiers" exist but haven\u2019t beaten classical ML on real tasks.',
-      'The most honest assessment: quantum ML might help for quantum data (e.g., chemistry), but not for photos and text.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p>
-          <strong className="text-white">The input bottleneck:</strong> Loading N classical data
-          points into a quantum state takes O(N) time \u2014 the same time a classical algorithm
-          takes to just read the data. This eliminates most claimed quantum speedups for ML.
-        </p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>
-          The "dequantization" results by Tang (2018) showed that many quantum ML speedups can be
-          achieved classically with randomized linear algebra. This deflated several claims of
-          exponential quantum advantage in recommendation systems and PCA.
-        </p>
-        <p>
-          The remaining hope is that quantum-native data (from quantum sensors or simulations)
-          could bypass the input bottleneck. For classical data like images and text, there is
-          currently no convincing evidence of quantum advantage.
-        </p>
-      </div>
-    ),
-    quiz: {
-      question: 'What\'s the biggest bottleneck for quantum machine learning on classical data?',
-      choices: [
-        'Quantum computers are too slow',
-        'Loading classical data into quantum states erases the speedup',
-        'Neural networks don\'t work on qubits',
-        'Quantum computers can\'t do multiplication',
-      ],
-      correct: 1,
-    },
-  },
-  {
-    title: 'Current Limitations',
-    hook: 'Quantum computing is real \u2014 but transformative applications are years away.',
-    hookSub: 'An honest look at where we are, what\u2019s next, and what experts actually agree on.',
-    visual: <LimitationsVisual />,
-    bullets: [
-      'Today\u2019s quantum computers are "NISQ" \u2014 Noisy Intermediate-Scale Quantum. Useful but limited.',
-      <>
-        The gap between current hardware and fault-tolerant quantum computing is roughly 1,000x in{' '}
-        <GlossaryTooltip term="Qubit">qubit</GlossaryTooltip> count and 100x in error reduction.
-      </>,
-      'Quantum computing is real and advancing fast, but transformative applications are still years away.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p>
-          <strong className="text-white">Honest timeline:</strong> Quantum simulation for small
-          molecules (now\u20135 years), practical optimization advantage (5\u201315 years, uncertain),
-          breaking RSA (15\u201330+ years). Every expert disagrees on these numbers \u2014 but the
-          order is roughly consistent.
-        </p>
-      </div>
-    ),
-    quiz: {
-      question: 'What does NISQ stand for?',
-      choices: [
-        'New Integrated Silicon Quantum',
-        'Noisy Intermediate-Scale Quantum',
-        'Non-Interactive Standard Quantum',
-        'Next-gen Intelligent Super Quantum',
-      ],
-      correct: 1,
-    },
-  },
-]
-
 /* ── Module Page ──────────────────────────────────────────────────────────── */
 
 export default function UseCases() {
-  const [step, setStep] = useState(0)
-  const { markDone, markLessonPassed, getLessonPassed, completed } = useProgress()
-  const passed = getLessonPassed('usecases', LESSONS.length)
-  const allPassed = passed.every(Boolean)
-  const lesson = LESSONS[step]
-
-  useEffect(() => {
-    if (allPassed && !completed['usecases']) markDone('usecases')
-  }, [allPassed])
-
-  function handleQuizPass() {
-    markLessonPassed('usecases', step)
-  }
-
   return (
     <ModuleLayout
       moduleId="usecases"
       title="Use Cases"
-      subtitle="Where quantum matters — and where it doesn't."
-      stepInfo={{ current: step, total: LESSONS.length, passed }}
+      subtitle="Where quantum matters, and where it doesn't — an honest, timeline-aware survey of near-term applications."
       prev={{ to: '/noise', label: 'Module 13: Noise & Hardware' }}
       next={null}
+      outline={USECASES_OUTLINE}
+      aside={<UseCasesSupport />}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.2 }}
+      <div className="prose-quantum max-w-none">
+        <p>
+          The previous module established that today's hardware is noisy and far from fault-tolerant. This
+          chapter takes that constraint as given and asks a more practical question: given the hardware that
+          actually exists, where does quantum computing offer genuine promise, and where does it not?
+        </p>
+        <p>
+          Four application areas are covered &mdash; chemistry, optimization, cryptography, and machine learning
+          &mdash; followed by an honest summary of current limitations. Each area gets the same treatment: what
+          the claim is, what evidence actually supports it, and what timeline is realistic.
+        </p>
+      </div>
+
+      <div className="mt-8 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <PrereqList
+          items={[
+            'The distinction between exponential, quadratic, and absent quantum speedup from Core Algorithms.',
+            "Noise & Hardware's account of why current devices are noisy and non-error-corrected.",
+            'Basic familiarity with what a logical, error-corrected qubit costs in physical qubits.',
+          ]}
         >
-          <LessonCard
-            lesson={lesson}
-            lessonIndex={step}
-            totalLessons={LESSONS.length}
-            isPassed={passed[step]}
-            onPass={handleQuizPass}
-            bulletStyle={MODULE_LAYOUT_STYLES.usecases.bullet}
+          If the speedup categories still feel unfamiliar, review{' '}
+          <Link to="/algorithms" className="text-lime-400 transition-colors hover:text-lime-300">
+            Core Algorithms
+          </Link>{' '}
+          before treating any claim in this chapter as evidence of a blanket quantum advantage.
+        </PrereqList>
+
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+          <p className="section-label">Learning Objectives</p>
+          <ul className="chapter-list mt-3 space-y-2">
+            <li>Explain why simulating molecules is a natural fit for quantum computers.</li>
+            <li>Describe the current state and limits of quantum optimization approaches.</li>
+            <li>State the cryptographic threat from Shor's algorithm and the near-term physics-based alternative.</li>
+            <li>Identify the main bottleneck limiting quantum machine learning on classical data.</li>
+          </ul>
+        </div>
+      </div>
+
+      <section id="usecases-chemistry" className="mt-10 scroll-mt-28">
+        <p className="section-label">Section 1</p>
+        <h2 className="section-heading">Chemistry & materials</h2>
+        <p className="section-sub">
+          Molecules are themselves quantum systems, which makes molecular simulation the application area with the
+          clearest theoretical case for quantum advantage.
+        </p>
+
+        <DefinitionBox term="Quantum Simulation">
+          Simulating a molecule classically requires resources that grow exponentially with its number of
+          electrons, largely because of the{' '}
+          <GlossaryTooltip term="Entanglement"><Keyword tone="entanglement">entanglement</Keyword></GlossaryTooltip>{' '}
+          between them. A quantum computer can represent that same entangled state directly, so its resource cost
+          grows only polynomially.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <ChemistryVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: The FeMoCo Catalyst">
+            <p>
+              Simulating the FeMoCo molecule, used in biological nitrogen fixation, would require roughly{' '}
+              <span className="font-mono">10⁴⁸</span> classical bits but only about 2,000 logical qubits. A
+              successful simulation could inform more efficient fertilizer production, a process currently
+              responsible for roughly 2% of global energy consumption.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            This is the same entanglement studied in{' '}
+            <Link to="/entanglement" className="text-lime-400 transition-colors hover:text-lime-300">
+              Entanglement
+            </Link>
+            , at a much larger scale — it is specifically the property that makes large molecules intractable for
+            classical simulation.
+          </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <VideoAside
+            title="Mapping a Problem to a Quantum Computer"
+            description="A Qiskit talk from the Quantum Computing in Practice series on how real-world problems get translated into something a quantum computer can actually run — a practical companion to this chapter."
+            source="Qiskit"
+            videoId="BiKpHaev0XI"
           />
+        </div>
+      </section>
 
-          {step === LESSONS.length - 1 && allPassed && (
-            <div className="mt-6 p-5 rounded-2xl bg-green-950/30 border border-green-800/40 text-center">
-              <div className="text-2xl mb-2">&#127881;</div>
-              <p className="text-green-300 font-semibold">Course complete!</p>
-              <p className="text-slate-400 text-sm mt-1">You've finished all 14 modules. Congratulations!</p>
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+      <section id="usecases-optimization" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 2</p>
+        <h2 className="section-heading">Optimization</h2>
+        <p className="section-sub">
+          Many real-world problems reduce to finding the best solution among an astronomically large number of
+          options. Quantum approaches explore that space differently, but the resulting advantage is modest.
+        </p>
 
-      <div className="mt-6">
-        <VideoAside
-          title="Mapping a Problem to a Quantum Computer"
-          description="A Qiskit talk from the Quantum Computing in Practice series on how real-world problems get translated into something a quantum computer can actually run — a practical companion to this module."
-          source="Qiskit"
-          videoId="BiKpHaev0XI"
+        <DefinitionBox term="Quantum Optimization">
+          Approaches such as QAOA (the Quantum Approximate Optimization Algorithm) and quantum annealing use{' '}
+          <GlossaryTooltip term="Superposition"><Keyword tone="superposition">superposition</Keyword></GlossaryTooltip>{' '}
+          and quantum tunneling to explore a solution landscape differently than classical local search. Proven
+          advantage over the best classical solvers remains limited and problem-dependent.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <OptimizationVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: The Traveling Salesman Problem">
+            <p>
+              Finding the shortest route through 20 cities has roughly{' '}
+              <span className="font-mono">10¹⁸</span> possible routes. Quantum computing does not solve this
+              exponentially faster — but may offer modest speedups for certain structured variants of such
+              problems.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <ExpandableAside title="Optional: why QAOA hasn't beaten classical solvers yet" label="Technical Aside">
+            <p>
+              QAOA is a hybrid classical-quantum approach: a quantum circuit proposes candidate solutions, and a
+              classical optimizer tunes the circuit's parameters. Results so far show QAOA generally struggling to
+              outperform highly optimized classical solvers on real problem instances.
+            </p>
+            <p className="mt-3">
+              Quantum annealing hardware has larger qubit counts but limited qubit connectivity and unclear
+              advantage in practice. For most practical optimization problems today, classical heuristics such as
+              simulated annealing remain highly competitive.
+            </p>
+          </ExpandableAside>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            This is the same pattern as Grover's search in{' '}
+            <Link to="/algorithms" className="text-lime-400 transition-colors hover:text-lime-300">
+              Core Algorithms
+            </Link>
+            : quadratic-or-smaller speedups are useful in principle, but they are not the transformative,
+            exponential advantage popular coverage often implies.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="usecases-cryptography" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 3</p>
+        <h2 className="section-heading">Cryptography</h2>
+        <p className="section-sub">
+          Quantum computing is both a threat to current encryption and a source of new, physics-based security —
+          on very different timelines.
+        </p>
+
+        <DefinitionBox term="Quantum Threat and Quantum Defense">
+          Shor's algorithm can factor large numbers exponentially faster than any known classical method, which
+          threatens RSA and elliptic-curve encryption. Quantum key distribution (QKD) instead uses quantum
+          mechanics defensively: any eavesdropping attempt on a quantum channel disturbs the transmitted states
+          and is detectable.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <CryptographyVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: The Cost of Breaking RSA-2048">
+            <p>
+              Breaking RSA-2048 is estimated to require roughly 4,000 error-corrected logical qubits, translating
+              to millions of physical qubits under current error-correction overhead. Current largest quantum
+              computers have on the order of 1,000 noisy physical qubits. Estimated timelines for a genuine
+              cryptographic threat range from 10 to 30-plus years.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            The qubit-count estimate here is the same one introduced in{' '}
+            <Link to="/algorithms" className="text-lime-400 transition-colors hover:text-lime-300">
+              Core Algorithms
+            </Link>
+            , and the physical-to-logical overhead behind the "millions of physical qubits" figure is exactly
+            what{' '}
+            <Link to="/noise" className="text-lime-400 transition-colors hover:text-lime-300">
+              Noise & Hardware
+            </Link>{' '}
+            covers in detail. Post-quantum cryptography — classical algorithms believed resistant to quantum
+            attack — is already being standardized by NIST as a near-term response.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="usecases-ml" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 4</p>
+        <h2 className="section-heading">Machine learning: promise vs. reality</h2>
+        <p className="section-sub">
+          Quantum machine learning is arguably the most overhyped application area covered in this chapter, for a
+          specific and fundamental reason.
+        </p>
+
+        <DefinitionBox term="The Data-Loading Bottleneck">
+          Loading <span className="font-mono">N</span> classical data points into a quantum state takes{' '}
+          <span className="font-mono">O(N)</span> time — no faster than a classical algorithm simply reading the
+          same data. This bottleneck eliminates most claimed quantum speedups for machine learning on ordinary
+          classical data such as images or text.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <MLRealityVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: Where the Speedup Disappears">
+            <p>
+              "Quantum kernel methods" and "variational quantum classifiers" exist and run on real hardware, but
+              have not yet beaten well-tuned classical machine learning on real-world tasks. The honest assessment
+              is that quantum ML may help specifically for quantum data, such as chemistry or materials
+              simulation output — not for photos and text.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <ExpandableAside title="Optional: the dequantization results" label="Research Context">
+            <p>
+              Work by Tang (2018) showed that several claimed exponential quantum ML speedups — including for
+              recommendation systems and principal component analysis — can be matched classically using
+              randomized linear algebra techniques. These "dequantization" results deflated a number of earlier
+              quantum advantage claims in this area.
+            </p>
+            <p className="mt-3">
+              The remaining credible hope is quantum-native data, produced by quantum sensors or quantum
+              simulations, which could bypass the input bottleneck entirely because it never needs to be loaded
+              from a classical representation in the first place.
+            </p>
+          </ExpandableAside>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            When a claimed quantum speedup for classical data sounds too good, checking whether it accounts for
+            the cost of loading that data in the first place is usually the fastest way to evaluate it.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="usecases-limitations" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 5</p>
+        <h2 className="section-heading">Current limitations</h2>
+        <p className="section-sub">
+          Every application area above is bounded by the same hardware reality: today's devices are real,
+          improving, and still far short of what transformative applications require.
+        </p>
+
+        <DefinitionBox term="NISQ">
+          NISQ stands for Noisy Intermediate-Scale Quantum &mdash; the current era of quantum hardware. NISQ
+          devices are useful for research and small demonstrations, but they lack the error correction needed for
+          long, reliable computations.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <LimitationsVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="An Honest Timeline">
+            <p>
+              Rough, widely-debated estimates: quantum simulation for small molecules, now to five years;
+              practical optimization advantage, five to fifteen years, with real uncertainty; breaking RSA, fifteen
+              to thirty-plus years. Experts disagree on the exact numbers, but the relative ordering is broadly
+              consistent across estimates.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            The roughly 1,000x gap in qubit count and 100x gap in error rate shown above is exactly the gap{' '}
+            <Link to="/noise" className="text-lime-400 transition-colors hover:text-lime-300">
+              Noise & Hardware
+            </Link>{' '}
+            explains the physical origin of. Nothing in this chapter is a new limitation — it is that same
+            hardware constraint, applied to four specific application areas.
+          </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            If you write up a SIGQuantum project claiming a "quantum speedup," name which of the four
+            categories above you mean and what classical baseline you compared against. "We used a quantum
+            algorithm" is not itself a speedup claim — Grover's algorithm on 4 qubits is not evidence of
+            anything faster than a laptop `for` loop until you say what it beat and by how much.
+          </MentorNote>
+        </div>
+      </section>
+
+      <section id="usecases-mistakes" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 6</p>
+        <h2 className="section-heading">Common mistakes</h2>
+        <p className="section-sub">
+          Nearly every misconception about quantum applications comes from treating one impressive result as
+          evidence of a general, unqualified advantage.
+        </p>
+
+        <MistakesBox
+          items={[
+            {
+              mistake: 'Assuming quantum computers will eventually be faster at everything.',
+              clarification:
+                'Proven speedup applies only to a small set of structured problems. Most everyday computing sees no quantum benefit at all, now or in principle.',
+            },
+            {
+              mistake: 'Believing QAOA or quantum annealing already outperform classical solvers on real optimization problems.',
+              clarification:
+                'Evidence so far is mixed at best. Highly optimized classical heuristics remain competitive with or better than current quantum approaches on most practical instances.',
+            },
+            {
+              mistake: 'Treating the RSA-breaking threat from Shor\'s algorithm as imminent.',
+              clarification:
+                'Breaking real RSA keys requires thousands of error-corrected logical qubits — millions of physical qubits under current overhead — which is decades away by most estimates.',
+            },
+            {
+              mistake: 'Assuming quantum machine learning automatically helps with classical data like images or text.',
+              clarification:
+                'The data-loading bottleneck erases most claimed advantages there. The more credible near-term case is quantum ML applied to inherently quantum data.',
+            },
+          ]}
+        />
+      </section>
+
+      <div className="mt-10">
+        <SummaryBox
+          points={[
+            'Quantum simulation of molecules is the clearest near-term application, since molecules are themselves quantum systems.',
+            'Quantum optimization approaches like QAOA explore solution landscapes differently, but proven advantage over classical solvers remains limited and problem-dependent.',
+            "Shor's algorithm threatens RSA in principle, but breaking real keys needs thousands of error-corrected logical qubits — likely a decade or more away; QKD and post-quantum cryptography are the near-term responses.",
+            'Quantum machine learning on ordinary classical data faces a fundamental input bottleneck; the more credible case is quantum ML applied to inherently quantum data.',
+            "Today's devices are NISQ-era: real and improving, but roughly 1,000x short in qubit count and 100x short in error rate compared to what fault-tolerant computing requires.",
+          ]}
         />
       </div>
 
-      <StepNav
-        steps={LESSONS.length}
-        current={step}
-        passed={passed}
-        onNext={() => setStep(s => s + 1)}
-        onPrev={() => setStep(s => s - 1)}
-        onGoto={setStep}
-      />
+      <section id="usecases-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p className="section-label">Where To Go From Here</p>
+        <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">You've reached the end of the sequential handbook</h2>
+        <p className="mt-3 text-sm leading-relaxed text-slate-400">
+          This module closes the 14-module sequence, from big-picture intuition through today's honest limitations.
+          From here, the most useful next steps are review and practice, not more new material — and, when you're
+          ready to go beyond this handbook, a resource sorted by what you're trying to do next rather than a flat
+          reading list.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link to="/roadmap" className="btn-primary">
+            Review Study Paths
+          </Link>
+          <Link to="/glossary" className="btn-secondary">
+            Open Glossary
+          </Link>
+          <Link to="/references" className="btn-secondary">
+            Choose Your Next Resource
+          </Link>
+        </div>
+      </section>
     </ModuleLayout>
   )
 }

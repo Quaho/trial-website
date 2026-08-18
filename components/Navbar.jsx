@@ -274,7 +274,6 @@ export default function Navbar() {
                   { to: '/roadmap',    label: 'Study Paths' },
                   { to: '/glossary',   label: 'Glossary' },
                   { to: '/references', label: 'References' },
-                  { to: '/challenges', label: 'Mini Challenges' },
                   { to: '/projects/first-circuit', label: 'Machine Projects' },
                 ].map(({ to, label }) => (
                   <Link

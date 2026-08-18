@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import ModuleLayout from '../../components/ModuleLayout'
 import DefinitionBox from '../../components/DefinitionBox'
@@ -12,6 +13,7 @@ import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import ConceptSection from '../../components/ConceptSection'
 import VideoAside from '../../components/VideoAside'
+import MentorNote from '../../components/MentorNote'
 import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
@@ -229,6 +231,37 @@ function InterferenceFigure() {
   )
 }
 
+function PredictBeforeReveal() {
+  const [revealed, setRevealed] = useState(false)
+
+  return (
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Predict Before You Reveal</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Could You Have Known the Outcome in Advance?</h3>
+      <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+        A qubit is prepared in the equal superposition <InlineMath>{'(|0\\rangle + |1\\rangle)/\\sqrt{2}'}</InlineMath>{' '}
+        and then measured once. Before revealing the answer: even in principle, with perfect knowledge of the
+        preparation process, could you have predicted whether that single run would return 0 or 1?
+      </p>
+      {!revealed ? (
+        <button
+          onClick={() => setRevealed(true)}
+          className="btn-secondary mt-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        >
+          Reveal Answer
+        </button>
+      ) : (
+        <div className="mt-4 rounded-xl border border-indigo-800/40 bg-indigo-950/20 p-4 text-sm text-slate-300 leading-relaxed">
+          No. For a genuine superposition, the outcome is not fixed in advance by any hidden fact about the
+          qubit — not one you failed to notice, and not one that better equipment could have read off. This is
+          the sense in which measurement is not "finding out" a value that was already there, unlike a
+          classical coin already lying heads-up under your hand before you look.
+        </div>
+      )}
+    </div>
+  )
+}
+
 function ApplicationsGrid() {
   const items = [
     {
@@ -438,6 +471,19 @@ export default function Intuition() {
           </div>
 
           <div className="mt-6">
+            <MentorNote>
+              A common mental slip: describing measurement as "finding out" which value the qubit already
+              had, the way you'd flip over a face-down card. For a genuine superposition there is no hidden
+              pre-existing 0 or 1 waiting to be discovered — the outcome is not determined until measurement
+              happens.
+            </MentorNote>
+          </div>
+
+          <div className="mt-6">
+            <PredictBeforeReveal />
+          </div>
+
+          <div className="mt-6">
             <RemarkBox>
               Later modules refine this picture by showing that measurement depends on basis. For now, the
               main point is that <Keyword tone="amplitude">amplitudes</Keyword> control outcome
@@ -539,10 +585,13 @@ export default function Intuition() {
       </div>
 
       <section id="intuition-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <p className="section-label">Next Steps</p>
+        <p className="section-label">Before You Continue</p>
         <h2 className="mt-3 text-2xl font-bold text-white tracking-tight">Move from intuition to notation</h2>
         <p className="mt-3 text-sm text-slate-400 leading-relaxed">
-          The next chapter introduces bra-ket notation so the state descriptions on this page can be
+          You should be able to explain, in your own words, why a single measurement returns one outcome
+          even though the state description was richer than that. If that explanation still feels shaky,
+          reread <span className="text-white">Measurement and collapse</span> before moving on — the next
+          chapter builds on it directly by introducing bra-ket notation so these state descriptions can be
           written and manipulated more formally.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">

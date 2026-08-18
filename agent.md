@@ -1,5 +1,407 @@
 # agent.md — Current Codex Task
 
+## TASK-038 — COMPLETE (2026-08-18)
+Phase 3b in full: "Beginner Usefulness & Continuation Resources," scoped
+from an external assessment (`LLM_ASSIGNMENT.md`) and governed by
+CLAUDE.md's "Mentor Notes, Stuck Recovery & Continuation Resources"
+section. Done directly (not through the usual one-Codex-task-at-a-time
+flow) at the user's explicit request to "do phase 3b" as a single pass,
+after a plan-mode proposal and two user decisions up front. Full detail
+in `TASKS.md`.
+
+**Two decisions resolved before implementation, both previously flagged
+as open in CLAUDE.md**: delete `LessonCard.jsx`/`StepNav.jsx`/`Quiz.jsx`/
+`DeepDive.jsx` (orphaned since TASK-037), and delete `/challenges`
+(flagged since TASK-031). Both were user-approved via `AskUserQuestion`
+before any files were touched. **Correction to a standing inaccuracy
+found in the process**: `/challenges` was described in CLAUDE.md and
+TASK-031 as "nav-unlinked," but it was actually reachable from the
+mobile `Navbar.jsx`'s "Explore" menu ("Mini Challenges"). That link was
+removed along with the route (`App.jsx`) and the page file itself.
+
+**New components**: `components/MentorNote.jsx` (cyan, `border-l-4`
+family styling matching `DefinitionBox`/`NotationBox`/`RemarkBox`, single
+concrete stumble point, `role="note"`) and `components/StuckPath.jsx`
+(rose, `type` prop keyed to CLAUDE.md's four blocker categories —
+`math`/`notation`/`circuit-reading`/`implementation` — each with its own
+icon reused from `lib/data/modules.js`'s existing icon choices for
+visual continuity, `role="region"`).
+
+**`References.jsx` rewrite**: split the entry that mislabeled
+`quantum.cloud.ibm.com/learning/en` as "IBM Qiskit Textbook" into two
+accurate entries — IBM Quantum Learning (primary, maintained) and Qiskit
+Textbook (archived, github.com/qiskit-community/qiskit-textbook,
+historical/supplemental framing). Added Microsoft Quantum Katas, MIT
+18.435J and 8.370x as two distinct links with the "may feel abrupt"
+rigor warning, and Quantum Country. Added a goal-sorted chooser (six
+rows) above the existing categorized sections, which were kept rather
+than replaced. Tightened the Khan Academy entry's wording to read as
+prerequisite repair only. Added a short "Where To Go Next" enhancement
+to `UseCases.jsx`'s existing closing section (it already linked to
+`/references`; the intro sentence and button label were adjusted to
+preview the new goal-sorted framing rather than duplicating content).
+
+**Per-module rollout, all 14 modules in `app/pages/`**: one `MentorNote`
+per module, each anchored to a specific concrete stumble point next to
+the triggering content (e.g. BraKet's "the probability is not 0.8, it is
+0.64" — the LLM_ASSIGNMENT's own example; MultiQubit/Labs on Qiskit's
+little-endian counts-key ordering; Algorithms on phase kickback leaving
+no readable trace on the target register). Each MentorNote was checked
+against content already present on its page to avoid restating a nearby
+RemarkBox/MistakesBox item verbatim — several planned MentorNotes were
+redirected to a different angle mid-implementation for exactly this
+reason (e.g. Gates' Z-gate note, Entanglement's factoring note, Noise's
+calibration-drift note, all picked *because* the obvious angle was
+already covered elsewhere on the same page).
+
+`StuckPath` placed once per blocker type, not on every module: `type="math"`
+on BraKet (→ Mathematical Language, Khan Academy), `type="notation"` on
+PhaseAngle (→ Bra-Ket, Glossary), `type="circuit-reading"` on
+Entanglement (→ Gates, Multi-Qubit, Circuits), `type="implementation"`
+on Algorithms (→ Qiskit, Labs, IBM Quantum Learning).
+
+Predict-before-reveal added to the six modules CLAUDE.md names as
+carrying a `ConceptSection` or amplitude/probability calculation —
+Intuition, BraKet, PhaseAngle, Gates, Measurement, Algorithms — each a
+local `useState('predict'/'reveal')` toggle mirroring `Labs.jsx`'s
+existing `SimulateVisual` pattern (the only page that already had one).
+BraKet's converts an existing passive-answer `ExampleBox` into an active
+one rather than adding a redundant second copy of the same numbers.
+Algorithms' reuses the page's own established N=1,000,000 → ~1,000-query
+Grover numbers as the worked example, then asks the reader to predict a
+*new* N=10,000 case rather than restating the given answer. Labs.jsx
+already had a predict/reveal moment and was left alone.
+
+**Section-title variation**: grepped for CLAUDE.md's named repeated
+phrases; found the RailCard title "What To Keep Straight" verbatim in 8
+modules (Noise, Algorithms, Entanglement, Measurement, Circuits, Labs,
+UseCases, PhaseAngle) and gave each a module-specific title instead.
+Varied the closing-section label away from "Next Steps" on 7 of 13
+modules that had it (Intuition → "Before You Continue", Qiskit/Labs →
+"Where This Appears in Projects", Noise → "Before You Claim It Works",
+Algorithms → "Before You Implement", Gates → "Before You Continue",
+Circuits → "Reading Checklist"), leaving the rest unchanged — CLAUDE.md
+asked for *some* pages to vary, not a second uniform relabeling.
+
+**Docs updated in the same pass**: CLAUDE.md's Current State, What
+Remains, Component Architecture table, and Phase 3b checklist (now
+checked off, dated); two stale historical notes corrected in the same
+file (the TASK-037-era "not yet resolved" orphaned-components note, and
+the Component Architecture table's own "not yet built" MentorNote/
+StuckPath rows).
+
+Verified: `npm run build` passes after every batch of edits, not just at
+the end. `grep -c "<MentorNote"` totals 14 across `app/pages` (one per
+module); `grep -c "<StuckPath"` totals 4. `grep -rln "challenges\|LessonCard\|StepNav\|DeepDive\|<Quiz"`
+across `app`/`components`/`lib` returns nothing. Predict/reveal numeric
+answers (BraKet's 3/4 and 1/4, Measurement's 0.36 and 0.64, Gates' S²=Z
+identity, Algorithms' √10,000=100) hand-checked against the stated
+formulas. Not visually verified in a browser — standing project
+convention (no Playwright/Chromium here).
+
+## TASK-037 — COMPLETE (2026-08-17)
+Migrate `UseCases.jsx` (module 14) off the legacy `LESSONS`/`LessonCard`/
+`StepNav` template onto `ModuleLayout` outline+aside, same pattern as
+TASK-032 through 036. Sixth and last of the "Advanced" group (modules
+9-14) — this closes out the full legacy-template migration. Full detail
+in `TASKS.md`.
+
+7-entry outline (`usecases-chemistry`/`-optimization`/`-cryptography`/
+`-ml`/`-limitations`/`-mistakes`/`-next`). All 5 original visuals kept in
+the main flow, reskinned to `border-lime-800/40 bg-lime-950/15`
+(use cases' assigned color).
+
+**This is the final module (`next={null}`), so the closing section was
+written as a genuine close, not a templated "Next Steps" pointing to a
+module 15 that doesn't exist**: "Where To Go From Here" points to
+`/roadmap`, `/glossary`, `/references` instead. The old page's
+celebratory "Course complete! You've finished all 14 modules.
+Congratulations!" banner (with a 🎉) is gone — `ModuleLayout`'s own
+plain "Module complete." checkmark replaces it, same as every other
+migrated module lost its custom banner. This is a deliberate, visible
+behavior change worth calling out explicitly (not hidden in the diff):
+per CLAUDE.md's Motion/Interactivity guidelines ("avoid excessive
+gamification," restrained feedback only), the plain checkmark is more
+consistent with the handbook's tone than a bespoke congratulatory
+banner, but it is a real, user-facing loss of a small celebratory
+moment — flagged here rather than silently dropped.
+
+Heavy cross-module linking added, appropriate for a closing chapter:
+chemistry section links to `/entanglement`, optimization and
+cryptography both link to `/algorithms`, cryptography also links to
+`/noise` for the physical-qubit-overhead math behind its own numbers,
+and the limitations section links back to `/noise` for the physical
+origin of the NISQ-era gap it displays. None of this existed in the
+legacy lesson-stepper version, which had no mechanism for section-level
+cross-links at all.
+
+`GlossaryTooltip` terms (`Entanglement`, `Superposition`) and `Keyword`
+tones (`entanglement`, `superposition`) checked against
+`glossary.js`/`Keyword.jsx`'s real data. Grep confirmed no stale
+"13 modules" or "Course complete" strings remain anywhere in the file.
+
+**Repo-wide consequence of finishing this series, found and flagged, not
+acted on**: `components/LessonCard.jsx`, `StepNav.jsx`, `Quiz.jsx`, and
+`DeepDive.jsx` are now fully orphaned — a repo-wide grep confirms zero
+pages import `LessonCard` or `StepNav` anymore (every page that did has
+now been migrated), and `Quiz`/`DeepDive` are each only imported by
+`LessonCard.jsx` itself. `CLAUDE.md`'s Component Architecture table
+already documents these four as covering "the module pages that still
+use the older lesson-stepper pattern" — that pattern no longer exists on
+any page. Whether to delete these four components (and update that
+CLAUDE.md table row) is a real follow-up decision, deliberately not
+made here — same posture as `/challenges` being flagged rather than
+deleted in TASK-031.
+
+Verified: `npm run build` passes (`UseCases-*.js`, 33.28kB); grep
+confirms all 7 outline ids match section anchors (empty diff), no
+legacy imports remain, exactly one `VideoAside`, and nothing else in
+the repo references `UseCases.jsx` internals. Not yet visually verified
+in a browser (standing project convention).
+
+### What's next
+The "Advanced" group (modules 9-14) migration that started with
+TASK-032 is now fully complete — no legacy `LESSONS`/`LessonCard`
+module page remains anywhere in the handbook. Two follow-ups surfaced
+but not actioned: (1) whether to delete the now-orphaned
+`LessonCard`/`StepNav`/`Quiz`/`DeepDive` components, and (2) the
+still-open `/challenges` question from TASK-031. Both are product
+decisions for the user.
+
+---
+
+## TASK-036 — COMPLETE (2026-08-17)
+Migrate `Noise.jsx` (module 13) off the legacy `LESSONS`/`LessonCard`/
+`StepNav` template onto `ModuleLayout` outline+aside, same pattern as
+TASK-032 through 035. Fifth of the "Advanced" group (modules 9-14). Full
+detail in `TASKS.md`.
+
+7-entry outline (`noise-ideal-vs-real`/`-decoherence`/`-nocloning`/
+`-repetition`/`-overhead`/`-mistakes`/`-next`). All 5 original visuals
+kept in the main flow, reskinned to a neutral
+`border-slate-700/40 bg-slate-900/40` treatment matching noise's
+assigned slate module color (rather than a saturated accent, since slate
+*is* the module color here).
+
+**Cleaned up a real dead-code bug found while migrating**:
+`ErrorCorrectionVisual` had a second dot-grid block whose map result was
+immediately `.slice(0, 0)`'d, so it always rendered nothing — pure dead
+code, removed rather than ported forward.
+
+Genuine connective content added: Section 3 (no-cloning) now links
+directly to `Labs.jsx`'s teleportation clarification (TASK-035) — both
+describe the same underlying limit, move-not-copy, from two different
+angles. Section 5 (error-correction overhead) closes with a remark
+framing "fault-tolerant" versus "useful today" as distinct claims,
+setting up the next module's premise (current hardware is noisy and
+non-error-corrected) explicitly rather than leaving it implicit.
+
+Same stale-completion-banner pattern as every prior task in this series
+("Module 12 complete" on the module-13 page), resolved the same way.
+
+`GlossaryTooltip` terms (`Decoherence`, `Error Correction`) and
+`Keyword` tones (`qubit`, `unitary`) checked against
+`glossary.js`/`Keyword.jsx`'s real data.
+
+Verified: `npm run build` passes (`Noise-*.js`, 31.76kB); grep confirms
+all 7 outline ids match section anchors (empty diff), no legacy imports
+remain, exactly one `VideoAside`, and nothing else in the repo
+references `Noise.jsx` internals. Not yet visually verified in a browser
+(standing project convention).
+
+### What's next
+Use Cases (module 14) is next — the last module in the "Advanced" group
+and the last one on the legacy template overall. Not yet scoped.
+
+---
+
+## TASK-035 — COMPLETE (2026-08-17)
+Migrate `Labs.jsx` (module 12) off the legacy `LESSONS`/`LessonCard`/
+`StepNav` template onto `ModuleLayout` outline+aside, same pattern as
+TASK-032/033/034. Fourth of the "Advanced" group (modules 9-14). Full
+detail in `TASKS.md`.
+
+7-entry outline (`labs-create`/`-gates`/`-simulate`/`-bell`/
+`-experiments`/`-mistakes`/`-next`). All 5 original visuals kept in the
+main flow (circuit-setup stepper, gate-by-gate Bell builder, predict/
+reveal simulate visual, end-to-end Bell recipe, mini-experiments
+selector), reskinned to `border-rose-800/40 bg-rose-950/15` (labs'
+assigned color).
+
+**Added one genuine rigor fix, not just a straight port**: the original
+page's "Quantum Teleportation" mini experiment gave code and an outcome
+with zero explanation of the mechanism — exactly the kind of unexplained
+formalism CLAUDE.md warns against. Added an `ExpandableAside` clarifying
+that teleportation moves a state via a Bell pair plus classical
+communication, does not send information faster than light, and
+destroys the original qubit's state per no-cloning — with a forward
+link to `/noise` where no-cloning is covered properly.
+
+Same stale-completion-banner pattern as TASK-032/033/034 ("Module 11
+complete" on the module-12 page), resolved the same way.
+
+`GlossaryTooltip` terms (`Bell State`, `Circuit`, `Gate`) and `Keyword`
+tones (`bell`, `circuit`, `gate`, `qubit`) checked against
+`glossary.js`/`Keyword.jsx`'s real data.
+
+Verified: `npm run build` passes (`Labs-*.js`, 28.96kB); grep confirms
+all 7 outline ids match section anchors (empty diff), no legacy imports
+remain, exactly one `VideoAside`, and nothing else in the repo
+references `Labs.jsx` internals. Not yet visually verified in a browser
+(standing project convention).
+
+### What's next
+Noise (module 13) is next in sequence, not yet scoped.
+
+---
+
+## TASK-034 — COMPLETE (2026-08-17)
+Migrate `Algorithms.jsx` (module 11) off the legacy `LESSONS`/
+`LessonCard`/`StepNav` template onto `ModuleLayout` outline+aside, same
+pattern as TASK-032/033. Third of the "Advanced" group (modules 9-14),
+one module at a time. Full detail in `TASKS.md`.
+
+7-entry outline (`algorithms-deutsch`/`-grover`/`-kickback`/`-shor`/
+`-advantage`/`-mistakes`/`-next`). All 5 original visuals kept in the
+main flow (Deutsch-Jozsa oracle toggle, Grover amplitude-amplification
+stepper, phase-kickback step list, Shor comparison table, quantum-
+advantage category table), reskinned to `border-orange-800/40
+bg-orange-950/15` (algorithms' assigned color).
+
+**Fixed a real pre-existing bug while migrating, not just cosmetics**:
+`AdvantageVisual` built Tailwind classes via template strings
+(`` `border-${c.color}-800/30` ``, etc.) — exactly the anti-pattern
+`modules.js`'s own comment warns about ("all classes must be full
+strings for Tailwind JIT to detect them"). Those dynamic classes were
+never in Tailwind's scanned output and were silently no-ops. Replaced
+with an explicit `ADVANTAGE_CATEGORY_STYLES` lookup of full literal
+class strings, one per color, matching the pattern `MODULE_STYLES`
+already uses in `modules.js`.
+
+Content additions beyond a straight port: Section 3 (phase kickback) now
+cross-references the |−⟩ phase-detection example from `Measurement.jsx`
+directly (φ=π case), and Section 4 (Shor) links forward to `/noise` for
+what "error-corrected logical qubit" actually costs in physical qubits —
+both genuine connective tissue the legacy lesson-stepper format had no
+place for.
+
+Same stale-completion-banner pattern as TASK-032/033 ("Module 10
+complete" on the module-11 page), resolved the same way via
+`ModuleLayout`'s own footer.
+
+`GlossaryTooltip` terms (`Amplitude`, `Interference`, `Oracle`,
+`Superposition`) and `Keyword` tones (`amplitude`, `gate`,
+`interference`, `superposition`, `unitary`) checked against
+`glossary.js`/`Keyword.jsx`'s real data.
+
+Verified: `npm run build` passes (`Algorithms-*.js`, 31.91kB); grep
+confirms all 7 outline ids match section anchors 1:1 (empty diff), no
+legacy imports remain, exactly one `VideoAside` (moved into section 2,
+Grover, matching its actual content — the original page had it
+oddly placed after the lesson stepper with no section association), and
+nothing else in the repo references `Algorithms.jsx` internals. Not yet
+visually verified in a browser (standing project convention).
+
+### What's next
+Labs (module 12) is next in sequence, not yet scoped.
+
+---
+
+## TASK-033 — COMPLETE (2026-08-17)
+Migrate `Measurement.jsx` (module 10) off the legacy `LESSONS`/
+`LessonCard`/`StepNav` template onto `ModuleLayout` outline+aside, same
+pattern as TASK-032's `Circuits.jsx`. Second of the "Advanced" group
+(modules 9-14), one module at a time. Full detail in `TASKS.md`.
+
+7-entry outline (`measurement-basis`/`-bases`/`-why`/`-probability`/
+`-change`/`-mistakes`/`-next`). All 5 of the original page's interactive
+visuals were kept in the main flow, reskinned to
+`rounded-2xl border-amber-800/40 bg-amber-950/15` (measurement's assigned
+module color) — none were redundant enough to demote to
+`ExpandableAside` this time, unlike TASK-032's Bell stepper. Two of the
+original page's `deepDive` asides (BB84 motivation, complex-amplitude
+Born rule) were kept as `ExpandableAside`s rather than dropped, plus one
+new one (arbitrary-basis measurement via a general unitary) covering
+content that was previously part of a `deepDive` too.
+
+Same stale-number bug pattern as TASK-032, fixed the same way: the old
+completion banner said "Module 9 complete" (should have been 10); moot
+now that `ModuleLayout`'s own footer replaces it.
+
+`GlossaryTooltip` terms (`Basis`, `Measurement`) and `Keyword` tones
+(`amplitude`, `basis`, `measurement`, `phase`, `unitary`) checked against
+`glossary.js`/`Keyword.jsx`'s real data, not assumed.
+
+Verified: `npm run build` passes (`Measurement-*.js`, 31.22kB); grep
+confirms all 7 outline ids match section anchors 1:1, no legacy imports
+remain, and nothing else in the repo references `Measurement.jsx`
+internals. Not yet visually verified in a browser (standing project
+convention).
+
+### What's next
+Algorithms (module 11) is next in sequence, not yet scoped.
+
+---
+
+## TASK-032 — COMPLETE (2026-08-17)
+Migrate `Circuits.jsx` (module 9) off the legacy `LESSONS`/`LessonCard`/
+`StepNav` lesson-stepper template onto the current `ModuleLayout`
+outline+aside handbook template — the first of the "Advanced" group
+(modules 9-14, all still legacy) to be migrated, one module at a time per
+user direction. Full detail in `TASKS.md`.
+
+Rewritten to match `Entanglement.jsx`'s established shape: intro
+paragraph, `PrereqList` + Learning Objectives, 7-entry outline
+(`circuits-reading`/`-elements`/`-stepping`/`-bell`/`-code`/`-mistakes`/
+`-next`), `DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox` per
+section, a `MistakesBox` section, `SummaryBox`, and a Next Steps section
+with real `Link`s (`/measurement`, `/projects/first-circuit`,
+`/references`). No `ConceptSection` — circuits is outside the diagnostic
+pilot's 3-module scope, unchanged by this task.
+
+**All 4 of the original page's SVG-diagram interactives were kept, not
+discarded** — CLAUDE.md says keep the best interactive if it materially
+helps, and these do real work. Reskinned to the modern card convention
+(`rounded-2xl border-emerald-800/40 bg-emerald-950/15`, matching
+`circuits`'s assigned module color) but logic untouched:
+`CircuitAnatomyVisual`, `CircuitElementsVisual`, and
+`CircuitStepperVisual` stayed in the main reading flow (sections 1-3);
+`CircuitToCodeVisual` stayed in section 5. **`BellStepperVisual` was
+moved into an `ExpandableAside`** in section 4 rather than kept expanded
+— it substantially overlaps `CircuitStepperVisual` (same H+CNOT circuit)
+and section 4's main flow already has a `MathDisplay` worked example, so
+per CLAUDE.md's "keep only the most important one expanded, move
+supplementary interactives into `ExpandableAside`" this was the one to
+fold, not delete.
+
+**Fixed in passing**: the old page's completion banner read "Module 8
+complete" (stale since TASK-027 renumbered circuits to module 9) — moot
+now, since `ModuleLayout`'s built-in "Mark as Complete" footer replaces
+that custom banner entirely; the stale string no longer exists anywhere
+in this file.
+
+**GlossaryTooltip/Keyword usage checked against real data, not
+assumed**: `GlossaryTooltip` terms used (`Circuit`, `Gate`,
+`Measurement`) all exist verbatim in `glossary.js`; `Keyword` tones used
+(`circuit`, `qubit`, `gate`, `measurement`, `bell`) all exist in
+`Keyword.jsx`'s `KEYWORD_STYLES` map.
+
+Verified: `npm run build` passes (`Circuits-*.js` chunk, 42.01kB, up from
+the legacy version — consistent with real content added, not lost); grep
+confirms all 7 outline `id`s have exactly one matching `id="..."`
+section anchor each; grep confirms no `useProgress`/`LessonCard`/
+`StepNav`/`MODULE_LAYOUT_STYLES` imports remain; grep confirms nothing
+else in the repo imports from `Circuits.jsx`'s internals (only `App.jsx`
+imports it as a route component, unchanged). Not yet visually verified
+in a browser — standing project convention (no Playwright/Chromium
+here).
+
+### What's next
+Superseded by TASK-037 above — Use Cases (module 14) has since been
+migrated, closing out the full Advanced-group migration.
+
+---
+
 ## TASK-019 — COMPLETE (reconciled 2026-08-09)
 Phase 2 structure work. See `TASKS.md`.
 

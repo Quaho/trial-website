@@ -12,6 +12,8 @@ import RailCard from '../../components/RailCard'
 import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import VideoAside from '../../components/VideoAside'
+import MentorNote from '../../components/MentorNote'
+import StuckPath from '../../components/StuckPath'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const PHASE_OUTLINE = [
@@ -34,7 +36,7 @@ function PhaseAngleSupport() {
         </ul>
       </RailCard>
 
-      <RailCard label="Reading Lens" title="What To Keep Straight">
+      <RailCard label="Reading Lens" title="Phase-Specific Traps">
         <ul className="space-y-2">
           <li>Equal probabilities do not imply identical quantum states.</li>
           <li>Relative phase matters; global phase does not.</li>
@@ -363,6 +365,37 @@ function BasisTable() {
   )
 }
 
+function GlobalPhasePredictReveal() {
+  const [revealed, setRevealed] = useState(false)
+
+  return (
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Predict Before You Reveal</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Two States, One Sign Flip</h3>
+      <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+        State A is <InlineMath>{'|+\\rangle = (|0\\rangle + |1\\rangle)/\\sqrt{2}'}</InlineMath>. State B is
+        the same vector multiplied by <InlineMath>{'-1'}</InlineMath>: <InlineMath>{'-(|0\\rangle + |1\\rangle)/\\sqrt{2}'}</InlineMath>.
+        If you measure many copies of each state in the computational basis, will the two measured
+        distributions differ?
+      </p>
+      {!revealed ? (
+        <button
+          onClick={() => setRevealed(true)}
+          className="btn-secondary mt-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        >
+          Reveal Answer
+        </button>
+      ) : (
+        <div className="mt-4 rounded-xl border border-violet-800/40 bg-violet-950/20 p-4 text-sm text-slate-300 leading-relaxed">
+          No — and not just in this basis. State A and State B are the same physical state written two
+          different ways; the factor of <InlineMath>{'-1'}</InlineMath> multiplies every component equally,
+          so it is a global phase. Global phase never shows up in measurement statistics, in any basis.
+        </div>
+      )}
+    </div>
+  )
+}
+
 function PhaseApplicationsGrid() {
   const items = [
     {
@@ -472,6 +505,19 @@ export default function PhaseAngle() {
 
         <div className="mt-6">
           <PhaseVsProbabilityFigure />
+        </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            A natural but wrong instinct: since <InlineMath>{'-|\\psi\\rangle'}</InlineMath> "looks
+            different" algebraically from <InlineMath>{'|\\psi\\rangle'}</InlineMath>, it's tempting to
+            think a measurement could tell them apart. It can't — multiplying an entire state by the same
+            factor is a global phase, and global phase never appears in measurement statistics.
+          </MentorNote>
+        </div>
+
+        <div className="mt-6">
+          <GlobalPhasePredictReveal />
         </div>
       </section>
 
@@ -605,6 +651,19 @@ export default function PhaseAngle() {
             The practical lesson is that phase is often manipulated first and observed only later,
             after additional gates convert the phase information into measurement bias.
           </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <StuckPath type="notation">
+            <p>
+              If the geometry of phase makes sense but the underlying kets, amplitudes, and inner products
+              are still shaky, the gap is the notation this chapter assumes, not phase itself.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <Link to="/braket" className="btn-secondary">Review Bra-Ket Notation</Link>
+              <Link to="/glossary" className="btn-secondary">Open Glossary</Link>
+            </div>
+          </StuckPath>
         </div>
       </section>
 

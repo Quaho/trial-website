@@ -60,7 +60,6 @@ const UseCases = lazyWithRecovery('usecases', () => import('./pages/UseCases'))
 const Roadmap = lazyWithRecovery('roadmap', () => import('./pages/Roadmap'))
 const Diagnostic = lazyWithRecovery('diagnostic', () => import('./pages/Diagnostic'))
 const Glossary = lazyWithRecovery('glossary', () => import('./pages/Glossary'))
-const Challenges = lazyWithRecovery('challenges', () => import('./pages/Challenges'))
 const References = lazyWithRecovery('references', () => import('./pages/References'))
 const FirstCircuit = lazyWithRecovery('first-circuit', () => import('./pages/projects/FirstCircuit'))
 const BellExplorer = lazyWithRecovery('bell-explorer', () => import('./pages/projects/BellExplorer'))
@@ -130,7 +129,6 @@ export default function App() {
               <Route path="/diagnostic" element={<Diagnostic />} />
               <Route path="/glossary"   element={<Glossary />} />
               <Route path="/references" element={<References />} />
-              <Route path="/challenges" element={<Challenges />} />
               <Route path="/projects/first-circuit" element={<FirstCircuit />} />
               <Route path="/projects/bell-explorer" element={<BellExplorer />} />
               <Route path="/projects/algorithm-showdown" element={<AlgorithmShowdown />} />

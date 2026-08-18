@@ -14,6 +14,8 @@ import MistakesBox from '../../components/MistakesBox'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import ConceptSection from '../../components/ConceptSection'
 import VideoAside from '../../components/VideoAside'
+import MentorNote from '../../components/MentorNote'
+import StuckPath from '../../components/StuckPath'
 import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
@@ -146,6 +148,37 @@ function OverlapFigure() {
         </div>
       ))}
     </div>
+  )
+}
+
+function AmplitudePredictReveal() {
+  const [revealed, setRevealed] = useState(false)
+
+  return (
+    <ExampleBox title="Predict Before You Reveal">
+      <MathDisplay>{'|\\psi\\rangle = \\tfrac{\\sqrt{3}}{2}|0\\rangle + \\tfrac{1}{2}|1\\rangle'}</MathDisplay>
+      <p>
+        This qubit has amplitude <InlineMath>{'\\tfrac{\\sqrt{3}}{2}'}</InlineMath> on{' '}
+        <InlineMath>{'|0\\rangle'}</InlineMath> and amplitude <InlineMath>{'\\tfrac{1}{2}'}</InlineMath> on{' '}
+        <InlineMath>{'|1\\rangle'}</InlineMath>. Before revealing, predict the measurement probabilities
+        P(0) and P(1) in the computational basis.
+      </p>
+      {!revealed ? (
+        <button
+          onClick={() => setRevealed(true)}
+          className="btn-secondary mt-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        >
+          Reveal Probabilities
+        </button>
+      ) : (
+        <p className="mt-3 rounded-xl border border-emerald-800/40 bg-emerald-950/20 p-3 text-slate-200">
+          <InlineMath>{'P(0) = \\left(\\tfrac{\\sqrt{3}}{2}\\right)^2 = \\tfrac{3}{4}'}</InlineMath>, and{' '}
+          <InlineMath>{'P(1) = \\left(\\tfrac{1}{2}\\right)^2 = \\tfrac{1}{4}'}</InlineMath>. The amplitudes
+          themselves, <InlineMath>{'\\tfrac{\\sqrt{3}}{2}'}</InlineMath> and <InlineMath>{'\\tfrac{1}{2}'}</InlineMath>,
+          were never the probabilities.
+        </p>
+      )}
+    </ExampleBox>
   )
 }
 
@@ -331,15 +364,16 @@ export default function BraKet() {
           </div>
 
           <div className="mt-6">
-            <ExampleBox>
-              <MathDisplay>{'|\\psi\\rangle = \\tfrac{\\sqrt{3}}{2}|0\\rangle + \\tfrac{1}{2}|1\\rangle'}</MathDisplay>
-              <p>
-                This notation says the qubit has amplitude <InlineMath>{'\\tfrac{\\sqrt{3}}{2}'}</InlineMath> on
-                <InlineMath>{'|0\\rangle'}</InlineMath> and amplitude <InlineMath>{'\\tfrac{1}{2}'}</InlineMath> on
-                <InlineMath>{'|1\\rangle'}</InlineMath>. The measurement probabilities in the computational basis are
-                therefore <InlineMath>{'\\tfrac{3}{4}'}</InlineMath> for 0 and <InlineMath>{'\\tfrac{1}{4}'}</InlineMath> for 1.
-              </p>
-            </ExampleBox>
+            <MentorNote>
+              Squaring late is the single most common arithmetic slip here. If an amplitude is 0.8, the
+              probability is <span className="font-medium text-white">not</span> 0.8 — it is{' '}
+              <InlineMath>{'0.8^2 = 0.64'}</InlineMath>. The amplitude and the probability are related but
+              are not the same number, and mixing them up is easy to do quickly without noticing.
+            </MentorNote>
+          </div>
+
+          <div className="mt-6">
+            <AmplitudePredictReveal />
           </div>
 
           <div className="mt-6">
@@ -447,6 +481,27 @@ export default function BraKet() {
               source="MIT OpenCourseWare"
               videoId="r2NMWEsNcTs"
             />
+          </div>
+
+          <div className="mt-6">
+            <StuckPath type="math">
+              <p>
+                If the notation itself makes sense but the underlying arithmetic — square roots, squaring,
+                complex conjugation — is what's slowing you down, the gap is prerequisite math, not this
+                chapter.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-3">
+                <Link to="/math-language" className="btn-secondary">Review Mathematical Language</Link>
+                <a
+                  href="https://www.khanacademy.org/math/linear-algebra"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-ghost"
+                >
+                  Khan Academy: Linear Algebra
+                </a>
+              </div>
+            </StuckPath>
           </div>
         </ConceptSection>
       </section>

@@ -1,13 +1,58 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import ModuleLayout from '../../components/ModuleLayout'
-import LessonCard from '../../components/LessonCard'
-import StepNav from '../../components/StepNav'
+import DefinitionBox from '../../components/DefinitionBox'
+import NotationBox from '../../components/NotationBox'
+import ExampleBox from '../../components/ExampleBox'
+import RemarkBox from '../../components/RemarkBox'
+import PrereqList from '../../components/PrereqList'
+import Keyword from '../../components/Keyword'
+import RailCard from '../../components/RailCard'
+import SummaryBox from '../../components/SummaryBox'
+import MistakesBox from '../../components/MistakesBox'
+import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
+import MentorNote from '../../components/MentorNote'
+import StuckPath from '../../components/StuckPath'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
-import { useProgress } from '../../lib/hooks/useProgress'
-import { MODULE_LAYOUT_STYLES } from '../../lib/data/modules'
+
+const ALGORITHMS_OUTLINE = [
+  { id: 'algorithms-deutsch', label: 'Deutsch–Jozsa: one query beats two' },
+  { id: 'algorithms-grover', label: "Grover's search: quadratic speedup" },
+  { id: 'algorithms-kickback', label: 'Phase kickback: the shared engine' },
+  { id: 'algorithms-shor', label: "Why Shor's algorithm matters" },
+  { id: 'algorithms-advantage', label: 'Where quantum advantage actually lies' },
+  { id: 'algorithms-mistakes', label: 'Common mistakes' },
+  { id: 'algorithms-next', label: 'Next steps' },
+]
+
+function AlgorithmsSupport() {
+  return (
+    <>
+      <RailCard label="Key Formulas" title="What To Recognize">
+        <ul className="space-y-2">
+          <li><span className="font-mono text-orange-300">|0&#x27E9; or |1&#x27E9;</span>: Deutsch&ndash;Jozsa's one-shot answer &mdash; constant or balanced.</li>
+          <li><span className="font-mono text-orange-300">2|s&#x27E9;&#x27E8;s| &minus; I</span>: Grover's diffusion operator, reflecting about the mean.</li>
+          <li><span className="font-mono text-orange-300">CU|+&#x27E9;|u&#x27E9; = ((|0&#x27E9;+e<sup>i&phi;</sup>|1&#x27E9;)/&radic;2)|u&#x27E9;</span>: phase kickback.</li>
+        </ul>
+      </RailCard>
+
+      <RailCard label="Reading Lens" title="Where the Speedup Actually Lives">
+        <ul className="space-y-2">
+          <li>Speedup type varies by algorithm: exponential (Shor), quadratic (Grover), none (most everyday tasks).</li>
+          <li>Every algorithm in this chapter relies on interference and phase kickback, not brute-force parallel evaluation.</li>
+          <li>Current hardware cannot yet run these algorithms at a cryptographically or commercially relevant scale.</li>
+        </ul>
+        <div className="mt-4 flex flex-col gap-2">
+          <Link to="/projects/algorithm-showdown" className="btn-secondary justify-center">Open Algorithm Showdown</Link>
+          <Link to="/measurement" className="btn-ghost justify-center">Review Measurement & Basis</Link>
+        </div>
+      </RailCard>
+    </>
+  )
+}
 
 /* ── Visuals ──────────────────────────────────────────────────────────────── */
 
@@ -38,12 +83,11 @@ function DeutschJozsaVisual() {
   const o = oracles[oracleType]
 
   return (
-    <div className="card border-orange-800/30 my-6">
-      <p className="text-xs text-orange-400 uppercase tracking-wider mb-4 text-center">
-        Deutsch's algorithm — one query to classify the function
-      </p>
+    <div className="rounded-2xl border border-orange-800/40 bg-orange-950/15 p-5">
+      <p className="section-label text-orange-400">Interactive Diagram</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Deutsch's Algorithm — One Query to Classify f</h3>
 
-      <div className="flex gap-2 justify-center mb-5">
+      <div className="mt-4 flex gap-2 justify-center">
         {Object.entries(oracles).map(([key, val]) => (
           <button
             key={key}
@@ -66,8 +110,8 @@ function DeutschJozsaVisual() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
+          className="mt-5"
         >
-          {/* Oracle black box */}
           <div className="flex items-center justify-center gap-3 sm:gap-5 mb-5">
             <div className="space-y-2 text-right">
               {o.mapping.map(m => (
@@ -89,7 +133,6 @@ function DeutschJozsaVisual() {
             </div>
           </div>
 
-          {/* Circuit flow */}
           <div className="bg-slate-900/60 rounded-xl p-4 text-center mb-4">
             <div className="flex items-center justify-center gap-2 font-mono text-sm flex-wrap">
               <span className="text-slate-400">|0⟩</span>
@@ -124,9 +167,7 @@ function GroverVisual() {
   function getAmplitudes(iter) {
     const amps = new Array(N).fill(1 / Math.sqrt(N))
     for (let i = 0; i < iter; i++) {
-      // Oracle: flip target
       amps[target] = -amps[target]
-      // Diffusion: invert about the mean
       const mean = amps.reduce((a, b) => a + b, 0) / N
       for (let j = 0; j < N; j++) {
         amps[j] = 2 * mean - amps[j]
@@ -139,12 +180,11 @@ function GroverVisual() {
   const maxAmp = Math.max(...amps.map(Math.abs))
 
   return (
-    <div className="card border-orange-800/30 my-6">
-      <p className="text-xs text-orange-400 uppercase tracking-wider mb-4 text-center">
-        Grover's search — amplitude amplification
-      </p>
+    <div className="rounded-2xl border border-orange-800/40 bg-orange-950/15 p-5">
+      <p className="section-label text-orange-400">Interactive Diagram</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Grover's Search — Amplitude Amplification</h3>
 
-      <div className="flex justify-center gap-2 mb-4">
+      <div className="mt-4 flex justify-center gap-2">
         {Array.from({ length: maxIters + 1 }, (_, i) => (
           <button
             key={i}
@@ -167,6 +207,7 @@ function GroverVisual() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
+          className="mt-4"
         >
           <div className="bg-slate-900/60 rounded-xl p-4 mb-4">
             <div className="flex items-end justify-center gap-1.5" style={{ height: '120px' }}>
@@ -189,8 +230,7 @@ function GroverVisual() {
               })}
             </div>
             <p className="text-xs text-slate-500 text-center mt-2">
-              Items 0–7. Target = <span className="text-orange-400">5</span>.
-              Height = probability amplitude.
+              Items 0–7. Target = <span className="text-orange-400">5</span>. Height = probability amplitude.
             </p>
           </div>
 
@@ -214,6 +254,38 @@ function GroverVisual() {
   )
 }
 
+function GroverQueryPredictReveal() {
+  const [revealed, setRevealed] = useState(false)
+
+  return (
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+      <p className="section-label">Predict Before You Reveal</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">A Smaller Database</h3>
+      <p className="mt-2 text-sm leading-relaxed text-slate-400">
+        The example above used <InlineMath>{'N = 1{,}000{,}000'}</InlineMath> entries. Using the same{' '}
+        <InlineMath>{'\\sqrt{N}'}</InlineMath> relationship, predict roughly how many queries Grover's
+        algorithm needs for a database of <InlineMath>{'N = 10{,}000'}</InlineMath> entries &mdash; and how
+        many a classical worst-case search would need.
+      </p>
+      {!revealed ? (
+        <button
+          onClick={() => setRevealed(true)}
+          className="btn-secondary mt-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        >
+          Reveal Answer
+        </button>
+      ) : (
+        <div className="mt-4 rounded-xl border border-orange-800/40 bg-orange-950/20 p-4 text-sm text-slate-300 leading-relaxed">
+          Classical worst case is up to 10,000 lookups. Grover needs about{' '}
+          <InlineMath>{'\\sqrt{10{,}000} = 100'}</InlineMath> queries &mdash; a hundredfold improvement,
+          smaller than the thousandfold improvement at <InlineMath>{'N = 1{,}000{,}000'}</InlineMath>{' '}
+          because the quadratic speedup scales with the square root, not with a fixed multiplier.
+        </div>
+      )}
+    </div>
+  )
+}
+
 function PhaseKickbackVisual() {
   const steps = [
     {
@@ -232,16 +304,15 @@ function PhaseKickbackVisual() {
       num: 3,
       label: 'Phase appears on control',
       formula: '|0\\rangle + e^{i\\phi}|1\\rangle',
-      desc: 'The control qubit now carries the phase. Measure in X basis to extract it.',
+      desc: 'The control qubit now carries the phase. Measure in the X basis to extract it.',
     },
   ]
 
   return (
-    <div className="card border-orange-800/30 my-6">
-      <p className="text-xs text-orange-400 uppercase tracking-wider mb-5 text-center">
-        Phase kickback — the engine of quantum algorithms
-      </p>
-      <div className="space-y-4">
+    <div className="rounded-2xl border border-orange-800/40 bg-orange-950/15 p-5">
+      <p className="section-label text-orange-400">Interactive Diagram</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Phase Kickback — The Engine of Quantum Algorithms</h3>
+      <div className="mt-4 space-y-4">
         {steps.map(s => (
           <div key={s.num} className="flex gap-3 items-start">
             <div className="w-8 h-8 rounded-full bg-orange-900/60 border border-orange-700/50
@@ -273,47 +344,51 @@ function PhaseKickbackVisual() {
 function ShorVisual() {
   const comparisons = [
     {
-      task: 'Factor 2048-bit number',
+      task: 'Factor a 2048-bit number',
       classical: 'Longer than the age of the universe',
       quantum: 'Hours (with enough qubits)',
-      icon: '🔐',
     },
     {
       task: 'Break RSA encryption',
       classical: 'Infeasible',
       quantum: 'Feasible with ~4000 logical qubits',
-      icon: '🛡️',
     },
     {
-      task: 'Find period of f(x)',
+      task: 'Find the period of f(x)',
       classical: 'O(√N) — exhaustive trial',
       quantum: 'O((log N)³) — exponential speedup',
-      icon: '🔄',
     },
   ]
 
   return (
-    <div className="space-y-3 my-6">
-      {comparisons.map((c, i) => (
-        <div key={i} className="card border-orange-800/30">
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-2xl">{c.icon}</span>
-            <h4 className="text-sm font-semibold text-white">{c.task}</h4>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-slate-900/60 rounded-lg p-3">
-              <p className="text-xs text-slate-500 mb-1">Classical</p>
-              <p className="text-sm text-red-400">{c.classical}</p>
+    <div className="rounded-2xl border border-orange-800/40 bg-orange-950/15 p-5">
+      <p className="section-label text-orange-400">Comparison Table</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">Classical vs. Quantum, Task by Task</h3>
+      <div className="mt-4 space-y-3">
+        {comparisons.map((c) => (
+          <div key={c.task} className="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+            <h4 className="text-sm font-semibold text-white mb-3">{c.task}</h4>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-slate-900/60 rounded-lg p-3">
+                <p className="text-xs text-slate-500 mb-1">Classical</p>
+                <p className="text-sm text-red-400">{c.classical}</p>
+              </div>
+              <div className="bg-slate-900/60 rounded-lg p-3">
+                <p className="text-xs text-slate-500 mb-1">Quantum</p>
+                <p className="text-sm text-green-400">{c.quantum}</p>
+              </div>
             </div>
-            <div className="bg-slate-900/60 rounded-lg p-3">
-              <p className="text-xs text-slate-500 mb-1">Quantum</p>
-              <p className="text-sm text-green-400">{c.quantum}</p>
-            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
+}
+
+const ADVANTAGE_CATEGORY_STYLES = {
+  green: { card: 'border-green-800/30', heading: 'text-green-400', pill: 'bg-green-900/30 border border-green-800/40 text-green-300' },
+  amber: { card: 'border-amber-800/30', heading: 'text-amber-400', pill: 'bg-amber-900/30 border border-amber-800/40 text-amber-300' },
+  red: { card: 'border-red-800/30', heading: 'text-red-400', pill: 'bg-red-900/30 border border-red-800/40 text-red-300' },
 }
 
 function AdvantageVisual() {
@@ -336,287 +411,486 @@ function AdvantageVisual() {
   ]
 
   return (
-    <div className="space-y-3 my-6">
-      {categories.map(c => (
-        <div key={c.label} className={`card border-${c.color}-800/30`}>
-          <h4 className={`text-sm font-semibold text-${c.color}-400 mb-3`}>{c.label}</h4>
-          <div className="flex flex-wrap gap-2">
-            {c.items.map(item => (
-              <span key={item} className={`px-2.5 py-1 rounded-full text-xs font-medium
-                bg-${c.color}-900/30 border border-${c.color}-800/40 text-${c.color}-300`}>
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
-      ))}
+    <div className="rounded-2xl border border-orange-800/40 bg-orange-950/15 p-5">
+      <p className="section-label text-orange-400">Reference Table</p>
+      <h3 className="mt-3 text-lg font-semibold text-white">What Is (and Isn't) Sped Up</h3>
+      <div className="mt-4 space-y-3">
+        {categories.map(c => {
+          const style = ADVANTAGE_CATEGORY_STYLES[c.color]
+          return (
+            <div key={c.label} className={`rounded-xl border bg-slate-950/70 p-4 ${style.card}`}>
+              <h4 className={`text-sm font-semibold mb-3 ${style.heading}`}>{c.label}</h4>
+              <div className="flex flex-wrap gap-2">
+                {c.items.map(item => (
+                  <span key={item} className={`px-2.5 py-1 rounded-full text-xs font-medium ${style.pill}`}>
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
 
-/* ── Lessons ──────────────────────────────────────────────────────────────── */
-
-const LESSONS = [
-  {
-    title: 'Deutsch-Jozsa Algorithm',
-    hook: 'One quantum query answers a question that takes two classical queries.',
-    hookSub: 'The simplest proof that quantum can beat classical — guaranteed.',
-    visual: <DeutschJozsaVisual />,
-    bullets: [
-      'Problem: is f(x) constant (same output for all inputs) or balanced (different outputs)?',
-      'Classical: must query f twice to be sure. Quantum: one query always suffices.',
-      <>
-        The trick: <GlossaryTooltip term="Superposition">superposition</GlossaryTooltip> queries all
-        inputs at once, <GlossaryTooltip term="Interference">interference</GlossaryTooltip> reveals the
-        pattern.
-      </>,
-    ],
-    example: (
-      <div>
-        <MathDisplay>
-          {'|0\\rangle \\xrightarrow{H} |+\\rangle \\xrightarrow{U_f} \\begin{cases} |+\\rangle & \\text{constant} \\\\ |-\\rangle & \\text{balanced} \\end{cases} \\xrightarrow{H} \\begin{cases} |0\\rangle \\\\ |1\\rangle \\end{cases}'}
-        </MathDisplay>
-        <p className="text-xs text-slate-500 text-center -mt-2">
-          Measure |0⟩ → constant. Measure |1⟩ → balanced. One shot, 100% certainty.
-        </p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>The full Deutsch-Jozsa algorithm works for n-bit inputs: is f constant or balanced?
-        Classically, you need 2^(n−1) + 1 queries in the worst case. Quantum: always 1.
-        This is an exponential separation — but the problem is artificial.</p>
-        <p>The real significance is conceptual: it proved that quantum algorithms can be
-        provably faster, not just heuristically faster. This opened the door to Shor and Grover.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'How many queries does Deutsch-Jozsa need to determine if f is constant or balanced?',
-      choices: ['2', '1', 'log(N)', 'N/2'],
-      correct: 1,
-    },
-  },
-  {
-    title: 'Grover\'s Search',
-    hook: 'Search an unsorted list of N items in √N steps instead of N.',
-    hookSub: 'Not exponential — but quadratic speedup is still remarkable.',
-    visual: <GroverVisual />,
-    bullets: [
-      <>
-        <GlossaryTooltip term="Oracle">Oracle</GlossaryTooltip> marks the target by flipping its{' '}
-        <GlossaryTooltip term="Amplitude">amplitude</GlossaryTooltip>&apos;s sign: positive → negative.
-      </>,
-      'Diffusion operator inverts all amplitudes about the mean — boosting the target.',
-      'Repeat √N times. The target\'s probability grows to ~100%.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">Concrete numbers:</strong> Searching a phone book with 1 million
-        entries: classical needs up to 1,000,000 lookups. Grover needs ~1,000. That's 1000× faster.
-        For a database of 10⁹, it's ~31,623 vs 1 billion.</p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>Grover's algorithm is provably optimal — no quantum algorithm can search faster
-        than O(√N) for an unstructured problem. This was shown by Bennett, Bernstein,
-        Brassard, and Vazirani (1997).</p>
-        <p>The diffusion operator is <InlineMath>{'2|s\\rangle\\langle s| - I'}</InlineMath> where
-        |s⟩ is the uniform superposition. Geometrically, it reflects the state about |s⟩,
-        which increases the component along the target direction.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'How many Grover iterations are needed to search 1,000,000 items?',
-      choices: ['1,000,000', '500,000', '~1,000', '~100'],
-      correct: 2,
-    },
-  },
-  {
-    title: 'Phase Kickback',
-    hook: 'Phase kickback is the trick that makes Deutsch-Jozsa, Grover, and Shor actually work.',
-    hookSub: 'The phase "kicks" from the target qubit back onto the control qubit.',
-    visual: <PhaseKickbackVisual />,
-    bullets: [
-      'When a controlled gate acts on an eigenstate, the eigenvalue becomes a phase on the control.',
-      'The target qubit doesn\'t change — but the control qubit acquires the phase e^(iφ).',
-      'This "kickback" is how quantum algorithms extract information without measuring the target.',
-    ],
-    example: (
-      <div>
-        <MathDisplay>
-          {'\\text{CU}|+\\rangle|u\\rangle = \\frac{|0\\rangle|u\\rangle + e^{i\\phi}|1\\rangle|u\\rangle}{\\sqrt{2}} = \\left(\\frac{|0\\rangle + e^{i\\phi}|1\\rangle}{\\sqrt{2}}\\right)|u\\rangle'}
-        </MathDisplay>
-        <p className="text-xs text-slate-500 text-center -mt-2">
-          The phase e^(iφ) moved to the control qubit. The target is unchanged.
-        </p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>Phase kickback is the key ingredient in quantum phase estimation (QPE).
-        QPE uses multiple controlled-U gates with powers of 2, combined with the
-        inverse QFT, to read out the phase φ in binary. This is the heart of Shor's algorithm.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'In phase kickback, where does the phase end up?',
-      choices: [
-        'On the target qubit',
-        'On the control qubit',
-        'Equally distributed between both qubits',
-        'It disappears',
-      ],
-      correct: 1,
-    },
-  },
-  {
-    title: 'Why Shor Matters',
-    hook: 'Shor\'s algorithm can factor large numbers exponentially faster than any known classical method.',
-    hookSub: 'This threatens RSA encryption — the backbone of internet security.',
-    visual: <ShorVisual />,
-    bullets: [
-      'RSA security relies on factoring being hard. Shor makes it easy — with enough qubits.',
-      'Key insight: factoring reduces to period-finding. The QFT finds periods exponentially fast.',
-      'Current quantum computers are too small and noisy. But it\'s a matter of engineering, not physics.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">The recipe:</strong> To factor N: (1) pick random a &lt; N,
-        (2) use QPE to find the period r of f(x) = a^x mod N, (3) use r to find factors via
-        gcd(a^(r/2) ± 1, N). Steps 1 and 3 are classical. Step 2 is the quantum magic.</p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>Shor's algorithm needs O((log N)³) quantum gates — polynomial in the number of digits.
-        The best classical algorithm (General Number Field Sieve) runs in sub-exponential time
-        <InlineMath>{'e^{O((\\log N)^{1/3} (\\log \\log N)^{2/3})}'}</InlineMath>.</p>
-        <p>The crossover point where quantum beats classical is estimated at around 2048 bits.
-        Current quantum computers have factored numbers up to about 21 (in research demonstrations).
-        Useful factoring requires ~4000 error-corrected logical qubits — likely decades away.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'What mathematical problem does Shor\'s algorithm reduce factoring to?',
-      choices: [
-        'Matrix multiplication',
-        'Period-finding',
-        'Shortest path',
-        'Eigenvalue decomposition',
-      ],
-      correct: 1,
-    },
-  },
-  {
-    title: 'Quantum Advantage',
-    hook: 'Quantum isn\'t faster at everything — it\'s faster at specific structured problems.',
-    hookSub: 'Knowing where quantum helps (and where it doesn\'t) is the real insight.',
-    visual: <AdvantageVisual />,
-    bullets: [
-      'Exponential speedup: factoring, quantum simulation, discrete log. These are the crown jewels.',
-      'Quadratic speedup: unstructured search (Grover). Helpful but not transformative.',
-      'No speedup: sorting, basic arithmetic, most everyday tasks. Classical computers win here.',
-    ],
-    example: (
-      <div className="card bg-slate-900/50 text-sm text-slate-400">
-        <p><strong className="text-white">The honest picture:</strong> Quantum advantage requires
-        (1) a problem with the right mathematical structure, (2) enough error-corrected qubits,
-        and (3) a quantum algorithm that exploits the structure. Without all three, classical wins.</p>
-      </div>
-    ),
-    deepDive: (
-      <div className="space-y-2 text-sm text-slate-400">
-        <p>"Quantum supremacy" demonstrations (Google 2019, IBM/China 2021+) showed tasks where
-        quantum is faster — but these are artificial sampling problems, not useful computations.</p>
-        <p>The most promising near-term applications are quantum simulation (chemistry, materials science)
-        and optimization heuristics (QAOA, VQE). These may achieve practical advantage before
-        full fault-tolerant computing arrives.</p>
-      </div>
-    ),
-    quiz: {
-      question: 'Which of these gets an exponential quantum speedup?',
-      choices: [
-        'Sorting a list',
-        'Searching an unsorted database',
-        'Factoring large numbers',
-        'Adding two numbers',
-      ],
-      correct: 2,
-    },
-  },
-]
-
 /* ── Module Page ──────────────────────────────────────────────────────────── */
 
 export default function Algorithms() {
-  const [step, setStep] = useState(0)
-  const { markDone, markLessonPassed, getLessonPassed, completed } = useProgress()
-  const passed = getLessonPassed('algorithms', LESSONS.length)
-  const allPassed = passed.every(Boolean)
-  const lesson = LESSONS[step]
-
-  useEffect(() => {
-    if (allPassed && !completed['algorithms']) markDone('algorithms')
-  }, [allPassed])
-
-  function handleQuizPass() {
-    markLessonPassed('algorithms', step)
-  }
-
   return (
     <ModuleLayout
       moduleId="algorithms"
       title="Core Algorithms"
-      subtitle="Why quantum beats classical — conceptually."
-      stepInfo={{ current: step, total: LESSONS.length, passed }}
+      subtitle="Why quantum beats classical, conceptually — and exactly where that advantage does and does not apply."
       prev={{ to: '/measurement', label: 'Module 10: Measurement & Basis' }}
       next={{ to: '/labs', label: 'Module 12: Qiskit Labs' }}
+      outline={ALGORITHMS_OUTLINE}
+      aside={<AlgorithmsSupport />}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.2 }}
+      <div className="prose-quantum max-w-none">
+        <p>
+          Quantum algorithms do not speed up computing in general &mdash; they exploit{' '}
+          <GlossaryTooltip term="Superposition"><Keyword tone="superposition">superposition</Keyword></GlossaryTooltip>{' '}
+          and <GlossaryTooltip term="Interference"><Keyword tone="interference">interference</Keyword></GlossaryTooltip>{' '}
+          for a small number of problems with the right mathematical structure. This chapter covers the four
+          algorithms that best illustrate why, what mechanism they share, and where the resulting advantage
+          actually applies.
+        </p>
+        <p>
+          Deutsch&ndash;Jozsa and Grover's search are worked through concretely. Phase kickback, the shared
+          mechanism behind both of them and behind Shor's algorithm, gets its own section. The chapter closes by
+          separating genuine quantum advantage from tasks where quantum offers nothing at all.
+        </p>
+      </div>
+
+      <div className="mt-8 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+        <PrereqList
+          items={[
+            'Comfort with the Born rule and basis-dependent measurement.',
+            'The Hadamard gate and how it converts between the Z and X bases.',
+            'Reading a short circuit diagram left to right.',
+          ]}
         >
-          <LessonCard
-            lesson={lesson}
-            lessonIndex={step}
-            totalLessons={LESSONS.length}
-            isPassed={passed[step]}
-            onPass={handleQuizPass}
-            bulletStyle={MODULE_LAYOUT_STYLES.algorithms.bullet}
+          If basis-dependent measurement still feels unfamiliar, review{' '}
+          <Link to="/measurement" className="text-orange-400 transition-colors hover:text-orange-300">
+            Measurement & Basis
+          </Link>{' '}
+          before treating a phase difference as something a Z-basis measurement could ever reveal directly.
+        </PrereqList>
+
+        <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+          <p className="section-label">Learning Objectives</p>
+          <ul className="chapter-list mt-3 space-y-2">
+            <li>Explain why one query settles the Deutsch&ndash;Jozsa problem, and why the problem is artificial.</li>
+            <li>Describe Grover's oracle-and-diffusion loop and state its query complexity.</li>
+            <li>Explain phase kickback and identify it inside Deutsch&ndash;Jozsa, Grover, and Shor.</li>
+            <li>Distinguish exponential, quadratic, and absent quantum speedup by example.</li>
+          </ul>
+        </div>
+      </div>
+
+      <section id="algorithms-deutsch" className="mt-10 scroll-mt-28">
+        <p className="section-label">Section 1</p>
+        <h2 className="section-heading">Deutsch–Jozsa: one query beats two</h2>
+        <p className="section-sub">
+          Deutsch&ndash;Jozsa is the simplest proof that a quantum algorithm can be guaranteed faster than any
+          classical one, not just faster on average.
+        </p>
+
+        <DefinitionBox term="Deutsch–Jozsa Problem">
+          Given a function <InlineMath>{'f'}</InlineMath> promised to be either constant (the same output for
+          every input) or balanced (different outputs for different inputs), determine which. Classically, this
+          can require querying <InlineMath>{'f'}</InlineMath> twice in the one-bit case. Quantum mechanically, one
+          query always suffices.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <DeutschJozsaVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: One Query, Certain Answer">
+            <MathDisplay>
+              {'|0\\rangle \\xrightarrow{H} |+\\rangle \\xrightarrow{U_f} \\begin{cases} |+\\rangle & \\text{constant} \\\\ |-\\rangle & \\text{balanced} \\end{cases} \\xrightarrow{H} \\begin{cases} |0\\rangle \\\\ |1\\rangle \\end{cases}'}
+            </MathDisplay>
+            <p>
+              Measuring <InlineMath>{'|0\\rangle'}</InlineMath> means <InlineMath>{'f'}</InlineMath> is constant;
+              measuring <InlineMath>{'|1\\rangle'}</InlineMath> means it is balanced &mdash; with certainty, from a
+              single query.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            This is the exact gate-then-measure pattern from{' '}
+            <Link to="/measurement" className="text-orange-400 transition-colors hover:text-orange-300">
+              Measurement & Basis
+            </Link>
+            : the oracle writes its answer into relative phase, and the second Hadamard converts that phase into a
+            directly measurable Z-basis outcome.
+          </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <ExpandableAside title="Optional: the general n-bit case" label="Extension">
+            <p>
+              For an <InlineMath>{'n'}</InlineMath>-bit input, the classical worst case needs{' '}
+              <InlineMath>{'2^{n-1} + 1'}</InlineMath> queries. The quantum algorithm still needs exactly one, an
+              exponential separation. The promise that <InlineMath>{'f'}</InlineMath> is either constant or
+              balanced is somewhat artificial &mdash; few real problems come with that guarantee.
+            </p>
+            <p className="mt-3">
+              Its significance is conceptual: Deutsch&ndash;Jozsa was the first proof that a quantum algorithm
+              could be provably, not just heuristically, faster than every classical algorithm. That result opened
+              the door to Grover's search and Shor's factoring algorithm.
+            </p>
+          </ExpandableAside>
+        </div>
+      </section>
+
+      <section id="algorithms-grover" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 2</p>
+        <h2 className="section-heading">Grover's search: quadratic speedup</h2>
+        <p className="section-sub">
+          Grover's algorithm searches an unsorted list of <InlineMath>{'N'}</InlineMath> items in roughly{' '}
+          <InlineMath>{'\\sqrt{N}'}</InlineMath> steps. It is not exponential, but the speedup is real and provably
+          optimal for this problem.
+        </p>
+
+        <DefinitionBox term="Amplitude Amplification">
+          Grover's algorithm repeats two steps: an{' '}
+          <GlossaryTooltip term="Oracle"><Keyword tone="gate">oracle</Keyword></GlossaryTooltip> that flips the
+          sign of the target's <GlossaryTooltip term="Amplitude"><Keyword tone="amplitude">amplitude</Keyword></GlossaryTooltip>,
+          and a diffusion step that reflects every amplitude about their mean. Together they boost the target's
+          probability toward 1 over roughly <InlineMath>{'\\sqrt{N}'}</InlineMath> repetitions.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <NotationBox symbol="2|s⟩⟨s| − I">
+            This is the diffusion operator, where <InlineMath>{'|s\\rangle'}</InlineMath> is the uniform
+            superposition over all <InlineMath>{'N'}</InlineMath> items. Geometrically, it reflects the current
+            state about <InlineMath>{'|s\\rangle'}</InlineMath>, which increases the component pointing toward the
+            oracle-marked target.
+          </NotationBox>
+        </div>
+
+        <div className="mt-6">
+          <GroverVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: Concrete Query Counts">
+            <p>
+              Searching a phone book with 1,000,000 entries: a classical search needs up to 1,000,000 lookups in
+              the worst case, while Grover needs about 1,000 &mdash; roughly a thousandfold improvement. For a
+              database of <InlineMath>{'10^9'}</InlineMath> entries, that becomes about 31,623 lookups instead of a
+              billion.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <GroverQueryPredictReveal />
+        </div>
+
+        <div className="mt-6">
+          <ExpandableAside title="Optional: why Grover's algorithm is provably optimal" label="Theoretical Aside">
+            <p>
+              Bennett, Bernstein, Brassard, and Vazirani proved in 1997 that no quantum algorithm can search an
+              unstructured space faster than <InlineMath>{'O(\\sqrt{N})'}</InlineMath>. Grover's algorithm meets
+              this bound exactly, so no future quantum algorithm can do better on this specific problem.
+            </p>
+          </ExpandableAside>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            The{' '}
+            <Link to="/projects/algorithm-showdown" className="text-orange-400 transition-colors hover:text-orange-300">
+              Algorithm Showdown project
+            </Link>{' '}
+            builds this oracle-and-diffusion circuit directly and compares its query count against classical
+            linear search at several problem sizes.
+          </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <VideoAside
+            title="Grover's Algorithm — Coding with Qiskit"
+            description="A Qiskit walkthrough implementing Grover's search algorithm in code — a hands-on companion to this section's conceptual coverage."
+            source="Qiskit"
+            videoId="0RPFWZj7Jm0"
           />
+        </div>
+      </section>
 
-          {step === LESSONS.length - 1 && allPassed && (
-            <div className="mt-6 p-5 rounded-2xl bg-green-950/30 border border-green-800/40 text-center">
-              <div className="text-2xl mb-2">&#127881;</div>
-              <p className="text-green-300 font-semibold">Module 10 complete.</p>
-              <p className="text-slate-400 text-sm mt-1">Head to Module 11 for hands-on Qiskit labs.</p>
+      <section id="algorithms-kickback" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 3</p>
+        <h2 className="section-heading">Phase kickback: the shared engine</h2>
+        <p className="section-sub">
+          Deutsch&ndash;Jozsa's oracle, Grover's oracle, and Shor's period-finding step all rely on the same
+          underlying trick for writing information into phase rather than into the target qubit's value.
+        </p>
+
+        <DefinitionBox term="Phase Kickback">
+          When a controlled-<InlineMath>{'U'}</InlineMath> gate acts on a target prepared in an eigenstate of{' '}
+          <InlineMath>{'U'}</InlineMath>, the resulting eigenvalue &mdash; a phase &mdash; appears on the control
+          qubit instead of changing the target. The target is left unchanged; the control carries the answer.
+        </DefinitionBox>
+
+        <div className="mt-4">
+          <NotationBox symbol="CU|+⟩|u⟩ = ((|0⟩ + e^(iφ)|1⟩)/√2)|u⟩">
+            Here <InlineMath>{'U|u\\rangle = e^{i\\phi}|u\\rangle'}</InlineMath>. The phase{' '}
+            <InlineMath>{'e^{i\\phi}'}</InlineMath> has moved entirely onto the control qubit, which can then be
+            measured &mdash; in the appropriate basis &mdash; to extract <InlineMath>{'\\phi'}</InlineMath>.
+          </NotationBox>
+        </div>
+
+        <div className="mt-6">
+          <PhaseKickbackVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: A Familiar Special Case">
+            <p>
+              Take <InlineMath>{'\\phi = \\pi'}</InlineMath>, so <InlineMath>{'U'}</InlineMath> acts like a phase
+              flip. Kickback leaves the control qubit in{' '}
+              <InlineMath>{'\\tfrac{|0\\rangle - |1\\rangle}{\\sqrt{2}}'}</InlineMath> &mdash; exactly the state{' '}
+              <InlineMath>{'|-\\rangle'}</InlineMath> from the phase-detection example in Measurement & Basis. The
+              same H-then-measure trick used there is how that phase gets read out.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <ExpandableAside title="Optional: phase kickback in quantum phase estimation" label="Extension">
+            <p>
+              Quantum phase estimation (QPE) applies a sequence of controlled-<InlineMath>{'U'}</InlineMath> gates
+              raised to increasing powers of 2, each kicking back a bit of phase information onto a separate
+              control qubit. An inverse quantum Fourier transform then reads out the phase{' '}
+              <InlineMath>{'\\phi'}</InlineMath> in binary. This is the core subroutine inside Shor's algorithm.
+            </p>
+          </ExpandableAside>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            Once phase kickback is recognizable, Deutsch&ndash;Jozsa's oracle and Grover's oracle stop looking like
+            two unrelated tricks &mdash; both are the same mechanism, applied to different problems.
+          </RemarkBox>
+        </div>
+
+        <div className="mt-6">
+          <MentorNote>
+            It's tempting to expect the target register to end up storing the function's output somewhere
+            you can read it off directly. It doesn't — after kickback, measuring the target gives back
+            exactly the state you prepared it in, with no directly readable trace of{' '}
+            <InlineMath>{'f(x)'}</InlineMath>. All the new information moved into the relative phase of the
+            control register instead.
+          </MentorNote>
+        </div>
+
+        <div className="mt-6">
+          <StuckPath type="implementation">
+            <p>
+              If the algebra of kickback makes sense but you can't picture how any of this becomes runnable
+              code, that's an implementation gap, not an algorithms gap.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <Link to="/qiskit" className="btn-secondary">Review Qiskit</Link>
+              <Link to="/labs" className="btn-secondary">Open Qiskit Labs</Link>
+              <a
+                href="https://quantum.cloud.ibm.com/learning/en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost"
+              >
+                IBM Quantum Learning
+              </a>
             </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+          </StuckPath>
+        </div>
+      </section>
 
-      <div className="mt-6">
-        <VideoAside
-          title="Grover's Algorithm — Coding with Qiskit"
-          description="A Qiskit walkthrough implementing Grover's search algorithm in code — a hands-on companion to this module's conceptual coverage."
-          source="Qiskit"
-          videoId="0RPFWZj7Jm0"
+      <section id="algorithms-shor" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 4</p>
+        <h2 className="section-heading">Why Shor's algorithm matters</h2>
+        <p className="section-sub">
+          Shor's algorithm factors large integers exponentially faster than the best known classical method,
+          which is why it is treated as a genuine long-term threat to RSA encryption.
+        </p>
+
+        <DefinitionBox term="Shor's Algorithm">
+          Shor's algorithm reduces integer factoring to <em>period-finding</em>: finding the period{' '}
+          <InlineMath>{'r'}</InlineMath> of <InlineMath>{'f(x) = a^x \\bmod N'}</InlineMath>. Quantum phase
+          estimation finds <InlineMath>{'r'}</InlineMath> in polynomial time; classical computers are not known to
+          be able to do this efficiently.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <ShorVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="Worked Example: The Recipe">
+            <p>
+              To factor <InlineMath>{'N'}</InlineMath>: pick a random <InlineMath>{'a < N'}</InlineMath>, use QPE
+              to find the period <InlineMath>{'r'}</InlineMath> of <InlineMath>{'f(x) = a^x \\bmod N'}</InlineMath>,
+              then compute <InlineMath>{'\\gcd(a^{r/2} \\pm 1, N)'}</InlineMath> to recover the factors. Only the
+              middle step is quantum; the rest is ordinary classical arithmetic.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <ExpandableAside title="Optional: complexity and current hardware reality" label="Technical Aside">
+            <p>
+              Shor's algorithm needs <InlineMath>{'O((\\log N)^3)'}</InlineMath> quantum gates &mdash; polynomial
+              in the number of digits. The best known classical algorithm, the general number field sieve, runs in
+              sub-exponential time <InlineMath>{'e^{O((\\log N)^{1/3} (\\log \\log N)^{2/3})}'}</InlineMath>.
+            </p>
+            <p className="mt-3">
+              The crossover point where quantum overtakes classical is estimated near 2048-bit numbers. Research
+              demonstrations to date have factored numbers only up to about 21. Useful factoring at cryptographic
+              scale is estimated to require on the order of 4000 error-corrected logical qubits &mdash; likely
+              decades of hardware progress away.
+            </p>
+          </ExpandableAside>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            "Error-corrected logical qubit" is doing a lot of work in that estimate.{' '}
+            <Link to="/noise" className="text-orange-400 transition-colors hover:text-orange-300">
+              Noise & Hardware
+            </Link>{' '}
+            covers why a single logical qubit currently requires many physical qubits working together.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="algorithms-advantage" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 5</p>
+        <h2 className="section-heading">Where quantum advantage actually lies</h2>
+        <p className="section-sub">
+          Quantum computers are not faster at everything. Knowing which category a problem falls into is as
+          important as knowing the algorithms themselves.
+        </p>
+
+        <DefinitionBox term="Quantum Advantage">
+          <Keyword tone="unitary">Quantum advantage</Keyword> requires three things at once: a problem with the
+          right mathematical structure, enough error-corrected qubits to run the algorithm, and an algorithm that
+          actually exploits that structure. Missing any one of the three, classical computing wins.
+        </DefinitionBox>
+
+        <div className="mt-6">
+          <AdvantageVisual />
+        </div>
+
+        <div className="mt-6">
+          <ExampleBox title="The Honest Picture">
+            <p>
+              Exponential speedup (factoring, quantum simulation, discrete logarithm) is rare and requires
+              hardware far beyond today's. Quadratic speedup (unstructured search) is useful but not
+              transformative. Everyday computing &mdash; sorting, arithmetic, most business logic &mdash; sees no
+              quantum benefit at all, now or in principle.
+            </p>
+          </ExampleBox>
+        </div>
+
+        <div className="mt-6">
+          <ExpandableAside title="Optional: what quantum supremacy demonstrations actually showed" label="Context">
+            <p>
+              Widely reported "quantum supremacy" results (Google, 2019; IBM and others since) demonstrated tasks
+              where a quantum device outperformed classical simulation &mdash; but the tasks were artificial
+              sampling problems chosen for that comparison, not useful computations.
+            </p>
+            <p className="mt-3">
+              The most promising near-term applications are quantum simulation of chemistry and materials, and
+              optimization heuristics such as QAOA and VQE. These may reach practical advantage before
+              fault-tolerant, error-corrected hardware exists at scale.
+            </p>
+          </ExpandableAside>
+        </div>
+
+        <div className="mt-6">
+          <RemarkBox>
+            <Link to="/usecases" className="text-orange-400 transition-colors hover:text-orange-300">
+              Use Cases
+            </Link>{' '}
+            surveys these near-term application areas in more detail, including where the promise is strongest and
+            where it remains unproven.
+          </RemarkBox>
+        </div>
+      </section>
+
+      <section id="algorithms-mistakes" className="mt-12 scroll-mt-28">
+        <p className="section-label">Section 6</p>
+        <h2 className="section-heading">Common mistakes</h2>
+        <p className="section-sub">
+          Most misconceptions about quantum algorithms come from generalizing from one famous result to quantum
+          computing as a whole.
+        </p>
+
+        <MistakesBox
+          items={[
+            {
+              mistake: 'Assuming every quantum algorithm gives an exponential speedup.',
+              clarification:
+                'Most problems get no speedup at all. Grover\'s search gives a quadratic speedup, and only a small class of structured problems — factoring, simulation, discrete log — are known to get an exponential one.',
+            },
+            {
+              mistake: 'Thinking a single Deutsch–Jozsa query reveals every individual output of f.',
+              clarification:
+                'Interference answers only the global constant-versus-balanced question. It does not reveal f(0) or f(1) individually — that information is never extracted.',
+            },
+            {
+              mistake: 'Believing current hardware can already run Shor\'s algorithm on cryptographically relevant numbers.',
+              clarification:
+                'Research demonstrations have factored numbers only up to about 21. Breaking real RSA keys is estimated to require on the order of 4000 error-corrected logical qubits, which does not yet exist.',
+            },
+            {
+              mistake: 'Treating "quantum supremacy" demonstrations as proof of general quantum advantage.',
+              clarification:
+                'Those results used artificial sampling tasks selected specifically to be hard for classical simulation, not evidence of speedup on a useful computation.',
+            },
+          ]}
+        />
+      </section>
+
+      <div className="mt-10">
+        <SummaryBox
+          points={[
+            'Deutsch–Jozsa proves quantum can be provably, not just probabilistically, faster for a specific problem: one query instead of up to 2ⁿ⁻¹ + 1.',
+            "Grover's search gives a quadratic (√N) speedup for unstructured search, and this is provably optimal — no faster quantum algorithm exists for this problem.",
+            'Phase kickback — a controlled-U eigenvalue landing on the control qubit instead of the target — is the shared mechanism behind Deutsch–Jozsa, Grover, and Shor.',
+            "Shor's algorithm reduces factoring to period-finding and threatens RSA, but needs on the order of thousands of error-corrected logical qubits, far beyond current hardware.",
+            'Quantum advantage is problem-specific: exponential for a few structured problems, quadratic for unstructured search, and absent for most everyday computing.',
+          ]}
         />
       </div>
 
-      <StepNav
-        steps={LESSONS.length}
-        current={step}
-        passed={passed}
-        onNext={() => setStep(s => s + 1)}
-        onPrev={() => setStep(s => s - 1)}
-        onGoto={setStep}
-      />
+      <section id="algorithms-next" className="mt-10 scroll-mt-28 rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
+        <p className="section-label">Before You Implement</p>
+        <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">From theory to running code</h2>
+        <p className="mt-3 text-sm leading-relaxed text-slate-400">
+          The next module moves from algorithm structure to hands-on Qiskit practice: building, running, and
+          interpreting the output of real circuits, including a small Grover implementation.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link to="/labs" className="btn-primary">
+            Continue to Qiskit Labs
+          </Link>
+          <Link to="/projects/algorithm-showdown" className="btn-secondary">
+            Try Algorithm Showdown
+          </Link>
+          <Link to="/references" className="btn-secondary">
+            Open References
+          </Link>
+        </div>
+      </section>
     </ModuleLayout>
   )
 }
