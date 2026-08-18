@@ -41,8 +41,9 @@ function AreaScoreRow({ area, score }) {
  * Renders `useDiagnostic()`'s `studyChain` as a connected sequence —
  * weakest area first — with an explicit "next" link between nodes,
  * mirroring the linked-list shape the data is already in. Covers only
- * the 3 diagnostic-tested modules; the background-based Study Paths on
- * /roadmap are a separate, untouched system.
+ * the diagnostic-tested modules (currently 7, driven entirely by
+ * DIAGNOSTIC_AREAS — see diagnostic.js); the background-based Study
+ * Paths on /roadmap are a separate, untouched system.
  */
 function StudyChainView({ studyChain }) {
   return (
@@ -208,7 +209,7 @@ function ResultsView({ diagnostic }) {
         </p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {DIAGNOSTIC_AREAS.map((area) => (
           <AreaScoreRow key={area.id} area={area} score={diagnostic.areaScores[area.id]} />
         ))}
@@ -297,9 +298,9 @@ export default function Diagnostic() {
             Placement Diagnostic
           </h1>
           <p className="mt-3 text-slate-400 text-sm sm:text-base leading-relaxed max-w-xl">
-            A short, ungraded check across notation, states, and gates. It suggests where your
-            knowledge boundary is — it never locks any page, and skipping it changes nothing about
-            what you can read.
+            An ungraded check spanning {DIAGNOSTIC_AREAS.length} topics, from notation and states
+            through phase, noise, and use cases. It suggests where your knowledge boundary is — it
+            never locks any page, and skipping it changes nothing about what you can read.
           </p>
         </div>
       </div>
@@ -312,7 +313,7 @@ export default function Diagnostic() {
             <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
               <p className="section-label">Before you start</p>
               <ul className="mt-3 space-y-2 text-sm text-slate-300 leading-relaxed">
-                <li>3 short sections — notation, states, gates — about {FLAT_QUESTIONS.length} questions total.</li>
+                <li>{DIAGNOSTIC_AREAS.length} sections, about {FLAT_QUESTIONS.length} questions total — longer than a quick check, but you can see your progress as you go.</li>
                 <li>There is no pass/fail. Answers only shape a suggestion, never access.</li>
                 <li>You can retake it any time; a new answer always replaces the old one.</li>
               </ul>

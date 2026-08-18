@@ -13,6 +13,7 @@ import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import VideoAside from '../../components/VideoAside'
 import MentorNote from '../../components/MentorNote'
+import CodeFillBlank from '../../components/CodeFillBlank'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const SETUP_CODE = `# Install Qiskit and the Aer simulator
@@ -643,6 +644,18 @@ export default function Qiskit() {
                 'Real devices introduce backend constraints and noise, so simulator output is a reference point, not a guarantee.',
             },
           ]}
+        />
+      </div>
+
+      <div className="mt-10">
+        <CodeFillBlank
+          title="Complete the Circuit"
+          prompt="This circuit should put the qubit into an equal superposition before measuring it. Which line belongs in the blank?"
+          before={['qc = QuantumCircuit(1, 1)']}
+          choices={['qc.h(0)', 'qc.x(0)', 'qc.z(0)', 'qc.s(0)']}
+          correctIndex={0}
+          after={['qc.measure(0, 0)']}
+          explanation="qc.h(0) applies a Hadamard gate, creating the equal superposition (|0⟩ + |1⟩)/√2 — the same pattern as first_circuit.py earlier on this page. qc.x(0) would just flip to |1⟩, still a definite outcome. qc.z(0) and qc.s(0) leave |0⟩ completely unchanged, since both only add phase to the |1⟩ component, which starts at zero amplitude here."
         />
       </div>
 

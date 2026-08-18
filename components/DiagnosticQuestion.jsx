@@ -1,13 +1,15 @@
 import { useRef } from 'react'
 
 /**
- * One placement-diagnostic question. Visually consistent with Quiz.jsx's
- * choice-button styling (indigo/slate states, lettered badges,
- * focus-visible rings) but behaviorally distinct on purpose: a placement
- * question never reveals correctness and never gates on getting it right
- * — see CLAUDE.md's "Diagnostic Placement & Concept Evidence". Selecting
- * and moving on is the entire interaction; Diagnostic.jsx owns the
- * "Continue" action.
+ * One placement-diagnostic question: indigo/slate choice-button styling,
+ * lettered badges, focus-visible rings. Behaviorally deliberate: a
+ * placement question never reveals correctness and never gates on
+ * getting it right — see CLAUDE.md's "Diagnostic Placement & Concept
+ * Evidence". Selecting and moving on is the entire interaction;
+ * Diagnostic.jsx owns the "Continue" action. Contrast the Qiskit
+ * Practice Challenges (`CodeFillBlank`/`CodeOrdering`), which are a
+ * deliberately different, real-graded mechanism — see CLAUDE.md's
+ * "Qiskit Practice Challenges" section.
  *
  * Implements the full ARIA "radio group" keyboard pattern, not just the
  * roles — a `role="radiogroup"`/`role="radio"` pair without roving

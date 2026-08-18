@@ -25,11 +25,10 @@ The site should **not** feel like:
 React 18 + Vite + Tailwind CSS v3 + KaTeX + React Router v6 + Framer Motion + Prism.js.
 
 ### Current State
-The identity shift and structural phases are complete, and Phase 3 content work is now essentially done. The site is branded **SIGQuantum — Technical Onboarding Handbook**. The handbook now spans **14 sequential modules**, Big-Picture Intuition through Use Cases (see Information Architecture below), each following the section template, and — as of TASK-032 through TASK-037 — every module now uses the same `ModuleLayout` outline+aside page template (`DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox`/`MistakesBox`/`SummaryBox`). No module page uses the older `LESSONS`/`LessonCard`/`StepNav` lesson-stepper pattern anymore. `Roadmap.jsx` (Study Paths) is fully implemented: three background-based paths (CS/Python, physics/theory, new to both), a full topic map, and machine-project status, all driven by `useProgress`. Three **Machine Projects** (First Quantum Circuit, Bell State Explorer, Algorithm Showdown) are built end to end with real Qiskit code, predict/reflect checkpoints, and step-gated progress via `ProjectLayout`. The **Diagnostic Placement pilot** (Phase 3a) shipped in full, scoped to Intuition, Bra-Ket, and Gates: a soft/advisory placement quiz, concept-level content collapsing, a linked-list study sequence, and a no-account save/restore code (see Diagnostic Placement & Concept Evidence below). Separately, every one of the 14 modules — not just the 3 pilot modules — now carries one optional, source-verified video aside (see Video Sourcing); that rollout was content-only and did not extend the concept-graph/diagnostic-collapsing system itself beyond the pilot. Phase 3b, scoped 2026-08-17 from an external beginner-usefulness assessment (`LLM_ASSIGNMENT.md`), shipped 2026-08-18 as TASK-038: `MentorNote` and `StuckPath` are built and in use (14 `MentorNote` instances, one per module; 4 `StuckPath` instances, one per blocker type, on `braket`/`phase`/`entanglement`/`algorithms`), the six CLAUDE.md-named difficult modules (`intuition`, `braket`, `phase`, `gates`, `measurement`, `algorithms`) each carry a new predict-before-reveal moment, `References.jsx` no longer mislabels IBM Quantum Learning as the old Qiskit Textbook and now carries a goal-sorted chooser plus Microsoft Quantum Katas/MIT OCW/Quantum Country, and the orphaned `LessonCard`/`StepNav`/`Quiz`/`DeepDive` components and the nav-linked (not actually unlinked — corrected from an earlier inaccurate note) `/challenges` page have been deleted. See "Mentor Notes, Stuck Recovery & Continuation Resources" below for the governing rules this task executed against.
+The identity shift and structural phases are complete, and Phase 3 content work is now essentially done. The site is branded **SIGQuantum — Technical Onboarding Handbook**. The handbook now spans **14 sequential modules**, Big-Picture Intuition through Use Cases (see Information Architecture below), each following the section template, and — as of TASK-032 through TASK-037 — every module now uses the same `ModuleLayout` outline+aside page template (`DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox`/`MistakesBox`/`SummaryBox`). No module page uses the older `LESSONS`/`LessonCard`/`StepNav` lesson-stepper pattern anymore. `Roadmap.jsx` (Study Paths) is fully implemented: three background-based paths (CS/Python, physics/theory, new to both), a full topic map, and machine-project status, all driven by `useProgress`. Three **Machine Projects** (First Quantum Circuit, Bell State Explorer, Algorithm Showdown) are built end to end with real Qiskit code, predict/reflect checkpoints, and step-gated progress via `ProjectLayout`. The **Diagnostic Placement pilot** (Phase 3a) shipped in full, scoped to Intuition, Bra-Ket, and Gates: a soft/advisory placement quiz, concept-level content collapsing, a linked-list study sequence, and a no-account save/restore code (see Diagnostic Placement & Concept Evidence below). Separately, every one of the 14 modules — not just the 3 pilot modules — now carries one optional, source-verified video aside (see Video Sourcing); that rollout was content-only and did not extend the concept-graph/diagnostic-collapsing system itself beyond the pilot. Phase 3b, scoped 2026-08-17 from an external beginner-usefulness assessment (`LLM_ASSIGNMENT.md`), shipped 2026-08-18 as TASK-038: `MentorNote` and `StuckPath` are built and in use (14 `MentorNote` instances, one per module; 4 `StuckPath` instances, one per blocker type, on `braket`/`phase`/`entanglement`/`algorithms`), the six CLAUDE.md-named difficult modules (`intuition`, `braket`, `phase`, `gates`, `measurement`, `algorithms`) each carry a new predict-before-reveal moment, `References.jsx` no longer mislabels IBM Quantum Learning as the old Qiskit Textbook and now carries a goal-sorted chooser plus Microsoft Quantum Katas/MIT OCW/Quantum Country, and the orphaned `LessonCard`/`StepNav`/`Quiz`/`DeepDive` components and the nav-linked (not actually unlinked — corrected from an earlier inaccurate note) `/challenges` page have been deleted. See "Mentor Notes, Stuck Recovery & Continuation Resources" below for the governing rules this task executed against. The Phase 3a pilot-rollout decision was then resolved the same day as TASK-039: the diagnostic was extended, at lighter density, to `math-language`/`phase`/`noise`/`usecases` (7 modules total, 32 questions), while the other 7 modules from Qiskit onward got a new, deliberately different feature instead — `CodeFillBlank`/`CodeOrdering` "Qiskit Practice Challenges" with real pass/fail grading, a documented scoped exception to the diagnostic's no-reveal rule (see "Qiskit Practice Challenges" below).
 
 ### What remains
-- Decide whether to roll the concept graph + diagnostic out beyond the 3 pilot modules (see Phase 3a) — the pilot's line-by-line, concept-tagged rigor audit (e.g. Gates.jsx's gate-matrix fix, Intuition.jsx's analogy audit) is a narrower, deeper pass than the template migration above, and still stops at Intuition/Bra-Ket/Gates by design; a separate concern from Phase 3b's mentor-note texture, which is now shipped
-- Phase 4 polish: accessibility, mobile, and rendering audits — sequenced after Phase 3b, not started
+- Phase 4 polish: accessibility, mobile, and rendering audits — sequenced after Phase 3b/3c, not started
 
 ---
 
@@ -624,6 +623,73 @@ with “least data, no accounts”: the code is generated and read entirely in
 the browser, nothing is transmitted anywhere, and it carries no
 personally identifying information — only the raw answer set.
 
+### Rollout scope (as of TASK-039)
+The Phase 3a pilot (`intuition`/`braket`/`gates`) was reviewed, and the
+diagnostic was extended — at lighter density, not full pilot parity — to
+4 more modules: `math-language`, `phase`, `noise`, `usecases`. Each new
+module's concepts have exactly 2 tagging questions, versus the pilot's
+7-8 per area; `phase` (a CLAUDE.md-named "difficult" module) got 2
+concepts, the other 3 got 1 each. The diagnostic now covers 7 modules
+and 32 questions total (see `lib/data/diagnostic.js`/`concepts.js`).
+
+The remaining 7 modules from Qiskit onward in module order (`qiskit`,
+`multiqubit`, `entanglement`, `circuits`, `measurement`, `algorithms`,
+`labs`) deliberately were **not** added to the diagnostic — see "Qiskit
+Practice Challenges" immediately below for what they got instead, and
+why. `gates` is the one exception that sits in both systems: it keeps
+its original pilot diagnostic content *and* got a Qiskit Practice
+Challenge, since it was explicitly in scope for both.
+
+---
+
+## Qiskit Practice Challenges
+
+A second, deliberately different mechanism from the diagnostic above,
+added in TASK-039 at the user's direction: real, checkable Qiskit code
+exercises — fill-in-the-blank or step-ordering — for the modules where
+Qiskit is "available" (module 5 onward in sequence): `qiskit`, `gates`,
+`multiqubit`, `entanglement`, `circuits`, `measurement`, `algorithms`,
+`labs`.
+
+### This is a documented, scoped exception — not a diagnostic feature
+The Diagnostic Placement system above is built specifically to **never**
+reveal correctness or gate on getting an answer right (`DiagnosticQuestion`'s
+own doc comment: "never reveals correctness and never gates on getting
+it right"). `CodeFillBlank` and `CodeOrdering` do the opposite on
+purpose: real pass/fail feedback, shown immediately, with a retry
+action. Per this file's Authority Model — conflicts with this file
+govern unless an intentional exception is documented — this section
+*is* that documentation. Do not read the diagnostic's no-reveal rule as
+extending to these components; it doesn't, by design.
+
+### No code execution
+This is a static site with no backend and no Python/Qiskit sandbox, and
+none was added. Grading is entirely client-side: `CodeFillBlank` compares
+a selected `<select>` choice (a complete statement, not free text) against
+one correct index; `CodeOrdering` compares a reordered list of lines
+(moved via keyboard-accessible up/down buttons, not drag-and-drop)
+against one correct sequence. Every exercise's code uses only syntax
+already established elsewhere on the site — `QuantumCircuit`, `.h`/`.x`/
+`.z`/`.s`/`.cx`, `.measure`/`.measure_all`, `AerSimulator`, `.run().result()`,
+`.get_counts()` — never invented syntax.
+
+### Restrained presentation, on purpose
+No scores, no streaks, no badges, no leaderboard, no persistence across
+sessions — each exercise is local `useState`, reset on page reload, same
+as the predict-before-reveal boxes from Phase 3b. This is deliberate:
+introducing real pass/fail grading is already a step toward the
+"gamified quiz" territory "What This Site Is Not" warns against, and the
+presentation must not compound that by adding scoring or progression on
+top of it. One exercise per module, embedded inline next to the relevant
+content — no new route, no nav entry.
+
+### Two modules kept off this track
+`noise` and `usecases` (modules 13–14) are sequentially "after Qiskit,"
+but neither page shows any Qiskit code — a genuine gap, not an oversight
+(`grep -c "<CodeBlock"` confirms 0 for both). Rather than invent Qiskit
+syntax disconnected from either page's real content, they were kept on
+the plain-MCQ diagnostic track instead (see "Rollout scope" above).
+
 ---
 
 ## Mentor Notes, Stuck Recovery & Continuation Resources
@@ -637,7 +703,7 @@ found the handbook technically sound but structurally uniform enough to
 read as machine-generated, and light on concrete, mentor-authored detail.
 This section is the governing spec for addressing that, the same way
 "Diagnostic Placement & Concept Evidence" governs the diagnostic pilot.
-Scoped as Phase 3b in the Build Plan below; not yet started.
+Scoped as Phase 3b in the Build Plan below — completed 2026-08-18.
 
 ### Tone contract: direct, not chatty
 "Mentor voice" here means concrete and specific, not warmer or more
@@ -706,8 +772,9 @@ is positioned for a specific need:
   supplemental only. The old community repository is archived/read-only
   and `qiskit.org/textbook` now redirects into IBM Quantum Learning; do
   not present it as the maintained path, and do not label an IBM Quantum
-  Learning link as "Qiskit Textbook" (the current `References.jsx` does
-  this and needs correcting — see Phase 3b).
+  Learning link as "Qiskit Textbook" (this was `References.jsx`'s actual
+  bug before Phase 3b fixed it — kept here as the standing rule, not a
+  pending fix).
 - **Microsoft Quantum Katas**
   (`https://learn.microsoft.com/en-us/azure/quantum/katas-qdk-learning`)
   — the best continuation for hands-on coding drills with checked
@@ -804,12 +871,14 @@ positioned and sorted by learner goal.
 | `ExampleBox` | Worked example with interpretation |
 | `RemarkBox` | Clarifying nuance or caveat |
 | `PrereqList` | Explicit prerequisites for a page |
-| `ConceptSection` | Diagnostic-evidence-aware content collapsing — see Diagnostic Placement & Concept Evidence |
+| `ConceptSection` | Diagnostic-evidence-aware content collapsing — see Diagnostic Placement & Concept Evidence. Used on 7 modules as of TASK-039 (the 3 pilot modules plus `math-language`/`phase`/`noise`/`usecases`), not all 14 by design. |
 | `VideoAside` | Optional sourced video embed, deferred load — see Video Sourcing |
-| `DiagnosticQuestion` | Placement-quiz choice UI (records and moves on; no reveal/retry, unlike `Quiz`) |
+| `DiagnosticQuestion` | Placement-quiz choice UI — records and moves on, never reveals correctness or gates. Contrast `CodeFillBlank`/`CodeOrdering` below, a deliberately different real-graded mechanism. |
 | `ProjectLayout` | Machine Project page shell — step list, progress bar, predict/reflect pattern |
 | `MentorNote` | Concrete, single-point beginner-stumble callout — see Mentor Notes, Stuck Recovery & Continuation Resources. Built in Phase 3b (TASK-038); one instance per module across all 14. |
 | `StuckPath` | Advisory recovery redirect keyed to blocker type (math/notation/circuit-reading/implementation) — see Mentor Notes, Stuck Recovery & Continuation Resources. Built in Phase 3b (TASK-038); one instance per blocker type, placed on `braket`, `phase`, `entanglement`, and `algorithms`. |
+| `CodeFillBlank` | Checkable Qiskit fill-in-the-blank exercise (select-based, real pass/fail + retry) — see Qiskit Practice Challenges. Built in TASK-039; one per module on `qiskit`, `gates`, `multiqubit`, `measurement`, `algorithms`. |
+| `CodeOrdering` | Checkable Qiskit step-ordering exercise (keyboard-accessible reorder, real pass/fail + retry) — see Qiskit Practice Challenges. Built in TASK-039; one per module on `entanglement`, `circuits`, `labs`. |
 
 `PathCard`, `ReferenceList`, and `FigureFrame` were planned but never built as named; their roles are covered instead by `Roadmap.jsx`’s own path cards, the References page’s plain list, and `DiagramFrame` respectively. Update this table rather than reintroducing the unused names if that ever changes.
 
@@ -1016,9 +1085,11 @@ below and the Component Architecture table.
 ### Phase 3a — Diagnostic Placement Pilot ✓ (completed 2026-08-09)
 Scope: Intuition, Bra-Ket, and Gates only. See “Diagnostic Placement &
 Concept Evidence” above for the governing rules. Full slicing lives in
-`agent.md`’s task history (TASK-020 through TASK-026). The concept graph
-and diagnostic-collapsing system remain scoped to these 3 modules — do
-not roll out further without reviewing this pilot first.
+`agent.md`’s task history (TASK-020 through TASK-026). The pilot was
+reviewed and the concept graph/diagnostic system rolled out further in
+TASK-039 (see Phase 3c below) — at lighter density than this pilot for
+the 4 new modules, and via a different, non-diagnostic mechanism (Qiskit
+Practice Challenges) for the 7 modules from Qiskit onward.
 - [x] Concept graph + diagnostic question data model, with an explicit
       version-bump contract so edited questions can’t silently rescore old
       answers
@@ -1039,7 +1110,8 @@ not roll out further without reviewing this pilot first.
       Video sourcing policy broadened from IBM-only to “IBM/Qiskit
       preferred, other verified-reputable sources acceptable” (TASK-029).
       This expanded video coverage only; the concept graph and diagnostic
-      collapsing are still Intuition/Bra-Ket/Gates only.
+      collapsing were still Intuition/Bra-Ket/Gates only at the time —
+      see Phase 3c below for the later rollout.
 - [x] New “Mathematical Language” module (module 2), fixing a real gap —
       `BraKet.jsx` referenced vector familiarity with nothing to link to
       (TASK-027)
@@ -1081,6 +1153,33 @@ rules. Shipped as TASK-038; full detail in `agent.md`/`TASKS.md`.
       was **not** actually nav-unlinked as earlier notes claimed — it was
       reachable from the mobile "Explore" menu in `Navbar.jsx`; that link
       was removed along with the route and the page file.
+
+### Phase 3c — Diagnostic Rollout & Qiskit Practice Challenges ✓ (completed 2026-08-18)
+Resolves the Phase 3a follow-on decision (whether to roll the pilot's
+concept graph/diagnostic beyond its 3 modules), redirected mid-planning
+by the user into two tracks rather than a single uniform MCQ expansion.
+Shipped as TASK-039; full detail in `agent.md`/`TASKS.md`. See
+"Diagnostic Placement & Concept Evidence" → "Rollout scope" and "Qiskit
+Practice Challenges" above for the governing rules this task established.
+- [x] Diagnostic extended, lighter density than the pilot, to
+      `math-language`/`phase`/`noise`/`usecases` — 5 new concepts, 10 new
+      questions (22 → 32 total), 4 new `DIAGNOSTIC_AREAS`
+- [x] Two new components, `CodeFillBlank` and `CodeOrdering` — real
+      pass/fail + retry, a documented exception to the diagnostic's
+      no-reveal rule, not part of the diagnostic itself
+- [x] One Qiskit Practice Challenge per module on `qiskit`, `gates`,
+      `multiqubit`, `entanglement`, `circuits`, `measurement`,
+      `algorithms`, `labs` — every exercise built only from Qiskit syntax
+      already established elsewhere on the site, none invented
+- [x] `noise`/`usecases` kept on the plain-MCQ track instead of forced
+      into a Qiskit exercise, since neither page shows any Qiskit code
+      (`grep -c "<CodeBlock"` confirmed 0 for both) — flagged and
+      resolved as a deviation from a literal "every module from Qiskit
+      onward" reading, to avoid fabricating ungrounded code examples
+- [x] `Diagnostic.jsx`/`Roadmap.jsx` copy and layout updated for the new
+      question count (results grid no longer hardcodes 3 columns, hero
+      and "before you start" copy no longer name only the 3 pilot
+      topics, time estimate updated proportionally)
 
 ### Phase 4 — Polish
 - [ ] Accessibility audit

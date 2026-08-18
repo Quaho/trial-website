@@ -14,6 +14,8 @@ import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import MentorNote from '../../components/MentorNote'
+import ConceptSection from '../../components/ConceptSection'
+import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const NOISE_OUTLINE = [
@@ -482,6 +484,8 @@ function ErrorCorrectionVisual() {
 /* ── Module Page ──────────────────────────────────────────────────────────── */
 
 export default function Noise() {
+  const diagnostic = useDiagnostic()
+
   return (
     <ModuleLayout
       moduleId="noise"
@@ -540,53 +544,55 @@ export default function Noise() {
           introduces error at every step, and that error shows up directly in the measurement statistics.
         </p>
 
-        <DefinitionBox term="Hardware Noise">
-          <Keyword tone="qubit">Hardware noise</Keyword> refers to unwanted physical effects — stray bit flips,
-          phase errors, and measurement mistakes — that cause a real device's output distribution to diverge from
-          the distribution an ideal, noise-free circuit predicts.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['hardware-noise']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Hardware Noise">
+            <Keyword tone="qubit">Hardware noise</Keyword> refers to unwanted physical effects — stray bit flips,
+            phase errors, and measurement mistakes — that cause a real device's output distribution to diverge from
+            the distribution an ideal, noise-free circuit predicts.
+          </DefinitionBox>
 
-        <div className="mt-6">
-          <IdealVsRealVisual />
-        </div>
+          <div className="mt-6">
+            <IdealVsRealVisual />
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox title="Worked Example: The Same Bell Circuit, Two Outputs">
-            <p>
-              On a simulator: <span className="font-mono text-green-300">{'{"00": 500, "11": 500}'}</span>. On real
-              hardware: <span className="font-mono text-amber-300">{'{"00": 472, "11": 481, "01": 28, "10": 19}'}</span>.
-              The circuit is identical in both cases — the noise itself creates the outcomes that an ideal Bell
-              state should never produce.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox title="Worked Example: The Same Bell Circuit, Two Outputs">
+              <p>
+                On a simulator: <span className="font-mono text-green-300">{'{"00": 500, "11": 500}'}</span>. On real
+                hardware: <span className="font-mono text-amber-300">{'{"00": 472, "11": 481, "01": 28, "10": 19}'}</span>.
+                The circuit is identical in both cases — the noise itself creates the outcomes that an ideal Bell
+                state should never produce.
+              </p>
+            </ExampleBox>
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            Seeing <span className="font-mono">|01&#x27E9;</span> or{' '}
-            <span className="font-mono">|10&#x27E9;</span> from a Bell circuit on real hardware does not mean the
-            circuit was built incorrectly. It is ordinary evidence of hardware noise, and it grows worse as
-            circuits get deeper.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              Seeing <span className="font-mono">|01&#x27E9;</span> or{' '}
+              <span className="font-mono">|10&#x27E9;</span> from a Bell circuit on real hardware does not mean the
+              circuit was built incorrectly. It is ordinary evidence of hardware noise, and it grows worse as
+              circuits get deeper.
+            </RemarkBox>
+          </div>
 
-        <div className="mt-6">
-          <VideoAside
-            title="Mitigating Noise in Quantum Hardware — Part 1"
-            description="A Qiskit Seminar Series talk on where noise comes from on real quantum hardware and how to work around it — a deeper companion to this section's introduction."
-            source="Qiskit"
-            videoId="Dv5cqB87nqk"
-          />
-        </div>
+          <div className="mt-6">
+            <VideoAside
+              title="Mitigating Noise in Quantum Hardware — Part 1"
+              description="A Qiskit Seminar Series talk on where noise comes from on real quantum hardware and how to work around it — a deeper companion to this section's introduction."
+              source="Qiskit"
+              videoId="Dv5cqB87nqk"
+            />
+          </div>
 
-        <div className="mt-6">
-          <MentorNote>
-            If a SIGQuantum project's circuit ran cleanly on hardware last week and looks noisier today with
-            no code changes, that is not automatically a sign something broke. Real devices are recalibrated
-            regularly, and which specific qubits and gate pairs are noisiest can shift between calibration
-            cycles — check the backend's current calibration data before assuming a regression in your code.
-          </MentorNote>
-        </div>
+          <div className="mt-6">
+            <MentorNote>
+              If a SIGQuantum project's circuit ran cleanly on hardware last week and looks noisier today with
+              no code changes, that is not automatically a sign something broke. Real devices are recalibrated
+              regularly, and which specific qubits and gate pairs are noisiest can shift between calibration
+              cycles — check the backend's current calibration data before assuming a regression in your code.
+            </MentorNote>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="noise-decoherence" className="mt-12 scroll-mt-28">

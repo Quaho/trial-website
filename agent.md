@@ -1,5 +1,91 @@
 # agent.md — Current Codex Task
 
+## TASK-039 — COMPLETE (2026-08-18)
+Resolves the last item before Phase 4: whether to roll the Phase 3a
+diagnostic pilot (Intuition/Bra-Ket/Gates) out to the rest of the
+handbook. Done directly at the user's request ("finish everything
+before phase 4"), then substantially redirected mid-planning — twice —
+via clarifying questions rather than guessed defaults. Full detail in
+`TASKS.md`.
+
+**How the scope changed from the original plan**: the first plan (plain
+MCQ diagnostic questions for all 11 non-pilot modules, full pilot
+density) was rejected outright — "actually change everything, change
+the diagnostic questions when it is available to use qiskit do a
+leetcode style question or qiskit orchestration." Two follow-up
+`AskUserQuestion` rounds pinned down: (1) real graded pass/fail
+exercises, not more no-reveal MCQs, for modules where Qiskit is
+"available" (module 5 onward); (2) mixed fill-in-the-blank/step-ordering
+format, embedded one per module inline in the page, same integration
+pattern as `MentorNote`/`StuckPath`.
+
+**Two tracks shipped, not one.** Track A (plain MCQ diagnostic,
+extending the reviewed pilot mechanism, lighter density than the pilot):
+`math-language`, `phase`, `noise`, `usecases` — 5 new concepts
+(`vector-normalization`, `phase-vs-probability`, `basis-dependent-phase`,
+`hardware-noise`, `nisq-limitations`), 10 new questions, `phase` got 2
+concepts as a CLAUDE.md-named difficult module, the other 3 got 1 each.
+22 → 32 total diagnostic questions, 7 areas. No `DIAGNOSTIC_VERSION`
+bump — pure additions don't require one per the documented contract; a
+returning user's `isComplete` correctly flips to false until they answer
+the new sections, their old answers stay valid.
+
+Track B (new "Qiskit Practice Challenges" feature, real pass/fail +
+retry — a **deliberate, documented exception** to the diagnostic's own
+"never reveals correctness" design contract, written up in CLAUDE.md's
+new "Qiskit Practice Challenges" section per its Authority Model's
+scoped-exception rule): `qiskit`, `gates`, `multiqubit`, `entanglement`,
+`circuits`, `measurement`, `algorithms`, `labs`. Two new components,
+`CodeFillBlank.jsx` (select-based blanks — deliberately not free text,
+so grading is exact-match reliable without a parser) and
+`CodeOrdering.jsx` (keyboard move-up/move-down reordering, not
+drag-and-drop, for accessibility). No code execution anywhere — this is
+a static site with no Python/Qiskit sandbox and none was added; every
+exercise's code uses only syntax already established elsewhere on the
+site (`QuantumCircuit`, `.h`/`.x`/`.z`/`.s`/`.cx`, `.measure`/
+`.measure_all`, `AerSimulator`, `.run().result()`, `.get_counts()`).
+`gates` sits in both tracks — it kept its original pilot diagnostic
+content and additionally got a Qiskit Practice Challenge, since it was
+explicitly named in the user's "every module from Qiskit onward" scope.
+
+**A third deviation flagged and resolved without another round-trip**:
+"every module from Qiskit onward" literally includes `noise` and
+`usecases`, but neither page shows any Qiskit code at all (`grep -c
+"<CodeBlock"` confirmed 0 for both, vs. 5/1/5 for Qiskit/Circuits/Labs).
+Rather than invent Qiskit syntax with no connection to either page's
+real content — which would have violated the same no-fabrication
+standard TASK-038 held to — those two stayed on the Track A plain-MCQ
+path instead. Flagged explicitly in the plan file at approval time
+rather than silently substituted.
+
+Every Track B exercise's correct answer is grounded in that module's own
+already-stated content, not invented: Gates' Z|+⟩=|−⟩, MultiQubit's own
+"Reading |10⟩" example, Entanglement's own H-then-CX Bell-state
+derivation (order matters — swapping the two lines leaves the qubits
+unentangled, which is the actual lesson), Measurement's and Algorithms'
+shared "H-then-measure" basis-change trick (Algorithms explicitly
+reuses it from Measurement in its own prose), Labs' own "description
+first, execution second" framing extended to `simulator.run()`.
+
+**UI debt fixed while in `Diagnostic.jsx`/`Roadmap.jsx`**: hardcoded
+`sm:grid-cols-3` on the results grid (→ responsive for 7 areas), a
+"3 short sections — notation, states, gates" bullet and hero sentence
+naming only the 3 pilot topics (→ dynamic, all `DIAGNOSTIC_AREAS`),
+`StudyChainView`'s stale doc comment, and Roadmap's "about 10 minutes"
+estimate (→ "about 15 minutes," proportional to the new 32-question
+total). Also fixed in passing: `DiagnosticQuestion.jsx`'s doc comment
+still compared its styling to the now-deleted `Quiz.jsx`.
+
+Verified: `npm run build` passes after every batch. A standalone
+programmatic check (`.mjs` script in the scratchpad, mirroring TASK-021's
+pilot verification) confirms every new question's `concepts` id resolves,
+every new concept's `prereqs` id resolves, all new ids are unique, every
+new concept has exactly 2 tagging questions. `grep -c "<CodeFillBlank\|<CodeOrdering"`
+across `app/pages` confirms exactly one per Track B module. All Track B
+correct answers hand-checked against the real gate matrices/formulas
+they're grounded in. Not visually verified in a browser — standing
+project convention.
+
 ## TASK-038 — COMPLETE (2026-08-18)
 Phase 3b in full: "Beginner Usefulness & Continuation Resources," scoped
 from an external assessment (`LLM_ASSIGNMENT.md`) and governed by

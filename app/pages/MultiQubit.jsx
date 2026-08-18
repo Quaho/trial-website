@@ -14,6 +14,7 @@ import MistakesBox from '../../components/MistakesBox'
 import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import MentorNote from '../../components/MentorNote'
+import CodeFillBlank from '../../components/CodeFillBlank'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const MULTIQUBIT_OUTLINE = [
@@ -648,6 +649,17 @@ export default function MultiQubit() {
                 'The left and right qubit positions matter. Swapping them changes the state label and often the physical meaning.',
             },
           ]}
+        />
+      </div>
+
+      <div className="mt-10">
+        <CodeFillBlank
+          title="Build the State |10⟩"
+          prompt="Using this page's own convention — first qubit is 1, second qubit is 0 — which line prepares |10⟩ starting from the default |00⟩?"
+          before={['qc = QuantumCircuit(2)']}
+          choices={['qc.x(0)', 'qc.x(1)', 'qc.h(0)', 'qc.cx(0, 1)']}
+          correctIndex={0}
+          explanation="qc.x(0) flips the first qubit (qubit 0) from |0⟩ to |1⟩, leaving the second qubit (qubit 1) at |0⟩ — exactly |10⟩. qc.x(1) flips the wrong qubit, producing |01⟩ instead. qc.h(0) creates a superposition rather than the definite state |1⟩. qc.cx(0, 1) does nothing here, since its control qubit starts at |0⟩."
         />
       </div>
 
