@@ -1,5 +1,57 @@
 # agent.md — Current Codex Task
 
+## TASK-034 — COMPLETE (2026-08-17)
+Migrate `Algorithms.jsx` (module 11) off the legacy `LESSONS`/
+`LessonCard`/`StepNav` template onto `ModuleLayout` outline+aside, same
+pattern as TASK-032/033. Third of the "Advanced" group (modules 9-14),
+one module at a time. Full detail in `TASKS.md`.
+
+7-entry outline (`algorithms-deutsch`/`-grover`/`-kickback`/`-shor`/
+`-advantage`/`-mistakes`/`-next`). All 5 original visuals kept in the
+main flow (Deutsch-Jozsa oracle toggle, Grover amplitude-amplification
+stepper, phase-kickback step list, Shor comparison table, quantum-
+advantage category table), reskinned to `border-orange-800/40
+bg-orange-950/15` (algorithms' assigned color).
+
+**Fixed a real pre-existing bug while migrating, not just cosmetics**:
+`AdvantageVisual` built Tailwind classes via template strings
+(`` `border-${c.color}-800/30` ``, etc.) — exactly the anti-pattern
+`modules.js`'s own comment warns about ("all classes must be full
+strings for Tailwind JIT to detect them"). Those dynamic classes were
+never in Tailwind's scanned output and were silently no-ops. Replaced
+with an explicit `ADVANTAGE_CATEGORY_STYLES` lookup of full literal
+class strings, one per color, matching the pattern `MODULE_STYLES`
+already uses in `modules.js`.
+
+Content additions beyond a straight port: Section 3 (phase kickback) now
+cross-references the |−⟩ phase-detection example from `Measurement.jsx`
+directly (φ=π case), and Section 4 (Shor) links forward to `/noise` for
+what "error-corrected logical qubit" actually costs in physical qubits —
+both genuine connective tissue the legacy lesson-stepper format had no
+place for.
+
+Same stale-completion-banner pattern as TASK-032/033 ("Module 10
+complete" on the module-11 page), resolved the same way via
+`ModuleLayout`'s own footer.
+
+`GlossaryTooltip` terms (`Amplitude`, `Interference`, `Oracle`,
+`Superposition`) and `Keyword` tones (`amplitude`, `gate`,
+`interference`, `superposition`, `unitary`) checked against
+`glossary.js`/`Keyword.jsx`'s real data.
+
+Verified: `npm run build` passes (`Algorithms-*.js`, 31.91kB); grep
+confirms all 7 outline ids match section anchors 1:1 (empty diff), no
+legacy imports remain, exactly one `VideoAside` (moved into section 2,
+Grover, matching its actual content — the original page had it
+oddly placed after the lesson stepper with no section association), and
+nothing else in the repo references `Algorithms.jsx` internals. Not yet
+visually verified in a browser (standing project convention).
+
+### What's next
+Labs (module 12) is next in sequence, not yet scoped.
+
+---
+
 ## TASK-033 — COMPLETE (2026-08-17)
 Migrate `Measurement.jsx` (module 10) off the legacy `LESSONS`/
 `LessonCard`/`StepNav` template onto `ModuleLayout` outline+aside, same
@@ -90,7 +142,7 @@ in a browser — standing project convention (no Playwright/Chromium
 here).
 
 ### What's next
-Superseded by TASK-033 above — Measurement (module 10) has since been
+Superseded by TASK-034 above — Algorithms (module 11) has since been
 migrated.
 
 ---
