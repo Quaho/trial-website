@@ -14,6 +14,8 @@ import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import MentorNote from '../../components/MentorNote'
+import ConceptSection from '../../components/ConceptSection'
+import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 
 const USECASES_OUTLINE = [
   { id: 'usecases-chemistry', label: 'Chemistry & materials' },
@@ -544,6 +546,8 @@ function LimitationsVisual() {
 /* ── Module Page ──────────────────────────────────────────────────────────── */
 
 export default function UseCases() {
+  const diagnostic = useDiagnostic()
+
   return (
     <ModuleLayout
       moduleId="usecases"
@@ -811,46 +815,48 @@ export default function UseCases() {
           improving, and still far short of what transformative applications require.
         </p>
 
-        <DefinitionBox term="NISQ">
-          NISQ stands for Noisy Intermediate-Scale Quantum &mdash; the current era of quantum hardware. NISQ
-          devices are useful for research and small demonstrations, but they lack the error correction needed for
-          long, reliable computations.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['nisq-limitations']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="NISQ">
+            NISQ stands for Noisy Intermediate-Scale Quantum &mdash; the current era of quantum hardware. NISQ
+            devices are useful for research and small demonstrations, but they lack the error correction needed for
+            long, reliable computations.
+          </DefinitionBox>
 
-        <div className="mt-6">
-          <LimitationsVisual />
-        </div>
+          <div className="mt-6">
+            <LimitationsVisual />
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox title="An Honest Timeline">
-            <p>
-              Rough, widely-debated estimates: quantum simulation for small molecules, now to five years;
-              practical optimization advantage, five to fifteen years, with real uncertainty; breaking RSA, fifteen
-              to thirty-plus years. Experts disagree on the exact numbers, but the relative ordering is broadly
-              consistent across estimates.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox title="An Honest Timeline">
+              <p>
+                Rough, widely-debated estimates: quantum simulation for small molecules, now to five years;
+                practical optimization advantage, five to fifteen years, with real uncertainty; breaking RSA, fifteen
+                to thirty-plus years. Experts disagree on the exact numbers, but the relative ordering is broadly
+                consistent across estimates.
+              </p>
+            </ExampleBox>
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            The roughly 1,000x gap in qubit count and 100x gap in error rate shown above is exactly the gap{' '}
-            <Link to="/noise" className="text-lime-400 transition-colors hover:text-lime-300">
-              Noise & Hardware
-            </Link>{' '}
-            explains the physical origin of. Nothing in this chapter is a new limitation — it is that same
-            hardware constraint, applied to four specific application areas.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              The roughly 1,000x gap in qubit count and 100x gap in error rate shown above is exactly the gap{' '}
+              <Link to="/noise" className="text-lime-400 transition-colors hover:text-lime-300">
+                Noise & Hardware
+              </Link>{' '}
+              explains the physical origin of. Nothing in this chapter is a new limitation — it is that same
+              hardware constraint, applied to four specific application areas.
+            </RemarkBox>
+          </div>
 
-        <div className="mt-6">
-          <MentorNote>
-            If you write up a SIGQuantum project claiming a "quantum speedup," name which of the four
-            categories above you mean and what classical baseline you compared against. "We used a quantum
-            algorithm" is not itself a speedup claim — Grover's algorithm on 4 qubits is not evidence of
-            anything faster than a laptop `for` loop until you say what it beat and by how much.
-          </MentorNote>
-        </div>
+          <div className="mt-6">
+            <MentorNote>
+              If you write up a SIGQuantum project claiming a "quantum speedup," name which of the four
+              categories above you mean and what classical baseline you compared against. "We used a quantum
+              algorithm" is not itself a speedup claim — Grover's algorithm on 4 qubits is not evidence of
+              anything faster than a laptop `for` loop until you say what it beat and by how much.
+            </MentorNote>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="usecases-mistakes" className="mt-12 scroll-mt-28">

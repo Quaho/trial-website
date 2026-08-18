@@ -15,6 +15,7 @@ import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import MentorNote from '../../components/MentorNote'
+import CodeFillBlank from '../../components/CodeFillBlank'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const MEASUREMENT_OUTLINE = [
@@ -819,6 +820,18 @@ export default function Measurement() {
           ]}
         />
       </section>
+
+      <div className="mt-10">
+        <CodeFillBlank
+          title="Effectively Measure in the X Basis"
+          prompt="Real hardware only measures in the Z basis directly. Which line, placed right before the measurement, converts this into an effective X-basis measurement?"
+          before={['qc = QuantumCircuit(1, 1)', '# qubit prepared in |+⟩ or |-⟩']}
+          choices={['qc.h(0)', 'qc.x(0)', 'qc.z(0)', 'qc.s(0)']}
+          correctIndex={0}
+          after={['qc.measure(0, 0)']}
+          explanation="qc.h(0) rotates the X-basis states |+⟩/|-⟩ into the Z-basis states |0⟩/|1⟩, so the Z-basis measurement that follows now reports which X-basis state you actually had — the same H-then-measure trick from Section 5. qc.x(0), qc.z(0), and qc.s(0) all leave the qubit in a basis where |+⟩ and |-⟩ still can't be told apart by a plain Z measurement."
+        />
+      </div>
 
       <div className="mt-10">
         <SummaryBox

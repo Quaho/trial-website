@@ -16,6 +16,7 @@ import VideoAside from '../../components/VideoAside'
 import CodeBlock from '../../components/CodeBlock'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import MentorNote from '../../components/MentorNote'
+import CodeOrdering from '../../components/CodeOrdering'
 
 const LABS_OUTLINE = [
   { id: 'labs-create', label: 'Create a circuit' },
@@ -819,6 +820,15 @@ export default function Labs() {
           ]}
         />
       </section>
+
+      <div className="mt-10">
+        <CodeOrdering
+          title="Order the Full Create-Run Recipe"
+          prompt="Arrange these four lines into a working recipe. One of them can only make sense after the circuit is completely built."
+          lines={['qc.h(0)', 'qc.cx(0, 1)', 'qc.measure_all()', 'result = simulator.run(qc).result()']}
+          explanation="The circuit has to be fully described — every gate and the measurement — before you submit it to run(). This is the same 'description first, execution second' idea from the Qiskit module: simulator.run(qc) belongs last because it's not part of the circuit at all, it's the step that executes the circuit you already built."
+        />
+      </div>
 
       <div className="mt-10">
         <SummaryBox

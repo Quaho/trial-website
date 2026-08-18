@@ -15,6 +15,7 @@ import GlossaryTooltip from '../../components/GlossaryTooltip'
 import ConceptSection from '../../components/ConceptSection'
 import VideoAside from '../../components/VideoAside'
 import MentorNote from '../../components/MentorNote'
+import CodeFillBlank from '../../components/CodeFillBlank'
 import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
@@ -830,6 +831,17 @@ export default function Gates() {
                 'X flips computational-basis states, but eigenstates such as |+⟩ behave differently because the action depends on basis.',
             },
           ]}
+        />
+      </div>
+
+      <div className="mt-10">
+        <CodeFillBlank
+          title="Reach |-⟩ From |+⟩"
+          prompt="qc.h(0) has already turned |0⟩ into |+⟩. Which line reaches |-⟩ from there?"
+          before={['qc = QuantumCircuit(1)', 'qc.h(0)      # |0⟩ → |+⟩']}
+          choices={['qc.z(0)', 'qc.x(0)', 'qc.s(0)', 'qc.h(0)']}
+          correctIndex={0}
+          explanation="qc.z(0) is correct: Z|+⟩ = |-⟩, exactly as Section 3 showed. qc.x(0) leaves |+⟩ unchanged, since |+⟩ is an eigenstate of X. qc.s(0) rotates by a smaller angle, landing on |i+⟩, not |-⟩. A second qc.h(0) would undo the first one entirely, returning to |0⟩ — not the target state either."
         />
       </div>
 

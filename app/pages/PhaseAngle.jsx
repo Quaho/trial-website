@@ -14,6 +14,8 @@ import MistakesBox from '../../components/MistakesBox'
 import VideoAside from '../../components/VideoAside'
 import MentorNote from '../../components/MentorNote'
 import StuckPath from '../../components/StuckPath'
+import ConceptSection from '../../components/ConceptSection'
+import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const PHASE_OUTLINE = [
@@ -429,6 +431,8 @@ function PhaseApplicationsGrid() {
 }
 
 export default function PhaseAngle() {
+  const diagnostic = useDiagnostic()
+
   return (
     <ModuleLayout
       moduleId="phase"
@@ -489,36 +493,38 @@ export default function PhaseAngle() {
           constructive and destructive <Keyword tone="interference">interference</Keyword>.
         </p>
 
-        <DefinitionBox term="Phase">
-          <Keyword tone="phase">Phase</Keyword> is the directional part of a complex <Keyword tone="amplitude">amplitude</Keyword>.
-          It does not by itself represent probability, but it changes how amplitudes combine when states
-          or computational paths interfere.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['phase-vs-probability']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Phase">
+            <Keyword tone="phase">Phase</Keyword> is the directional part of a complex <Keyword tone="amplitude">amplitude</Keyword>.
+            It does not by itself represent probability, but it changes how amplitudes combine when states
+            or computational paths interfere.
+          </DefinitionBox>
 
-        <div className="mt-4">
-          <RemarkBox>
-            A single measurement in the computational basis can hide phase information completely. That
-            does not mean phase is physically irrelevant; it means you need the right basis or the right
-            interference pattern to reveal it.
-          </RemarkBox>
-        </div>
+          <div className="mt-4">
+            <RemarkBox>
+              A single measurement in the computational basis can hide phase information completely. That
+              does not mean phase is physically irrelevant; it means you need the right basis or the right
+              interference pattern to reveal it.
+            </RemarkBox>
+          </div>
 
-        <div className="mt-6">
-          <PhaseVsProbabilityFigure />
-        </div>
+          <div className="mt-6">
+            <PhaseVsProbabilityFigure />
+          </div>
 
-        <div className="mt-6">
-          <MentorNote>
-            A natural but wrong instinct: since <InlineMath>{'-|\\psi\\rangle'}</InlineMath> "looks
-            different" algebraically from <InlineMath>{'|\\psi\\rangle'}</InlineMath>, it's tempting to
-            think a measurement could tell them apart. It can't — multiplying an entire state by the same
-            factor is a global phase, and global phase never appears in measurement statistics.
-          </MentorNote>
-        </div>
+          <div className="mt-6">
+            <MentorNote>
+              A natural but wrong instinct: since <InlineMath>{'-|\\psi\\rangle'}</InlineMath> "looks
+              different" algebraically from <InlineMath>{'|\\psi\\rangle'}</InlineMath>, it's tempting to
+              think a measurement could tell them apart. It can't — multiplying an entire state by the same
+              factor is a global phase, and global phase never appears in measurement statistics.
+            </MentorNote>
+          </div>
 
-        <div className="mt-6">
-          <GlobalPhasePredictReveal />
-        </div>
+          <div className="mt-6">
+            <GlobalPhasePredictReveal />
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="phase-unit-circle" className="mt-12 scroll-mt-28">
@@ -592,36 +598,38 @@ export default function PhaseAngle() {
           Changing basis is often implemented by applying a gate before measurement.
         </p>
 
-        <DefinitionBox term="Measurement Basis">
-          A measurement basis is the set of states used to interpret the outcome of a measurement. A
-          state that looks indistinguishable in one basis can be easy to distinguish in another.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['basis-dependent-phase']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Measurement Basis">
+            A measurement basis is the set of states used to interpret the outcome of a measurement. A
+            state that looks indistinguishable in one basis can be easy to distinguish in another.
+          </DefinitionBox>
 
-        <div className="mt-6">
-          <BasisTable />
-        </div>
+          <div className="mt-6">
+            <BasisTable />
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox title="Worked Example: |+> versus |->">
-            <p>
-              The states <InlineMath>{'|+\\rangle = (|0\\rangle + |1\\rangle)/\\sqrt{2}'}</InlineMath> and
-              <InlineMath>{'|-\\rangle = (|0\\rangle - |1\\rangle)/\\sqrt{2}'}</InlineMath> have the same
-              computational-basis probabilities: 50% for 0 and 50% for 1.
-            </p>
-            <p className="mt-3">
-              They differ only by relative phase. Applying a Hadamard gate before measurement rotates
-              that X-basis distinction into the Z basis, allowing the two states to be told apart.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox title="Worked Example: |+> versus |->">
+              <p>
+                The states <InlineMath>{'|+\\rangle = (|0\\rangle + |1\\rangle)/\\sqrt{2}'}</InlineMath> and
+                <InlineMath>{'|-\\rangle = (|0\\rangle - |1\\rangle)/\\sqrt{2}'}</InlineMath> have the same
+                computational-basis probabilities: 50% for 0 and 50% for 1.
+              </p>
+              <p className="mt-3">
+                They differ only by relative phase. Applying a Hadamard gate before measurement rotates
+                that X-basis distinction into the Z basis, allowing the two states to be told apart.
+              </p>
+            </ExampleBox>
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            Global phase and relative phase are different. Multiplying the entire state by the same
-            factor <InlineMath>{'e^{i\\phi}'}</InlineMath> does not change measurement statistics, but changing
-            the phase of one component relative to another can.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              Global phase and relative phase are different. Multiplying the entire state by the same
+              factor <InlineMath>{'e^{i\\phi}'}</InlineMath> does not change measurement statistics, but changing
+              the phase of one component relative to another can.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <section id="phase-algorithms" className="mt-12 scroll-mt-28">

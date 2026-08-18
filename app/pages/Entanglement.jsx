@@ -14,6 +14,7 @@ import ExpandableAside from '../../components/ExpandableAside'
 import VideoAside from '../../components/VideoAside'
 import MentorNote from '../../components/MentorNote'
 import StuckPath from '../../components/StuckPath'
+import CodeOrdering from '../../components/CodeOrdering'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const ENTANGLEMENT_OUTLINE = [
@@ -621,6 +622,15 @@ export default function Entanglement() {
           </RemarkBox>
         </div>
       </section>
+
+      <div className="mt-10">
+        <CodeOrdering
+          title="Build the Bell State |Φ+⟩"
+          prompt="Arrange these lines to build the Bell state. Order matters here: the same two gates in the wrong order leave the qubits unentangled."
+          lines={['qc = QuantumCircuit(2)', 'qc.h(0)', 'qc.cx(0, 1)']}
+          explanation="Create the circuit, put qubit 0 into superposition with H, then entangle with CNOT. Swapping the last two lines would apply CNOT while qubit 0 is still |0⟩ — the target stays unaffected, and qc.h(0) afterward only puts qubit 0 into superposition on its own, leaving the pair in a separable state, not |Φ+⟩. This is exactly Section 2's 'Where Entanglement First Appears' worked example, in code."
+        />
+      </div>
 
       <div className="mt-10">
         <SummaryBox

@@ -12,6 +12,8 @@ import SummaryBox from '../../components/SummaryBox'
 import MistakesBox from '../../components/MistakesBox'
 import VideoAside from '../../components/VideoAside'
 import MentorNote from '../../components/MentorNote'
+import ConceptSection from '../../components/ConceptSection'
+import { useDiagnostic } from '../../lib/hooks/useDiagnostic'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const MATH_LANGUAGE_OUTLINE = [
@@ -128,6 +130,8 @@ function VectorOpsFigure() {
 }
 
 export default function MathLanguage() {
+  const diagnostic = useDiagnostic()
+
   return (
     <ModuleLayout
       moduleId="math-language"
@@ -309,49 +313,51 @@ export default function MathLanguage() {
           condition on its entries — it is not something every vector automatically has.
         </p>
 
-        <DefinitionBox term="Normalized Vector">
-          A vector <InlineMath>{'v = (a, b)'}</InlineMath> is normalized when the sum of the squared
-          moduli of its entries equals 1: <InlineMath>{'|a|^2 + |b|^2 = 1'}</InlineMath>. This uses the
-          same modulus defined in Section 1, so it applies whether the entries are real or complex.
-        </DefinitionBox>
+        <ConceptSection conceptIds={['vector-normalization']} demonstrated={diagnostic.demonstrated}>
+          <DefinitionBox term="Normalized Vector">
+            A vector <InlineMath>{'v = (a, b)'}</InlineMath> is normalized when the sum of the squared
+            moduli of its entries equals 1: <InlineMath>{'|a|^2 + |b|^2 = 1'}</InlineMath>. This uses the
+            same modulus defined in Section 1, so it applies whether the entries are real or complex.
+          </DefinitionBox>
 
-        <div className="mt-6">
-          <NotationBox symbol="‖v‖² = |a|² + |b|² = 1">
-            The condition is stated in terms of squared moduli, never the raw entries directly — an entry
-            can be negative or complex and the vector can still be normalized.
-          </NotationBox>
-        </div>
+          <div className="mt-6">
+            <NotationBox symbol="‖v‖² = |a|² + |b|² = 1">
+              The condition is stated in terms of squared moduli, never the raw entries directly — an entry
+              can be negative or complex and the vector can still be normalized.
+            </NotationBox>
+          </div>
 
-        <div className="mt-6">
-          <ExampleBox title="Worked Example: Checking Normalization">
-            <MathDisplay>{'v = \\begin{pmatrix}1/\\sqrt{2}\\\\1/\\sqrt{2}\\end{pmatrix} \\quad\\Rightarrow\\quad \\left|\\tfrac{1}{\\sqrt{2}}\\right|^2 + \\left|\\tfrac{1}{\\sqrt{2}}\\right|^2 = \\tfrac{1}{2} + \\tfrac{1}{2} = 1'}</MathDisplay>
-            <p>
-              The squared moduli of the two entries sum to 1, so this vector is normalized.
-            </p>
-          </ExampleBox>
-        </div>
+          <div className="mt-6">
+            <ExampleBox title="Worked Example: Checking Normalization">
+              <MathDisplay>{'v = \\begin{pmatrix}1/\\sqrt{2}\\\\1/\\sqrt{2}\\end{pmatrix} \\quad\\Rightarrow\\quad \\left|\\tfrac{1}{\\sqrt{2}}\\right|^2 + \\left|\\tfrac{1}{\\sqrt{2}}\\right|^2 = \\tfrac{1}{2} + \\tfrac{1}{2} = 1'}</MathDisplay>
+              <p>
+                The squared moduli of the two entries sum to 1, so this vector is normalized.
+              </p>
+            </ExampleBox>
+          </div>
 
-        <div className="mt-6">
-          <MentorNote>
-            A common repair attempt: given <InlineMath>{'v = (3, 4)'}</InlineMath>, students sometimes
-            "normalize" by dividing each entry by the sum <InlineMath>{'3 + 4 = 7'}</InlineMath>, giving{' '}
-            <InlineMath>{'(3/7, 4/7)'}</InlineMath> — but <InlineMath>{'(3/7)^2 + (4/7)^2 \\approx 0.51'}</InlineMath>,
-            not 1. The correct divisor is the modulus itself, <InlineMath>{'\\sqrt{3^2+4^2} = 5'}</InlineMath>,
-            giving <InlineMath>{'(3/5, 4/5)'}</InlineMath>, and indeed{' '}
-            <InlineMath>{'(3/5)^2 + (4/5)^2 = 1'}</InlineMath>.
-          </MentorNote>
-        </div>
+          <div className="mt-6">
+            <MentorNote>
+              A common repair attempt: given <InlineMath>{'v = (3, 4)'}</InlineMath>, students sometimes
+              "normalize" by dividing each entry by the sum <InlineMath>{'3 + 4 = 7'}</InlineMath>, giving{' '}
+              <InlineMath>{'(3/7, 4/7)'}</InlineMath> — but <InlineMath>{'(3/7)^2 + (4/7)^2 \\approx 0.51'}</InlineMath>,
+              not 1. The correct divisor is the modulus itself, <InlineMath>{'\\sqrt{3^2+4^2} = 5'}</InlineMath>,
+              giving <InlineMath>{'(3/5, 4/5)'}</InlineMath>, and indeed{' '}
+              <InlineMath>{'(3/5)^2 + (4/5)^2 = 1'}</InlineMath>.
+            </MentorNote>
+          </div>
 
-        <div className="mt-6">
-          <RemarkBox>
-            This is exactly the condition a quantum state vector must satisfy so that measurement
-            probabilities sum to 1. The full connection to probability is covered once{' '}
-            <Link to="/braket" className="text-indigo-400 hover:text-indigo-300 transition-colors">Bra-Ket Notation</Link>{' '}
-            and later{' '}
-            <Link to="/measurement" className="text-indigo-400 hover:text-indigo-300 transition-colors">Measurement &amp; Basis</Link>{' '}
-            attach that meaning to the entries — here, it is only a property of the vector.
-          </RemarkBox>
-        </div>
+          <div className="mt-6">
+            <RemarkBox>
+              This is exactly the condition a quantum state vector must satisfy so that measurement
+              probabilities sum to 1. The full connection to probability is covered once{' '}
+              <Link to="/braket" className="text-indigo-400 hover:text-indigo-300 transition-colors">Bra-Ket Notation</Link>{' '}
+              and later{' '}
+              <Link to="/measurement" className="text-indigo-400 hover:text-indigo-300 transition-colors">Measurement &amp; Basis</Link>{' '}
+              attach that meaning to the entries — here, it is only a property of the vector.
+            </RemarkBox>
+          </div>
+        </ConceptSection>
       </section>
 
       <div className="mt-12">

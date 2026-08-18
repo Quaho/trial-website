@@ -16,6 +16,7 @@ import VideoAside from '../../components/VideoAside'
 import GlossaryTooltip from '../../components/GlossaryTooltip'
 import MentorNote from '../../components/MentorNote'
 import StuckPath from '../../components/StuckPath'
+import CodeFillBlank from '../../components/CodeFillBlank'
 import { MathDisplay, MathInline as InlineMath } from '../../components/MathBlock'
 
 const ALGORITHMS_OUTLINE = [
@@ -859,6 +860,18 @@ export default function Algorithms() {
           ]}
         />
       </section>
+
+      <div className="mt-10">
+        <CodeFillBlank
+          title="Read Out a Kicked-Back Phase"
+          prompt="After phase kickback with φ = π, the control qubit ends up in |-⟩. Which line, right before measuring, reads that out via the Z basis?"
+          before={['qc = QuantumCircuit(1, 1)', '# control already in |-⟩ from kickback']}
+          choices={['qc.h(0)', 'qc.x(0)', 'qc.z(0)', 'qc.s(0)']}
+          correctIndex={0}
+          after={['qc.measure(0, 0)']}
+          explanation="qc.h(0) is the same H-then-measure trick used in Measurement & Basis: it rotates |-⟩ into |1⟩, so a plain Z-basis measurement now reliably reports the kicked-back phase. qc.x(0), qc.z(0), and qc.s(0) don't perform that basis change, so |-⟩ would still measure as an even 50/50 split in Z — the phase information stays hidden."
+        />
+      </div>
 
       <div className="mt-10">
         <SummaryBox

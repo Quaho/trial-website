@@ -198,7 +198,7 @@ export default function Roadmap() {
               Not sure where your knowledge stands?
             </h2>
             <p className="mt-1 text-sm text-slate-400 leading-relaxed max-w-xl">
-              Take the placement diagnostic (about 10 minutes) to see which sections you can
+              Take the placement diagnostic (about 15 minutes) to see which sections you can
               likely skim and which are worth starting with. It does not choose a path for
               you — the paths below are still based on your background.
             </p>
