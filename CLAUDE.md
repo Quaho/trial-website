@@ -2,6 +2,24 @@
 
 ## Project Identity
 
+**Visual alignment note (2026-08-19):** the handbook's typography and
+color system are intentionally aligned with sigquantum.com, SIGQuantum's
+actual club site — verified directly against its live compiled CSS and
+font-loading, not guessed from its logo or a general "club site" vibe.
+This is a **visual-only** decision. It governs the Design Direction and
+Visual System sections below and nothing else — it does not reopen or
+change the writing voice. Tone and Voice below is unchanged from this
+project's original identity; a future session should not read this note
+as license to casualize the prose.
+
+This note supersedes an earlier, now-reverted draft edit to this section
+that briefly pivoted *both* the voice and the visuals toward a
+club-branded look, including a "rust-orange accent, navy, blue-gray"
+palette. That palette was never actually verified against the real site
+and does not exist there — sigquantum.com ships no defined accent color
+at all (see Visual System's Color subsection for what was actually
+confirmed). That draft edit has been reverted; do not reintroduce it.
+
 This project is **not** a general event website and **not** a casual beginner course.
 
 It is the **technical onboarding handbook** for students preparing to participate in **SIGQuantum** and **Fall Fest**. Its purpose is to give new members a structured, credible, academically oriented path into the core concepts, notation, tools, and expectations used in the group.
@@ -25,7 +43,7 @@ The site should **not** feel like:
 React 18 + Vite + Tailwind CSS v3 + KaTeX + React Router v6 + Framer Motion + Prism.js.
 
 ### Current State
-The identity shift and structural phases are complete, and Phase 3 content work is now essentially done. The site is branded **SIGQuantum — Technical Onboarding Handbook**. The handbook now spans **14 sequential modules**, Big-Picture Intuition through Use Cases (see Information Architecture below), each following the section template, and — as of TASK-032 through TASK-037 — every module now uses the same `ModuleLayout` outline+aside page template (`DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox`/`MistakesBox`/`SummaryBox`). No module page uses the older `LESSONS`/`LessonCard`/`StepNav` lesson-stepper pattern anymore. `Roadmap.jsx` (Study Paths) is fully implemented: three background-based paths (CS/Python, physics/theory, new to both), a full topic map, and machine-project status, all driven by `useProgress`. Three **Machine Projects** (First Quantum Circuit, Bell State Explorer, Algorithm Showdown) are built end to end with real Qiskit code, predict/reflect checkpoints, and step-gated progress via `ProjectLayout`. The **Diagnostic Placement pilot** (Phase 3a) shipped in full, scoped to Intuition, Bra-Ket, and Gates: a soft/advisory placement quiz, concept-level content collapsing, a linked-list study sequence, and a no-account save/restore code (see Diagnostic Placement & Concept Evidence below). Separately, every one of the 14 modules — not just the 3 pilot modules — now carries one optional, source-verified video aside (see Video Sourcing); that rollout was content-only and did not extend the concept-graph/diagnostic-collapsing system itself beyond the pilot. Phase 3b, scoped 2026-08-17 from an external beginner-usefulness assessment (`LLM_ASSIGNMENT.md`), shipped 2026-08-18 as TASK-038: `MentorNote` and `StuckPath` are built and in use (14 `MentorNote` instances, one per module; 4 `StuckPath` instances, one per blocker type, on `braket`/`phase`/`entanglement`/`algorithms`), the six CLAUDE.md-named difficult modules (`intuition`, `braket`, `phase`, `gates`, `measurement`, `algorithms`) each carry a new predict-before-reveal moment, `References.jsx` no longer mislabels IBM Quantum Learning as the old Qiskit Textbook and now carries a goal-sorted chooser plus Microsoft Quantum Katas/MIT OCW/Quantum Country, and the orphaned `LessonCard`/`StepNav`/`Quiz`/`DeepDive` components and the nav-linked (not actually unlinked — corrected from an earlier inaccurate note) `/challenges` page have been deleted. See "Mentor Notes, Stuck Recovery & Continuation Resources" below for the governing rules this task executed against. The Phase 3a pilot-rollout decision was then resolved the same day as TASK-039: the diagnostic was extended, at lighter density, to `math-language`/`phase`/`noise`/`usecases` (7 modules total, 32 questions), while the other 7 modules from Qiskit onward got a new, deliberately different feature instead — `CodeFillBlank`/`CodeOrdering` "Qiskit Practice Challenges" with real pass/fail grading, a documented scoped exception to the diagnostic's no-reveal rule (see "Qiskit Practice Challenges" below).
+The identity shift and structural phases are complete, and Phase 3 content work is now essentially done. The site is branded **SIGQuantum — Technical Onboarding Handbook**. The handbook now spans **14 sequential modules**, Big-Picture Intuition through Use Cases (see Information Architecture below), each following the section template, and — as of TASK-032 through TASK-037 — every module now uses the same `ModuleLayout` outline+aside page template (`DefinitionBox`/`NotationBox`/`ExampleBox`/`RemarkBox`/`MistakesBox`/`SummaryBox`). No module page uses the older `LESSONS`/`LessonCard`/`StepNav` lesson-stepper pattern anymore. `Roadmap.jsx` (Study Paths) is fully implemented: three background-based paths (CS/Python, physics/theory, new to both), a full topic map, and machine-project status, all driven by `useProgress`. Three **Machine Projects** (First Quantum Circuit, Bell State Explorer, Algorithm Showdown) are built end to end with real Qiskit code, predict/reflect checkpoints, and step-gated progress via `ProjectLayout`. The **Diagnostic Placement pilot** (Phase 3a) shipped in full, scoped to Intuition, Bra-Ket, and Gates: a soft/advisory placement quiz, concept-level content collapsing, a linked-list study sequence, and a no-account save/restore code (see Diagnostic Placement & Concept Evidence below). Separately, every one of the 14 modules — not just the 3 pilot modules — now carries one optional, source-verified video aside (see Video Sourcing); that rollout was content-only and did not extend the concept-graph/diagnostic-collapsing system itself beyond the pilot. Phase 3b, scoped 2026-08-17 from an external beginner-usefulness assessment (`LLM_ASSIGNMENT.md`), shipped 2026-08-18 as TASK-038: `MentorNote` and `StuckPath` are built and in use (14 `MentorNote` instances, one per module; 4 `StuckPath` instances, one per blocker type, on `braket`/`phase`/`entanglement`/`algorithms`), the six CLAUDE.md-named difficult modules (`intuition`, `braket`, `phase`, `gates`, `measurement`, `algorithms`) each carry a new predict-before-reveal moment, `References.jsx` no longer mislabels IBM Quantum Learning as the old Qiskit Textbook and now carries a goal-sorted chooser plus Microsoft Quantum Katas/MIT OCW/Quantum Country, and the orphaned `LessonCard`/`StepNav`/`Quiz`/`DeepDive` components and the nav-linked (not actually unlinked — corrected from an earlier inaccurate note) `/challenges` page have been deleted. See "Mentor Notes, Stuck Recovery & Continuation Resources" below for the governing rules this task executed against. The Phase 3a pilot-rollout decision was then resolved the same day as TASK-039: the diagnostic was extended, at lighter density, to `math-language`/`phase`/`noise`/`usecases` (7 modules total, 32 questions), while the other 7 modules from Qiskit onward got a new, deliberately different feature instead — `CodeFillBlank`/`CodeOrdering` "Qiskit Practice Challenges" with real pass/fail grading, a documented scoped exception to the diagnostic's no-reveal rule (see "Qiskit Practice Challenges" below). At direct user request, this was extended further with two more additions, both grounded only in facts already established elsewhere on the site: the diagnostic itself gained 4 optional code-reading questions (`gates`/`math-language`, still silent/no-reveal — see "Rollout scope" → "Code-reading questions"), and a third, separate mechanism, `/qiskit-challenges`, was added — a standalone, real-graded, LeetCode-style problem set of 6 problems (see "Qiskit Challenges" below).
 
 ### What remains
 - Phase 4 polish: accessibility, mobile, and rendering audits — sequenced after Phase 3b/3c, not started
@@ -103,38 +121,48 @@ The site must not assume prior mastery of:
 - Prefer correct terminology over slang
 - Avoid hype language
 - Avoid excessive friendliness markers
-- Avoid “magic” framing
+- Avoid "magic" framing
 - Avoid oversimplified analogies that replace the real idea
 
 ### Good tone examples
-- “In this section, we define the computational basis and explain how measurement outcomes are derived.”
-- “The Hadamard gate changes the measurement basis and is therefore central to many introductory circuits.”
-- “You do not need full prior exposure to linear algebra, but you should be comfortable with vectors and matrices.”
+- "In this section, we define the computational basis and explain how measurement outcomes are derived."
+- "The Hadamard gate changes the measurement basis and is therefore central to many introductory circuits."
+- "You do not need full prior exposure to linear algebra, but you should be comfortable with vectors and matrices."
 
 ### Avoid
-- “Let’s have fun with qubits”
-- “Quantum is weird and crazy”
-- “No math needed”
-- “You’ll master this in minutes”
-- “Just trust the intuition for now” without later clarification
+- "Let's have fun with qubits"
+- "Quantum is weird and crazy"
+- "No math needed"
+- "You'll master this in minutes"
+- "Just trust the intuition for now" without later clarification
 
 ---
 
 ## Design Direction
 
 ### Overall feel
-The interface should feel like a modern academic handbook:
-- restrained
-- legible
-- spacious
-- carefully organized
-- technically trustworthy
+The interface should still read as a restrained, modern academic
+handbook first — legible, spacious, carefully organized, technically
+trustworthy. Within that restraint, its typography and color system
+should visually resemble sigquantum.com specifically, not a generic
+"textbook" look:
+- a genuine light/dark theme, dark-mode-first, like the real site
+  (`<html class="dark">` by default)
+- a neutral, mostly grayscale surface palette rather than a saturated
+  brand color scheme — sigquantum.com itself has no strong, consistently
+  applied accent color (see Visual System's Color subsection for what
+  was actually verified there)
+- a deliberate two-font pairing rather than one font doing everything —
+  see Visual System's Typography subsection for the exact fonts
 
 ### Inspirations
+- sigquantum.com's actual compiled stylesheet and font choices —
+  verified directly (fetched CSS, checked `font-family` declarations and
+  the Tailwind color classes actually present in its markup), not
+  assumed from the logo or a general impression of "club sites"
 - textbook and reference hierarchy
 - technical documentation clarity
 - well-designed course notes
-- carefully structured concept guides
 
 ### Avoid
 - oversized hero marketing language
@@ -142,6 +170,9 @@ The interface should feel like a modern academic handbook:
 - decorative motion as a focal point
 - excessive gamification
 - appified lesson progression that trivializes the material
+- inventing a brand accent color that sigquantum.com doesn't actually
+  have — if a future session wants to add color energy, it must be
+  reverified against the live site first, not asserted
 
 ---
 
@@ -179,6 +210,7 @@ The site should be organized around **technical onboarding**, not event promotio
 /noise               Module 13 — Noise & Hardware
 /usecases            Module 14 — Use Cases
 /diagnostic          Optional placement diagnostic — soft/advisory, see below
+/qiskit-challenges   Qiskit Challenges — standalone LeetCode-style problem set, real-graded
 /roadmap             Study Paths — by-background routes + full topic map
 /projects/*          Machine Projects — hands-on Qiskit walkthroughs
 /glossary            Technical terms and notation
@@ -640,6 +672,27 @@ why. `gates` is the one exception that sits in both systems: it keeps
 its original pilot diagnostic content *and* got a Qiskit Practice
 Challenge, since it was explicitly in scope for both.
 
+### Code-reading questions (added after the rollout above)
+Direct user request: add "leetcode-like" programming questions into the
+diagnostic itself, while keeping its no-reveal contract intact. A
+diagnostic question may carry an optional `code` field (rendered above
+the prompt via the same `CodeBlock` used everywhere else on the site) —
+still a plain multiple-choice question, still silent, still never
+reveals correctness. This is NOT the same thing as "Qiskit Challenges"
+below, which is real-graded; a code-reading diagnostic question is graded
+exactly like every other diagnostic question — recorded, never revealed.
+
+Scoped to `gates` (+2 questions) and `math-language` (+2 questions)
+only, not all 7 diagnostic areas: those are the only two diagnostic-
+covered module pages with real code or literal-number content to ground
+a genuine snippet on (Gates' established gate-matrix facts; Mathematical
+Language's normalization arithmetic, expressed as Python). The other 5
+areas' pages (`intuition`, `braket`, `phase`, `noise`, `usecases`) show
+no code at all — inventing snippets for them would repeat the exact
+fabrication risk already flagged and avoided for `noise`/`usecases` in
+the Qiskit Practice Challenges rollout. 36 questions total as of this
+addition (32 + 4).
+
 ---
 
 ## Qiskit Practice Challenges
@@ -697,6 +750,57 @@ but neither page shows any Qiskit code — a genuine gap, not an oversight
 (`grep -c "<CodeBlock"` confirms 0 for both). Rather than invent Qiskit
 syntax disconnected from either page's real content, they were kept on
 the plain-MCQ diagnostic track instead (see "Rollout scope" above).
+
+---
+
+## Qiskit Challenges
+
+A **third** mechanism, distinct from both the Diagnostic and the
+per-module Qiskit Practice Challenges above, added at direct user
+request alongside the diagnostic's own new code-reading questions: a
+standalone, LeetCode-style problem set at `/qiskit-challenges`
+(`app/pages/QiskitChallenges.jsx`, `components/LeetCodeProblem.jsx`,
+`lib/data/qiskitChallenges.js`).
+
+### How it differs from the other two
+- **vs. the Diagnostic**: real pass/fail grading, shown immediately —
+  the diagnostic never reveals correctness, this always does. Same
+  documented-exception reasoning as Qiskit Practice Challenges' own
+  section above.
+- **vs. Qiskit Practice Challenges**: those are one exercise per module,
+  embedded inline in that module's own page, with an explicit "no new
+  route, no nav entry" rule. Qiskit Challenges is the deliberate
+  exception to that specific placement rule — a separate page, its own
+  route, and its own nav entry, because the point here is a distinct,
+  browsable problem set in a different format (title, difficulty,
+  problem statement, worked example, then the exercise), not more inline
+  practice next to existing prose. The "no new route" rule in the Qiskit
+  Practice Challenges section refers to that mechanism specifically, not
+  to this one.
+
+### Same constraints carried over
+No code execution — still a static site with no Python/Qiskit sandbox,
+still select-based exact-match grading (`LeetCodeProblem` is a stripped,
+LeetCode-shelled sibling of `CodeFillBlank`, not free text). Every
+problem's correct answer and explanation is grounded in a fact already
+established on that problem's linked module page (`groundedIn` field in
+`qiskitChallenges.js` cites which) — never invented syntax or an
+unverified claim. Ordering-style exercises (`CodeOrdering`'s pattern)
+were deliberately avoided here: several natural candidates involve gates
+that commute (e.g. two CX gates sharing a control but different targets,
+as in a GHZ recipe), which would make more than one order legitimately
+correct — a real grading bug for a component that checks one exact
+sequence. Every problem here is a single-blank fill instead.
+
+### Restrained presentation, same rule as Qiskit Practice Challenges
+No score, no streak, no badges beyond the Easy/Medium/Hard difficulty
+label (informational metadata about problem complexity, not a reward
+mechanic — the same convention LeetCode itself uses), no leaderboard, no
+persistence across sessions or aggregate score shown across problems.
+Each problem's state is local `useState`, reset on reload, checked
+independently of every other problem. This keeps the "no gamified
+progression for its own sake" boundary in "What This Site Is Not"
+intact even with a dedicated page and nav entry.
 
 ---
 
@@ -881,13 +985,14 @@ positioned and sorted by learner goal.
 | `PrereqList` | Explicit prerequisites for a page |
 | `ConceptSection` | Diagnostic-evidence-aware content collapsing — see Diagnostic Placement & Concept Evidence. Used on 7 modules as of TASK-039 (the 3 pilot modules plus `math-language`/`phase`/`noise`/`usecases`), not all 14 by design. |
 | `VideoAside` | Optional sourced video embed, deferred load — see Video Sourcing |
-| `DiagnosticQuestion` | Placement-quiz choice UI — records and moves on, never reveals correctness or gates. Contrast `CodeFillBlank`/`CodeOrdering` below, a deliberately different real-graded mechanism. |
+| `DiagnosticQuestion` | Placement-quiz choice UI — records and moves on, never reveals correctness or gates. Optionally renders a code snippet (`question.code`) above the prompt for code-reading questions — still no-reveal. Contrast `CodeFillBlank`/`CodeOrdering`/`LeetCodeProblem` below, deliberately different real-graded mechanisms. |
 | `ProjectLayout` | Machine Project page shell — step list, progress bar, predict/reflect pattern |
 | `MentorNote` | Concrete, single-point beginner-stumble callout — see Mentor Notes, Stuck Recovery & Continuation Resources. Built in Phase 3b (TASK-038); one instance per module across all 14. |
 | `StuckPath` | Advisory recovery redirect keyed to blocker type (math/notation/circuit-reading/implementation) — see Mentor Notes, Stuck Recovery & Continuation Resources. Built in Phase 3b (TASK-038); one instance per blocker type, placed on `braket`, `phase`, `entanglement`, and `algorithms`. |
 | `CodeFillBlank` | Checkable Qiskit fill-in-the-blank exercise (select-based, real pass/fail + retry) — see Qiskit Practice Challenges. Built in TASK-039; one per module on `qiskit`, `gates`, `multiqubit`, `measurement`, `algorithms`. |
 | `CodeOrdering` | Checkable Qiskit step-ordering exercise (keyboard-accessible reorder, real pass/fail + retry) — see Qiskit Practice Challenges. Built in TASK-039; one per module on `entanglement`, `circuits`, `labs`. |
 | `StateTransition` | Compact before → after ket/outcome pair, passed as `CodeFillBlank`/`CodeOrdering`'s `visual` prop so a glance replaces a sentence of setup — see Qiskit Practice Challenges. Added after user feedback that the initial prose-only exercises were too text-heavy; used in all 8 Qiskit Practice Challenge instances. |
+| `LeetCodeProblem` | Checkable, LeetCode-shelled Qiskit problem card (number, difficulty badge, statement, example, single-blank fill, real pass/fail + retry) — see Qiskit Challenges. A standalone page/route (`/qiskit-challenges`), unlike the inline-only Qiskit Practice Challenges above. |
 
 `PathCard`, `ReferenceList`, and `FigureFrame` were planned but never built as named; their roles are covered instead by `Roadmap.jsx`’s own path cards, the References page’s plain list, and `DiagramFrame` respectively. Update this table rather than reintroducing the unused names if that ever changes.
 
@@ -912,21 +1017,68 @@ When rewriting Phase 3 pages:
 ## Visual System
 
 ### Typography
-Use typography that supports dense but readable technical content.
+Use typography that supports dense but readable technical content, and
+matches sigquantum.com's real pairing rather than one font doing
+everything. Confirmed by reading the live site's compiled CSS directly:
+- headings and section labels: **IBM Plex Sans** (sigquantum.com's own
+  heading/label font)
+- body copy: **Source Sans Pro** (sigquantum.com's own body font — its
+  `<body>` element carries this as its base `font-sans`)
+- code: **Fira Code** (loaded by sigquantum.com specifically for code,
+  separate from its general sans stack)
 - strong H1/H2 hierarchy
 - readable body size
 - keep handbook body text on a shared scale across rewritten pages; avoid ad hoc mixes of `text-sm` and `text-base` for equivalent body copy
 - good line spacing
-- monospaced font for code
 - clear math rendering
 
+**Implemented (2026-08-19):** `tailwind.config.js`'s `fontFamily.sans`
+now points to Source Sans Pro and a new `fontFamily.heading` points to
+IBM Plex Sans (applied to `h1`–`h5`, `.section-heading`, and
+`.section-label` in `app/index.css`); `index.html`'s Google Fonts link
+was updated to match. `fontFamily.mono` is unchanged (already Fira Code
+in the fallback stack).
+
 ### Color
-Use a restrained palette.
-- neutral base
-- one primary accent
-- limited secondary accents for semantic callouts
+Use a restrained, mostly neutral palette, matching what sigquantum.com
+actually ships — not an assumed "club branding" scheme.
+- neutral gray base, dark-mode-first (sigquantum.com defaults to
+  `<html class="dark">`; its light/dark surfaces are plain
+  `gray-100`/`gray-800`-family neutrals, not tinted)
+- **no strong saturated brand accent** — sigquantum.com's markup
+  references `theme-primary`/`theme-dark-primary`/`theme-dark-secondary`
+  classes, but none of them resolve to a defined color in its Tailwind
+  config (confirmed by reading the config directly, not assumed from the
+  class names). Treat this as "the real site currently ships no accent
+  color," not as license to invent one.
+- limited secondary accents for semantic callouts (`DefinitionBox`,
+  `NotationBox`, etc.) — this handbook's own structural system,
+  independent of sigquantum.com, and it should stay restrained rather
+  than become a substitute brand palette
 - color-code a small, recurring set of key terms on each rewritten chapter page to improve scanning; use it sparingly and consistently
 - avoid rainbow-like module identity styling unless it serves actual structure
+
+**Implemented (2026-08-19), scoped to chrome only, per explicit user
+direction:** the site's global UI chrome — `Navbar`, `ModuleLayout`,
+`ProjectLayout`, `DiagnosticQuestion`/`Diagnostic.jsx`, `ModuleCard`,
+`LearningPath`, `GlossaryTooltip`, `ExpandableAside`, `ConceptSection`,
+`VideoAside`, `Roadmap.jsx`, `References.jsx`, `Glossary.jsx`, and the
+shared `.btn-primary`/`.card-hover`/`.card-interactive`/`.gradient-text`/
+skip-link classes in `app/index.css` — was desaturated from indigo to
+neutral slate. The unused `quantum` color scale (confirmed by repo-wide
+grep to have zero real usages) was deleted from `tailwind.config.js`
+rather than repurposed. **Deliberately left untouched**: the per-module
+rainbow accent system in `MODULE_LAYOUT_STYLES` (`lib/data/modules.js`;
+each of the 14 modules keeps its own distinct hue — indigo/violet/
+purple/fuchsia/sky/... in module order), the analogous per-project
+system in `PROJECT_STYLES` (`lib/data/projects.js`), the fixed per-box
+type colors (`DefinitionBox`=indigo, `NotationBox`=violet,
+`SummaryBox`=indigo), `Keyword.jsx`'s per-term tones, and each module
+page's own bespoke content styling that reuses its assigned module
+color. These are this handbook's own structural, pedagogical color-
+coding system — independent of and out of scope for matching
+sigquantum.com's chrome, confirmed with the user before this pass
+touched anything.
 
 ### Surfaces
 - clean cards or panels for definitions, examples, and notes

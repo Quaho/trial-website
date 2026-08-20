@@ -59,6 +59,7 @@ const Noise = lazyWithRecovery('noise', () => import('./pages/Noise'))
 const UseCases = lazyWithRecovery('usecases', () => import('./pages/UseCases'))
 const Roadmap = lazyWithRecovery('roadmap', () => import('./pages/Roadmap'))
 const Diagnostic = lazyWithRecovery('diagnostic', () => import('./pages/Diagnostic'))
+const QiskitChallenges = lazyWithRecovery('qiskit-challenges', () => import('./pages/QiskitChallenges'))
 const Glossary = lazyWithRecovery('glossary', () => import('./pages/Glossary'))
 const References = lazyWithRecovery('references', () => import('./pages/References'))
 const FirstCircuit = lazyWithRecovery('first-circuit', () => import('./pages/projects/FirstCircuit'))
@@ -127,6 +128,7 @@ export default function App() {
               {/* Extra pages */}
               <Route path="/roadmap"    element={<Roadmap />} />
               <Route path="/diagnostic" element={<Diagnostic />} />
+              <Route path="/qiskit-challenges" element={<QiskitChallenges />} />
               <Route path="/glossary"   element={<Glossary />} />
               <Route path="/references" element={<References />} />
               <Route path="/projects/first-circuit" element={<FirstCircuit />} />

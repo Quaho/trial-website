@@ -32,7 +32,7 @@ export default function Glossary() {
     <div className="min-h-screen bg-slate-950">
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-slate-800">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/40 to-slate-950" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-800/50 to-slate-950" />
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
@@ -66,7 +66,7 @@ export default function Glossary() {
             aria-label="Search glossary terms"
             className="w-full pl-12 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-xl
                        text-white placeholder-slate-500 text-base
-                       focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent
+                       focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent
                        transition-colors duration-150"
           />
         </div>
@@ -107,8 +107,8 @@ export default function Glossary() {
                       <Link
                         key={m.to}
                         to={m.to}
-                        className="text-xs px-2.5 py-1 rounded-full bg-indigo-900/30 border border-indigo-800/40
-                                   text-indigo-400 hover:bg-indigo-900/50 transition-colors duration-150"
+                        className="text-xs px-2.5 py-1 rounded-full bg-slate-800/40 border border-slate-700/50
+                                   text-slate-300 hover:bg-slate-700/50 transition-colors duration-150"
                       >
                         {m.label}
                       </Link>

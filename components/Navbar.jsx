@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Atom, Menu, X, ChevronDown, Map, BookOpen, Cpu } from 'lucide-react'
+import { Atom, Menu, X, ChevronDown, Map, BookOpen, Cpu, Code2 } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MODULES, NAV_GROUPS } from '../lib/data/modules'
@@ -37,8 +37,8 @@ function NavDropdown({ group, label, modules, pathname, onNavigate }) {
         onClick={() => setOpen(o => !o)}
         className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
           isActive
-            ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-900/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
-            : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+            ? 'bg-slate-100 text-slate-900 shadow-sm shadow-black/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
+            : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
         }`}
         aria-expanded={open}
         aria-haspopup="true"
@@ -66,8 +66,8 @@ function NavDropdown({ group, label, modules, pathname, onNavigate }) {
                   onClick={() => { setOpen(false); onNavigate?.() }}
                   className={`flex items-center gap-2.5 px-3.5 py-2.5 text-sm transition-colors ${
                     pathname === m.to
-                      ? 'bg-indigo-600/20 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+                      ? 'bg-slate-700/60 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
                   }`}
                 >
                   <Icon className="w-4 h-4 shrink-0 opacity-70" />
@@ -106,10 +106,10 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-2 font-bold text-white hover:text-indigo-300 transition-colors shrink-0
-              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded"
+            className="flex items-center gap-2 font-bold text-white hover:text-slate-300 transition-colors shrink-0
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300 rounded"
           >
-            <Atom className="w-5 h-5 text-indigo-400" />
+            <Atom className="w-5 h-5 text-slate-300" />
             SIGQuantum
           </Link>
 
@@ -120,8 +120,8 @@ export default function Navbar() {
               to="/"
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                 pathname === '/'
-                  ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-900/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+                  ? 'bg-slate-100 text-slate-900 shadow-sm shadow-black/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
               }`}
             >
               Home
@@ -145,14 +145,15 @@ export default function Navbar() {
               { to: '/glossary', icon: BookOpen, label: 'Glossary' },
               { to: '/references', icon: BookOpen, label: 'References' },
               { to: '/projects/first-circuit', icon: Cpu, label: 'Projects' },
+              { to: '/qiskit-challenges', icon: Code2, label: 'Challenges' },
             ].map(({ to, icon: Icon, label }) => (
               <Link
                 key={to}
                 to={to}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                   pathname === to
-                    ? 'bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+                    ? 'bg-slate-100 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -164,7 +165,7 @@ export default function Navbar() {
           {/* Mobile hamburger */}
           <button
             className="md:hidden p-2 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-slate-800/60
-              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300"
             onClick={() => setOpen(o => !o)}
             aria-label="Toggle menu"
             aria-expanded={open}
@@ -212,7 +213,7 @@ export default function Navbar() {
                 to="/"
                 onClick={() => setOpen(false)}
                 className={`flex min-h-[44px] items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  pathname === '/' ? 'bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400' : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+                  pathname === '/' ? 'bg-slate-100 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300' : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
                 }`}
               >
                 Home
@@ -227,7 +228,7 @@ export default function Navbar() {
                     <button
                       onClick={() => setExpandedGroup(isExpanded ? null : group)}
                       className="w-full min-h-[44px] flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-500 hover:text-slate-300 hover:bg-slate-800/40 transition-colors mt-1
-                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                        focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300"
                       type="button"
                     >
                       {label}
@@ -251,8 +252,8 @@ export default function Navbar() {
                                 onClick={() => setOpen(false)}
                                 className={`flex min-h-[44px] items-center gap-2.5 pl-5 pr-3 py-2.5 rounded-lg text-sm transition-colors ${
                                   pathname === m.to
-                                    ? 'bg-indigo-600/20 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
-                                    : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+                                    ? 'bg-slate-700/60 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
+                                    : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
                                 }`}
                               >
                                 <Icon className="w-4 h-4 shrink-0 opacity-70" />
@@ -275,13 +276,14 @@ export default function Navbar() {
                   { to: '/glossary',   label: 'Glossary' },
                   { to: '/references', label: 'References' },
                   { to: '/projects/first-circuit', label: 'Machine Projects' },
+                  { to: '/qiskit-challenges', label: 'Qiskit Challenges' },
                 ].map(({ to, label }) => (
                   <Link
                     key={to}
                     to={to}
                     onClick={() => setOpen(false)}
                     className={`flex min-h-[44px] items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                      pathname === to ? 'bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400' : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400'
+                      pathname === to ? 'bg-slate-100 text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300' : 'text-slate-400 hover:text-white hover:bg-slate-800/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300'
                     }`}
                   >
                     {label}

@@ -36,7 +36,7 @@ export default function GlossaryTooltip({ term, children }) {
         aria-describedby={open ? tooltipId : undefined}
         className="rounded-sm text-inherit font-inherit border-b border-dashed border-slate-500 cursor-help
                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-                   focus-visible:outline-indigo-400"
+                   focus-visible:outline-slate-300"
       >
         {children}
       </button>
@@ -62,9 +62,9 @@ export default function GlossaryTooltip({ term, children }) {
             </p>
             <Link
               to="/glossary"
-              className="mt-2 inline-flex rounded-md text-xs font-medium text-indigo-400 transition-colors duration-150
-                         hover:text-indigo-300 focus-visible:outline focus-visible:outline-2
-                         focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              className="mt-2 inline-flex rounded-md text-xs font-medium text-slate-300 transition-colors duration-150
+                         hover:text-white focus-visible:outline focus-visible:outline-2
+                         focus-visible:outline-offset-2 focus-visible:outline-slate-300"
             >
               See glossary &rarr;
             </Link>

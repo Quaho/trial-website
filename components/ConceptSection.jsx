@@ -36,7 +36,7 @@ export default function ConceptSection({ conceptIds, demonstrated, children }) {
       <summary
         className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 marker:content-none
                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-                   focus-visible:outline-indigo-400 rounded-2xl"
+                   focus-visible:outline-slate-300 rounded-2xl"
       >
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-emerald-400">
