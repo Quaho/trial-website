@@ -1,5 +1,128 @@
 # agent.md — Current Codex Task
 
+## TASK-042 — COMPLETE (2026-08-19)
+Direct user request: "Add leetcode like questions to the diagnostic."
+Ambiguous against the diagnostic's own no-reveal contract, so scoped via
+`AskUserQuestion` first rather than guessed. The user's answer asked for
+both halves: (1) real programming questions added into the diagnostic
+itself, but still not revealing correctness, and (2) a completely
+separate new section of real, LeetCode-style, graded Qiskit questions.
+
+**Part 1 — code-reading diagnostic questions.** `DiagnosticQuestion`
+gained an optional `question.code` field, rendered via the same
+`CodeBlock` used everywhere else, with zero change to the diagnostic's
+behavior otherwise (still silent, still no-reveal, still just evidence-
+gathering). Scoped to `gates` (+2) and `math-language` (+2) only — the
+only two diagnostic-covered pages with real code/numeric content to
+ground a genuine question on; the other 5 diagnostic areas
+(`intuition`/`braket`/`phase`/`noise`/`usecases`) show no code at all,
+and inventing snippets for them would repeat the exact fabrication risk
+TASK-039 already flagged and avoided. 32 → 36 diagnostic questions, no
+`DIAGNOSTIC_VERSION` bump (pure additions, per the file's own contract).
+
+**Part 2 — Qiskit Challenges, a third mechanism.** New standalone route
+`/qiskit-challenges` (`app/pages/QiskitChallenges.jsx`,
+`components/LeetCodeProblem.jsx`, `lib/data/qiskitChallenges.js`), new
+Navbar entry (desktop extras list + mobile Explore list). 6 problems
+(2 Easy/2 Medium/2 Hard) spanning `gates`/`qiskit`/`multiqubit`/
+`circuits`/`entanglement`/`labs`, each a LeetCode-shaped card (number,
+difficulty badge, problem statement, static illustrative example, single
+select-based fill-blank, real pass/fail + retry). Every problem's
+correct answer is grounded in a fact already established on its linked
+module page (cited per-problem in the data file's `groundedIn` field) —
+e.g. problem 5 reuses Bell State Explorer's exact `qc.x(1)`-before-`cx`
+recipe for |Ψ+⟩, problem 6 reuses Labs' own GHZ recipe verbatim.
+Deliberately fill-blank only, no reorder-style exercises: several
+natural reorder candidates (e.g. GHZ's two CX gates, which commute since
+they share a control but target different qubits) would have more than
+one legitimately correct order, which `CodeOrdering`'s single-sequence
+check can't express — a real grading-correctness risk, avoided rather
+than shipped and caught later.
+
+Restraint carried over from Qiskit Practice Challenges: no score, no
+streak, no leaderboard, no persistence across problems/sessions — each
+problem's state is local and independent. The one deliberate departure
+from that section's "no new route, no nav entry" line is scoped
+explicitly in CLAUDE.md's new "Qiskit Challenges" section: that rule
+governs the inline per-module mechanism specifically, not this one.
+
+CLAUDE.md updated: new "Qiskit Challenges" section (parallel to "Qiskit
+Practice Challenges", explaining how it differs from both existing
+mechanisms), a "Code-reading questions" subsection under "Rollout
+scope", Component Architecture rows for `LeetCodeProblem` and the
+updated `DiagnosticQuestion` row, the IA route list, and Current State.
+
+Verified: `npm run build` passes; `QiskitChallenges` code-splits into
+its own ~10kB chunk. Two standalone Node scripts (mirroring TASK-021/039's
+verification pattern) confirm: all 36 diagnostic question ids unique,
+areas valid, correct-index in bounds, concept ids resolve against
+`concepts.js`; all 6 Qiskit Challenges ids unique, module ids resolve
+against `MODULES`, correct-index in bounds, no duplicate choice text,
+difficulty values valid. Every problem's physics/circuit fact was
+hand-checked against the source page it cites (not just written and
+trusted) — in particular the GHZ- and Bell-variant-adjacent problems,
+where getting a control/target or gate order wrong would silently teach
+something false. Not visually verified in a browser — standing project
+convention.
+
+## TASK-041 — COMPLETE (2026-08-19)
+Direct user request: change CLAUDE.md so the site's **coloring and text
+style** match sigquantum.com — explicitly not its voice/tone. This
+partially superseded an uncommitted, unreviewed "Identity pivot" draft
+edit to CLAUDE.md that had been sitting in the working tree (found at
+the start of this session) which had pivoted both the *voice* and the
+*visuals* toward a club-branded look, including a "rust-orange accent,
+navy, blue-gray" palette claim.
+
+**Verified the real site before writing anything** (fetched
+sigquantum.com's compiled CSS and GitHub source
+`acm-uiuc/sigquantum-web` directly, not assumed from its logo or a
+"club site" impression): the rust-orange claim was fabricated — the
+real site has no defined accent color at all (`theme-primary`/
+`theme-dark-primary` classes in its markup resolve to nothing in its
+Tailwind config). What's actually real: body font Source Sans Pro,
+heading font IBM Plex Sans, code font Fira Code, dark-mode-first neutral
+gray palette.
+
+**CLAUDE.md**: reverted Tone and Voice and Project Identity's feel-like
+bullets back to the original restrained academic voice (per explicit
+user instruction — visual only, not speaking style); rewrote Design
+Direction and Visual System's Typography/Color subsections with the
+verified fonts/palette; added a scoped "Visual alignment note"
+documenting and correcting the fabricated-palette draft rather than
+silently overwriting it.
+
+**Implementation, scoped via `AskUserQuestion` before touching ~30
+files**: found the site's real accent color (indigo/violet/fuchsia) was
+far more pervasive than the doc draft assumed — not just an unused
+`quantum` Tailwind color scale (confirmed 0 real usages, deleted), but
+the genuine chrome color across Navbar, buttons, and diagnostic UI, AND
+the fixed color of several pedagogical components (`DefinitionBox`,
+`NotationBox`, `SummaryBox`) and the 14-module "rainbow" accent system
+in `MODULE_LAYOUT_STYLES`. Asked the user how far to take it rather than
+guessing; answer was "chrome only." Implemented: `tailwind.config.js`
+(`font-sans` → Source Sans Pro, new `font-heading` → IBM Plex Sans,
+dead `quantum` scale removed), `index.html` (Google Fonts swapped),
+`app/index.css` (`font-heading` applied to headings/labels; `.btn-primary`/
+`.card-hover`/`.card-interactive`/`.gradient-text`/skip-link desaturated
+to neutral slate), and the same indigo→slate desaturation across
+`Navbar`, `ModuleLayout`, `ProjectLayout`, `DiagnosticQuestion`,
+`Diagnostic.jsx`, `ModuleCard`, `LearningPath`, `GlossaryTooltip`,
+`ExpandableAside`, `ConceptSection`, `VideoAside`, `Roadmap.jsx`,
+`References.jsx`, `Glossary.jsx`. **Deliberately untouched**, confirmed
+with the user first: `MODULE_LAYOUT_STYLES` (per-module rainbow),
+`PROJECT_STYLES` (per-project equivalent), `DefinitionBox`/`NotationBox`/
+`SummaryBox`'s fixed colors, `Keyword.jsx`'s per-term tones, and every
+module page's own bespoke content styling — all structural/pedagogical
+color-coding, independent of sigquantum.com's chrome.
+
+Verified: `npm run build` passes after every batch. Repo-wide grep
+confirmed the `quantum` color scale had zero real usages before
+deleting it. Not visually verified in a browser — standing project
+convention; the neutral `.btn-primary` (light chip on dark background)
+and Navbar's active-state styling are the two spots most worth a manual
+look.
+
 ## TASK-040 — COMPLETE (2026-08-18)
 Direct user feedback on TASK-039's output, caught immediately after
 deploy: "too much text right now" on the 8 Qiskit Practice Challenge
