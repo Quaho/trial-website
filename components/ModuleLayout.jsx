@@ -41,13 +41,13 @@ function OutlineNav({ sections, activeSection, compact = false }) {
                   aria-current={isActive ? 'true' : undefined}
                   className={`group flex items-start gap-3 rounded-xl px-3 py-2 text-sm transition-colors ${
                     isActive
-                      ? 'bg-indigo-950/40 text-white'
+                      ? 'bg-slate-700/50 text-white'
                       : 'text-slate-400 hover:bg-slate-800/70 hover:text-slate-200'
                   }`}
                 >
                   <span
                     className={`mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full ${
-                      isActive ? 'bg-indigo-400' : 'bg-slate-600 group-hover:bg-slate-400'
+                      isActive ? 'bg-slate-300' : 'bg-slate-600 group-hover:bg-slate-400'
                     }`}
                   />
                   <span>
@@ -287,7 +287,7 @@ export default function ModuleLayout({ moduleId, title, subtitle, prev, next, st
                     transition={{ duration: 0.15 }}
                     onClick={() => { markDone(moduleId); setJustCompleted(true) }}
                     className="btn-primary focus-visible:outline focus-visible:outline-2
-                               focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                               focus-visible:outline-offset-2 focus-visible:outline-slate-300"
                   >
                     <CheckCircle className="w-4 h-4" />
                     Mark as Complete

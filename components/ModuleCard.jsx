@@ -10,7 +10,7 @@ export default function ModuleCard({ number, title, description, to, icon: Icon,
       aria-disabled={locked || undefined}
     >
       <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-lg
-                       ${completed ? 'bg-green-600/20 text-green-400' : 'bg-indigo-600/20 text-indigo-400'}`}>
+                       ${completed ? 'bg-green-600/20 text-green-400' : 'bg-slate-700/40 text-slate-300'}`}>
         {completed ? <CheckCircle className="w-6 h-6" /> : locked ? <Lock className="w-5 h-5" /> : <Icon className="w-6 h-6" />}
       </div>
       <div className="flex-1 min-w-0">
@@ -20,11 +20,11 @@ export default function ModuleCard({ number, title, description, to, icon: Icon,
             <span className="badge bg-green-900/40 text-green-400">Completed</span>
           )}
         </div>
-        <h3 className="font-semibold text-white group-hover:text-indigo-300 transition-colors">{title}</h3>
+        <h3 className="font-semibold text-white group-hover:text-slate-300 transition-colors">{title}</h3>
         <p className="text-sm text-slate-400 mt-1">{description}</p>
       </div>
       {!locked && (
-        <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-indigo-400 transition-colors flex-shrink-0 mt-0.5" />
+        <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-slate-300 transition-colors flex-shrink-0 mt-0.5" />
       )}
     </Link>
   )

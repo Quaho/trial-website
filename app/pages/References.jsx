@@ -6,8 +6,8 @@ const GOAL_CHOOSER = [
     goal: 'I want to build circuits in Python',
     advice: (
       <>
-        Finish <Link to="/qiskit" className="text-indigo-400 hover:text-indigo-300 transition-colors">Qiskit</Link>{' '}
-        and <Link to="/labs" className="text-indigo-400 hover:text-indigo-300 transition-colors">Labs</Link> here,
+        Finish <Link to="/qiskit" className="text-slate-300 hover:text-white transition-colors">Qiskit</Link>{' '}
+        and <Link to="/labs" className="text-slate-300 hover:text-white transition-colors">Labs</Link> here,
         then move to IBM Quantum Learning and IBM Quantum Documentation for the maintained workflow.
       </>
     ),
@@ -26,8 +26,8 @@ const GOAL_CHOOSER = [
     advice: (
       <>
         MIT OpenCourseWare is the rigorous path. Wait until{' '}
-        <Link to="/braket" className="text-indigo-400 hover:text-indigo-300 transition-colors">Bra-Ket Notation</Link> and{' '}
-        <Link to="/gates" className="text-indigo-400 hover:text-indigo-300 transition-colors">Gates</Link>{' '}
+        <Link to="/braket" className="text-slate-300 hover:text-white transition-colors">Bra-Ket Notation</Link> and{' '}
+        <Link to="/gates" className="text-slate-300 hover:text-white transition-colors">Gates</Link>{' '}
         feel stable first — it is excellent but can feel abrupt otherwise.
       </>
     ),
@@ -45,7 +45,7 @@ const GOAL_CHOOSER = [
     goal: 'I am stuck on the math',
     advice: (
       <>
-        Start with <Link to="/math-language" className="text-indigo-400 hover:text-indigo-300 transition-colors">Mathematical Language</Link>{' '}
+        Start with <Link to="/math-language" className="text-slate-300 hover:text-white transition-colors">Mathematical Language</Link>{' '}
         here, then Khan Academy Linear Algebra for slower, mastery-based practice before returning.
       </>
     ),
@@ -143,13 +143,13 @@ export default function References() {
         paths for deeper study once you are ready to go beyond it.
       </p>
 
-      <section className="mb-12 rounded-2xl border border-indigo-800/40 bg-indigo-950/20 p-6">
-        <p className="text-xs uppercase tracking-widest text-indigo-400 mb-1">Choose By Goal</p>
+      <section className="mb-12 rounded-2xl border border-slate-700/50 bg-slate-900/40 p-6">
+        <p className="text-xs uppercase tracking-widest text-slate-400 mb-1">Choose By Goal</p>
         <h2 className="text-xl font-semibold text-white mb-5">Where should I go next?</h2>
         <div className="space-y-4">
           {GOAL_CHOOSER.map(({ goal, advice }) => (
             <div key={goal} className="flex gap-3">
-              <ArrowRight className="w-4 h-4 mt-1 flex-shrink-0 text-indigo-400" aria-hidden="true" />
+              <ArrowRight className="w-4 h-4 mt-1 flex-shrink-0 text-slate-400" aria-hidden="true" />
               <div>
                 <p className="font-medium text-white">{goal}</p>
                 <p className="mt-1 text-sm text-slate-400 leading-relaxed">{advice}</p>
@@ -173,7 +173,7 @@ export default function References() {
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-semibold text-white hover:text-indigo-300 transition-colors"
+                    className="font-semibold text-white hover:text-white transition-colors"
                   >
                     {item.name}
                   </a>
@@ -190,7 +190,7 @@ export default function References() {
       <Link
         to="/"
         className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors mt-4
-          focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded"
+          focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300 rounded"
       >
         <ChevronLeft className="w-4 h-4" />
         Back to Home

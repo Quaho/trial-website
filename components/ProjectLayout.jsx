@@ -64,7 +64,7 @@ export default function ProjectLayout({
           <Link
             to="/roadmap"
             className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-white mb-6 transition-colors
-                       focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded"
+                       focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300 rounded"
           >
             <ChevronLeft className="w-4 h-4" />
             Study Paths

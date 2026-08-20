@@ -42,9 +42,9 @@ export default function VideoAside({ title, description, source, videoId }) {
       <details className="group mt-4" onToggle={handleToggle}>
         <summary
           className="inline-flex cursor-pointer list-none items-center gap-2 rounded-lg px-1 py-1 text-sm font-medium
-                     text-indigo-400 marker:content-none hover:text-indigo-300
+                     text-slate-300 marker:content-none hover:text-white
                      focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-                     focus-visible:outline-indigo-400"
+                     focus-visible:outline-slate-300"
         >
           Watch on YouTube
           <ChevronDown

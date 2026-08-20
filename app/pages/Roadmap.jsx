@@ -169,7 +169,7 @@ export default function Roadmap() {
           <Link
             to="/"
             className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors
-                       focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded"
+                       focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300 rounded"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Home
@@ -190,10 +190,10 @@ export default function Roadmap() {
       </section>
 
       <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 sm:pt-12">
-        <div className="rounded-2xl border border-indigo-800/40 bg-indigo-950/20 p-5 sm:p-6
+        <div className="rounded-2xl border border-slate-700/50 bg-slate-900/40 p-5 sm:p-6
                          flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="section-label text-indigo-400">Optional</p>
+            <p className="section-label text-slate-400">Optional</p>
             <h2 className="mt-2 text-lg font-semibold text-white">
               Not sure where your knowledge stands?
             </h2>
@@ -261,7 +261,7 @@ export default function Roadmap() {
                     <Link
                       to={project.to}
                       className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors ${accent.link}
-                                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded`}
+                                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300 rounded`}
                     >
                       Recommended project
                       <ArrowRight className="w-4 h-4" />
@@ -282,7 +282,7 @@ export default function Roadmap() {
                         <Link
                           to={module.to}
                           className="group flex items-start gap-4 rounded-xl border border-slate-800 bg-slate-950/60 p-4 transition-colors hover:border-slate-700
-                                     focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                                     focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300"
                         >
                           <span className={`mt-0.5 flex h-8 w-8 items-center justify-center rounded-full border text-sm font-semibold ${accent.number}`}>
                             {index + 1}
@@ -394,7 +394,7 @@ export default function Roadmap() {
                         key={module.id}
                         to={module.to}
                         className="block rounded-xl border border-slate-800 bg-slate-950/50 p-4 transition-colors hover:border-slate-700
-                                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300"
                       >
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="text-xs font-medium text-slate-500">Module {module.number}</span>
@@ -431,7 +431,7 @@ export default function Roadmap() {
                   key={project.id}
                   to={project.to}
                   className="rounded-2xl border border-slate-800 bg-slate-900/50 p-5 transition-colors hover:border-slate-700
-                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-300"
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xs font-medium text-slate-500">Machine Project {project.number}</span>
